@@ -19,9 +19,9 @@ namespace WebApplication1.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public ActionResult<IEnumerable<string>> Get(int id)
         {
-            return "value";
+            return new string[] { "value2" };
         }
 
         // POST api/values
