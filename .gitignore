@@ -262,3 +262,5 @@ __pycache__/
 PresentationApp/WebApplication1/Migrations/*
 
 *.csproj
+*.json
+*.sln
