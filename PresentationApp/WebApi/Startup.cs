@@ -28,7 +28,9 @@ namespace WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddDbContext<MyProjectsContext>(options => options.UseSqlServer("Data Source=.;Initial Catalog=MyProjectsDB;Integrated Security=true"));
+            services.AddEntityFrameworkSqlServer();
+            services.AddDbContextPool<MyProjectsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyProjectsDb")));
+            services.AddScoped<IMyProjectsRepository, MyProjectsRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

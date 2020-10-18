@@ -4,17 +4,27 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
+using WebApi.DataModel;
+
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        
+        private readonly MyProjectsContext context;
+        public ValuesController(MyProjectsContext context)
+        {
+            this.context = context;
+        }
+
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+            var user = context.Find<User>("0");
+            return new string[] { "value1", "value2", user.UserId };
         }
 
         // GET api/values/5
