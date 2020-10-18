@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace WebApi.DataModel
 {
     public class MyProjectsRepository: IMyProjectsRepository
@@ -16,7 +17,7 @@ namespace WebApi.DataModel
 
         public IEnumerable<User> GetAllUsers()
         {
-            return context.Users;
+            return context.Users; 
         }
     }
 }

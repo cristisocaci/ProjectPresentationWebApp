@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebApi.DataModel
 {
-    interface IMyProjectsRepository
+    public interface IMyProjectsRepository
     {
         IEnumerable<User> GetAllUsers();
         
