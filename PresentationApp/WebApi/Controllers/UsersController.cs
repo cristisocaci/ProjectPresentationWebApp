@@ -22,14 +22,16 @@ namespace WebApi.Controllers
             this.logger = logger;
         }
 
-        // api/users
+        // read all users without projects
+        // GET api/users
         [HttpGet]
         public IActionResult Get()
         {
             try
             {
+                var users = repository.GetAllUsers();
                 logger.LogInformation("Users returned");
-                return Ok(repository.GetAllUsers());
+                return Ok(users);
             }
             catch(Exception e)
             {
@@ -37,5 +39,35 @@ namespace WebApi.Controllers
                 return BadRequest("Failed to get users");
             }
         }
+
+        // read a user with projects
+        // GET api/users/{id}
+        [HttpGet("{id}")]
+        public IActionResult GetUser(string id)
+        {
+            try
+            {
+                var user = repository.GetUser(id);
+                if(user != null)
+                {
+                    logger.LogInformation($"User with id {id} returned");
+                    return Ok(user);
+                }
+                return NotFound($"User with id {id} not found");
+            }
+            catch(Exception e)
+            {
+                logger.LogError($"Failed to get user with id {id}: " + e.Message);
+                return BadRequest($"Failed to get user with id {id}");
+            }
+        }
+
+        // Create user
+        // POST api/users
+        //[HttpPost]
+        //public IActionResult CreateUser([FromBody] User user)
+       // {
+
+        //}
     }
 }

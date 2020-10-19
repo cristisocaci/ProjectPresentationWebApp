@@ -8,6 +8,6 @@ namespace WebApi.DataModel
     public interface IMyProjectsRepository
     {
         IEnumerable<User> GetAllUsers();
-        
+        User GetUser(string id);
     }
 }
