@@ -9,5 +9,11 @@ namespace WebApi.DataModel
     {
         IEnumerable<User> GetAllUsers();
         User GetUser(string id);
+
+
+        IEnumerable<Project> GetAllProjects(string userId);
+        Project GetProject(string userId, int id);
+
+        IEnumerable<Info> GetAllInfos(int projectId);
     }
 }

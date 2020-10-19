@@ -40,7 +40,7 @@ namespace WebApi.Controllers
             }
         }
 
-        // read a user with projects
+        // read a user 
         // GET api/users/{id}
         [HttpGet("{id}")]
         public IActionResult GetUser(string id)
@@ -53,6 +53,7 @@ namespace WebApi.Controllers
                     logger.LogInformation($"User with id {id} returned");
                     return Ok(user);
                 }
+                logger.LogInformation($"User with id {id} not found");
                 return NotFound($"User with id {id} not found");
             }
             catch(Exception e)

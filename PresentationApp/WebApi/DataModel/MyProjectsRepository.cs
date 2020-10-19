@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,15 +21,34 @@ namespace WebApi.DataModel
 
         public IEnumerable<User> GetAllUsers()
         {
-            return context.Users; 
+            return context.Users;
         }
-
-        User IMyProjectsRepository.GetUser(string id)
+        public User GetUser(string id)
         {
             var user = context.Users.Find(id);
-          
             return user;
-            //TODO: return the projects also
+        }
+
+        public IEnumerable<Project> GetAllProjects(string userId)
+        {
+            return context.Projects
+                .Include(p => p.Infos)
+                .Where(p => p.UserId == userId)
+                .ToList();
+           
+        }
+        public Project GetProject(string userId, int id)
+        {
+            return context.Projects
+                .Include(p => p.Infos)
+                .Where(p => p.UserId == userId && p.ProjectId == id)
+                .FirstOrDefault();
+            // return infos also
+        }
+
+        public IEnumerable<Info> GetAllInfos(int projectId)
+        {
+            return context.Infos.Where(i => i.ProjectId == projectId).ToList();
         }
     }
 }
