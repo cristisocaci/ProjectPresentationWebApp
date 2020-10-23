@@ -102,6 +102,13 @@ namespace WebApi.Controllers
 
         }
 
+        // Update User
+        // PUT api/users/{id}
+        [HttpPut("{id}")]
+        public IActionResult Update(string id, [FromBody] User newUser)
+        {
+            return Ok();
+        }
 
     }
 }

@@ -49,8 +49,6 @@ namespace WebApi.DataModel
             // return infos also
         }
 
-
-
         public void AddEntity(object entity)
         {
             context.Add(entity);
@@ -68,7 +66,18 @@ namespace WebApi.DataModel
             context.Remove(proj);
         }
 
- 
+        public bool UpdateProject(Project proj, string userId, int id)
+        {
+            var oldProject = GetProject(userId, id);
+            if (oldProject == null)
+                return false;
+            oldProject.Title = proj.Title;
+            oldProject.Infos =  new List<Info> { };
+            context.SaveChanges();
+            oldProject.Infos = proj.Infos;
+            return SaveChanges();
+        }
+
         public bool SaveChanges()
         {
             return context.SaveChanges() > 0;

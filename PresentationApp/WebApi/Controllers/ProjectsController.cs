@@ -48,7 +48,7 @@ namespace WebApi.Controllers
         // read a project of a user
         // GET api/users/{userId}/projects/{id}
         [HttpGet("{id:int}")]
-        public IActionResult Get(string userId, int id)
+        public IActionResult GetUser(string userId, int id)
         {
             try
             {
@@ -100,14 +100,31 @@ namespace WebApi.Controllers
                     if (repository.SaveChanges())
                         return Ok("Project deleted");
                 }
-                else
-                    return BadRequest($"User doesn't have project with id {id}");
             }
             catch
             {
                 logger.LogInformation("Failed to delete project");
             }
             return BadRequest("Failed to delete project");
+        }
+
+        // update project
+        // PUT POST api/users/{userId}/projects/{id}
+        [HttpPut("{id}")]
+        public IActionResult Update(string userId, int id, [FromBody] Project project)
+        {
+            try
+            {
+                if (repository.UpdateProject(project, userId, id))
+                {
+                    return Ok("Project updated");
+                }
+            }
+            catch
+            {
+                logger.LogInformation("Failed to update the project");
+            }
+            return BadRequest("Failed to update the project");
         }
 
     }
