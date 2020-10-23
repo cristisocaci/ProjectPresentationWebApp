@@ -9,7 +9,7 @@ using WebApi.DataModel;
 
 namespace WebApi.Controllers
 {
-    [Route("api/users/{userId}/projects")]
+    [Route("api/users/{userId}/[controller]")]
     [ApiController]
     public class ProjectsController : ControllerBase
     {
@@ -47,7 +47,7 @@ namespace WebApi.Controllers
 
         // read a project of a user
         // GET api/users/{userId}/projects/{id}
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public IActionResult Get(string userId, int id)
         {
             try
@@ -66,6 +66,48 @@ namespace WebApi.Controllers
                 logger.LogError($"Failed to get project with id {id} of user with id {userId}: " + e.Message);
                 return BadRequest($"Failed to get project with id {id} of user with id {userId}");
             }
+        }
+
+        // create project
+        // POST api/users/{userId}/projects
+        [HttpPost]
+        public IActionResult CreateProject(string userId, [FromBody] Project project)
+        {
+            try
+            {
+                project.UserId = userId;
+                repository.AddEntity(project);
+                if (repository.SaveChanges())
+                    return Created($"api/users/{userId}/projects/{project.ProjectId}", project);
+            }
+            catch
+            {
+                logger.LogInformation("Failed to add a new project");
+            }
+            return BadRequest("Failed to add a new project");
+        }
+
+        // delete project
+        // POST api/users/{userId}/projects/{id}
+        [HttpPost("{id}")]
+        public IActionResult Delete(string userId, int id)
+        {
+            try
+            {
+                if (repository.UserHasProject(userId, id))
+                {
+                    repository.DeleteProject(id);
+                    if (repository.SaveChanges())
+                        return Ok("Project deleted");
+                }
+                else
+                    return BadRequest($"User doesn't have project with id {id}");
+            }
+            catch
+            {
+                logger.LogInformation("Failed to delete project");
+            }
+            return BadRequest("Failed to delete project");
         }
 
     }

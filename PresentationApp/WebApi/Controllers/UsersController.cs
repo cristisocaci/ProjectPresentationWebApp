@@ -65,10 +65,43 @@ namespace WebApi.Controllers
 
         // Create user
         // POST api/users
-        //[HttpPost]
-        //public IActionResult CreateUser([FromBody] User user)
-       // {
+        [HttpPost]
+        public IActionResult CreateUser([FromBody] User user)
+        {
+            try
+            {
+                repository.AddEntity(user);
+                if (repository.SaveChanges())
+                    return Created($"api/users/{user.UserId}", user);
+            }
+            catch
+            {
+                logger.LogInformation("Failed to add a new user");
+            }
+            return BadRequest("Failed to add a new user");
 
-        //}
+        }
+
+        // Delete User
+        // POST api/users/{id}
+        [HttpPost("{id}")]
+        public IActionResult Delete(string id)
+        {
+            try
+            {
+                repository.DeleteUser(id);
+                if (repository.SaveChanges())
+                    return Ok("User deleted");
+  
+            }
+            catch
+            {
+                logger.LogInformation("Failed to delete user");
+            }
+            return BadRequest("Failed to delete user");
+
+        }
+
+
     }
 }

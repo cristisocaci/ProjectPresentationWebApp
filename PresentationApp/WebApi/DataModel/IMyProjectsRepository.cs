@@ -9,11 +9,17 @@ namespace WebApi.DataModel
     {
         IEnumerable<User> GetAllUsers();
         User GetUser(string id);
+        void DeleteUser(string entity);
 
 
         IEnumerable<Project> GetAllProjects(string userId);
         Project GetProject(string userId, int id);
+        void DeleteProject(int entity);
 
-        IEnumerable<Info> GetAllInfos(int projectId);
+
+        void AddEntity(object entity);
+  
+        bool SaveChanges();
+        bool UserHasProject(string userId, int id);
     }
 }

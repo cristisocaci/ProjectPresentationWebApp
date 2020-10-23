@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace WebApi.DataModel
 {
-    public class MyProjectsRepository: IMyProjectsRepository
+    public class MyProjectsRepository : IMyProjectsRepository
     {
         private readonly MyProjectsContext context;
         private readonly ILogger<MyProjectsRepository> logger;
@@ -25,7 +25,10 @@ namespace WebApi.DataModel
         }
         public User GetUser(string id)
         {
-            var user = context.Users.Find(id);
+            var user = context.Users
+                .Include(u => u.Projects)
+                .Where(u => u.UserId == id)
+                .FirstOrDefault();
             return user;
         }
 
@@ -35,7 +38,7 @@ namespace WebApi.DataModel
                 .Include(p => p.Infos)
                 .Where(p => p.UserId == userId)
                 .ToList();
-           
+
         }
         public Project GetProject(string userId, int id)
         {
@@ -46,9 +49,35 @@ namespace WebApi.DataModel
             // return infos also
         }
 
-        public IEnumerable<Info> GetAllInfos(int projectId)
+
+
+        public void AddEntity(object entity)
         {
-            return context.Infos.Where(i => i.ProjectId == projectId).ToList();
+            context.Add(entity);
+        }
+
+        public void DeleteUser(string id)
+        {
+            var user = context.Users.Find(id);
+            context.Users.Remove(user);
+        }
+
+        public void DeleteProject(int id)
+        {
+            var proj = context.Projects.Find(id);
+            context.Remove(proj);
+        }
+
+ 
+        public bool SaveChanges()
+        {
+            return context.SaveChanges() > 0;
+        }
+
+        public bool UserHasProject(string userId, int id)
+        {
+            return context.Projects.Find(id).UserId == userId;
         }
     }
+       
 }
