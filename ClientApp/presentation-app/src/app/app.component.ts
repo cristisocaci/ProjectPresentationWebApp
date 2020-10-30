@@ -11,7 +11,7 @@ export class AppComponent implements OnInit{
   response: any;
   constructor(private http : HttpClient){}
   ngOnInit(){
-    this.http.get<any>('http://localhost:5000/api/values/1').subscribe({
+      this.http.get<any>('http://localhost:8888/api/users/0/projects').subscribe({
       next: data => {
         this.response = data;
         console.log(data)
@@ -21,4 +21,5 @@ export class AppComponent implements OnInit{
       }
     })
   }
+  
 }

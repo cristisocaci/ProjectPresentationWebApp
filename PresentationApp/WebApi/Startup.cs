@@ -32,7 +32,12 @@ namespace WebApi
             services.AddEntityFrameworkSqlServer();
             services.AddDbContextPool<MyProjectsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyProjectsDb")));
             services.AddScoped<IMyProjectsRepository, MyProjectsRepository>();
-           
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -41,7 +46,9 @@ namespace WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseCors("MyPolicy");
             app.UseMvc();
+            
         }
     }
 }
