@@ -37,8 +37,8 @@ namespace WebApi.DataModel
                 new User { UserId = "0" }
             );
             modelBuilder.Entity<Project>().HasData(
-                new  { ProjectId = 1, Title = "Demo 1", UserId = "0" },
-                new  { ProjectId = 2, Title = "Demo 2", UserId = "0" }
+                new  { ProjectId = 1, Title = "Demo 1", UserId = "0", NextProjectId=2, Description="Description of project 1" },
+                new  { ProjectId = 2, Title = "Demo 2", UserId = "0", NextProjectId=-1, Description = "Description of project 1" }
             );
             
             modelBuilder.Entity<Info>().HasData(

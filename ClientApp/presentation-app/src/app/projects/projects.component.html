@@ -1,0 +1,61 @@
+
+<nav class="navbar navbar-expand-md bg-dark text-light justify-content-between">
+    <ul class="navbar-nav mx-2">
+        <!-- Page title -->
+        <a class="navbar-brand text-light text-weight-bolder" href="/projects">My Board</a>
+        <!-- Dropdown -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-light" href="#" id="navbardrop" data-toggle="dropdown">
+                Account
+            </a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">Account Info</a>
+                <a class="dropdown-item" href="#">Settings</a>
+                <a class="dropdown-item" href="#">Share My Board</a>
+            </div>
+        </li>
+    </ul>
+
+    <!-- Search item -->
+    <form class="form-inline mx-2 justify-content-end" action="/projects">
+        <input class="form-control mr-md-2 form-control-sm" type="text" placeholder="Search">
+        <button class="btn btn-outline-light btn-sm" type="submit">Search</button>
+    </form>
+</nav>
+
+<!-- Used to put 3 card on a row -->
+<div *ngFor="let deck of nbOfDecks; let i=index">
+    <div class="card-deck mx-3 mt-3 justify-content-center">
+        <!-- Card content -->
+        <div class="card"  *ngFor="let project of projects.slice(i*3,i*3+3)" style="max-width: 30rem">
+            <!-- Card image-->
+            <img class="card-img-top" src="http://localhost:8888/img/unnamed1.jpg">
+            <!-- Popover -->
+            <ng-template #popContent>
+                <div class="btn-group-vertical">
+                    <button type="button" class="btn btn-outline-primary">Edit</button>
+                    <button type="button" class="btn btn-outline-primary">Share</button>
+                    <button type="button" class="btn btn-outline-primary">Delete</button>
+                </div>
+            </ng-template>
+            <button class="card-img-overlay ml-auto badge badge-pill mx-2 my-1" style="max-height: 8%; max-width: 8%; background-color:rgba(255, 255, 255, 0.0); border:none; padding:0"
+                placement="bottom" [autoClose]="'outside'" [ngbPopover]="popContent">
+                <span class="mh-100 mw-100">
+                    <svg viewBox="0 0 16 16" class="bi bi-three-dots h-100 w-100" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                    </svg>
+                </span>
+            </button>
+            <!-- Card title and description -->
+            <div class="card-body">
+                <h4 class="card-title">{{project.title}}</h4>
+                <p class="card-text">{{project.description}}</p>
+            </div>
+            <!--Redirect to project button-->
+            <div class="card-footer">
+                <a href="/projects" class="btn btn-outline-primary">See Project</a>
+            </div>
+        </div>
+
+    </div>
+</div>

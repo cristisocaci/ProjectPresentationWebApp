@@ -35,7 +35,6 @@ namespace WebApi.DataModel
         public IEnumerable<Project> GetAllProjects(string userId)
         {
             return context.Projects
-                .Include(p => p.Infos)
                 .Where(p => p.UserId == userId)
                 .ToList();
 

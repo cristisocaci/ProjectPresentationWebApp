@@ -47,6 +47,7 @@ namespace WebApi
                 app.UseDeveloperExceptionPage();
             }
             app.UseCors("MyPolicy");
+            app.UseStaticFiles();
             app.UseMvc();
             
         }
