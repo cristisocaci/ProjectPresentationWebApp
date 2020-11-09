@@ -2,6 +2,6 @@ export class Info {
     infoId: string;
     type: string;
     content: string;
-    nextInfoId: string;
+    position: number;
     projectId: number;
 }

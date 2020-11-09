@@ -12,7 +12,7 @@ namespace WebApi.DataModel
         public string Title { get; set; }
         public string Photo { get; set; }
         public string Description { get; set; }
-        public int NextProjectId { get; set; }
+        public int Position { get; set; }
 
         public string UserId { get; set; }
         public User User { get; set; }

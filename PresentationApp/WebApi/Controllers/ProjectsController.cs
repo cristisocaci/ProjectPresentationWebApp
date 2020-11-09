@@ -85,6 +85,7 @@ namespace WebApi.Controllers
             {
                 logger.LogInformation("Failed to add a new project");
             }
+
             return BadRequest("Failed to add a new project");
         }
 
@@ -99,7 +100,7 @@ namespace WebApi.Controllers
                 {
                     repository.DeleteProject(id);
                     if (repository.SaveChanges())
-                        return Ok("Project deleted");
+                        return Ok(new string[] { "Project deleted" });
                 }
             }
             catch
@@ -110,7 +111,7 @@ namespace WebApi.Controllers
         }
 
         // update project
-        // PUT POST api/users/{userId}/projects/{id}
+        // PUT api/users/{userId}/projects/{id}
         [HttpPut("{id}")]
         public IActionResult Update(string userId, int id, [FromBody] Project project)
         {
@@ -118,7 +119,7 @@ namespace WebApi.Controllers
             {
                 if (repository.UpdateProject(project, userId, id))
                 {
-                    return Ok("Project updated");
+                    return Ok(new string[] { "Project updated" });
                 }
             }
             catch
@@ -128,5 +129,25 @@ namespace WebApi.Controllers
             return BadRequest("Failed to update the project");
         }
 
+        // update multiple projects
+        // PUT api/users/{userId}/projects
+        [HttpPut]
+        public IActionResult UpdateMultiple(string userId, [FromBody] Project[] projects)
+        {
+            try
+            {
+                if (repository.UpdateProjects(projects, userId))
+                {
+                    return Ok(new string[] { "Projects updated" });
+                }
+            }
+            catch
+            {
+                logger.LogInformation("Failed to update the projects");
+               
+            }
+            return BadRequest("Failed to update the projects");
+
+        }
     }
 }

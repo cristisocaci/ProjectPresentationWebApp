@@ -37,15 +37,15 @@ namespace WebApi.DataModel
                 new User { UserId = "0" }
             );
             modelBuilder.Entity<Project>().HasData(
-                new  { ProjectId = 1, Title = "Demo 1", UserId = "0", NextProjectId=2, Description="Description of project 1" },
-                new  { ProjectId = 2, Title = "Demo 2", UserId = "0", NextProjectId=-1, Description = "Description of project 1" }
+                new  { ProjectId = 1, Title = "Demo 1", UserId = "0", Position=0, Description="Description of project 1" },
+                new  { ProjectId = 2, Title = "Demo 2", UserId = "0", Position=1, Description = "Description of project 1" }
             );
             
             modelBuilder.Entity<Info>().HasData(
-                new { InfoId = "1", Content = "Project 1 information #1", Type = "text", NextInfoId = "2", ProjectId = 1 },
-                new { InfoId = "2", Content = "Project 1 information #2", Type = "text", NextInfoId = "-1", ProjectId = 1 },
-                new { InfoId = "3", Content = "Project 2 information #1", Type = "text", NextInfoId = "4", ProjectId = 2 },
-                new { InfoId = "4", Content = "Project 2 information #2", Type = "text", NextInfoId = "-1", ProjectId = 2 }
+                new { InfoId = "1", Content = "Project 1 information #1", Type = "text", Position = 0, ProjectId = 1 },
+                new { InfoId = "2", Content = "Project 1 information #2", Type = "text", Position = 1, ProjectId = 1 },
+                new { InfoId = "3", Content = "Project 2 information #1", Type = "text", Position = 0, ProjectId = 2 },
+                new { InfoId = "4", Content = "Project 2 information #2", Type = "text", Position = 1, ProjectId = 2 }
             );
            
         }

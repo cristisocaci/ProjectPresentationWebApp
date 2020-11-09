@@ -16,6 +16,7 @@ namespace WebApi.DataModel
         Project GetProject(string userId, int id);
         void DeleteProject(int entity);
         bool UpdateProject(Project proj, string userId, int id);
+        bool UpdateProjects(Project[] projects, string userId);
 
 
         void AddEntity(object entity);

@@ -71,9 +71,26 @@ namespace WebApi.DataModel
             if (oldProject == null)
                 return false;
             oldProject.Title = proj.Title;
+            oldProject.Photo = proj.Photo;
+            oldProject.Description = proj.Description;
+            oldProject.Position = proj.Position;
             oldProject.Infos =  new List<Info> { };
             context.SaveChanges();
             oldProject.Infos = proj.Infos;
+            return SaveChanges();
+        }
+
+        public bool UpdateProjects(Project[] projects, string userId)
+        {
+            foreach (var proj in projects) {
+                var oldProject = GetProject(userId, proj.ProjectId);
+                if (oldProject == null)
+                    return false;
+                oldProject.Title = proj.Title;
+                oldProject.Photo = proj.Photo;
+                oldProject.Description = proj.Description;
+                oldProject.Position = proj.Position;
+            }
             return SaveChanges();
         }
 

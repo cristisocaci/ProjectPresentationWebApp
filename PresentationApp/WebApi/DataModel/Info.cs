@@ -10,7 +10,7 @@ namespace WebApi.DataModel
         public string InfoId { get; set; }
         public string Type { get; set; }
         public string Content { get; set; }
-        public string NextInfoId { get; set; }
+        public int Position { get; set; }
 
         public int ProjectId { get; set; }
         public Project Project { get; set; }

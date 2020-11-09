@@ -5,7 +5,7 @@ export class Project {
     title: string;
     photo: string;
     description: string;
-    nextProjectId: number;
+    position: number;
     userId: string;
-    infos: Array<Info>;
+    infos: Array<Info> = new Array<Info>();
 }
