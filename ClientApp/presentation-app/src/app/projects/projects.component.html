@@ -17,7 +17,7 @@
         </li>
         <!-- Create Project -->
         <li class="nav-item">
-            <a class="btn text-light" (click)="createProject()">Create Project</a>
+            <a class="btn text-light" (click)="createProjectDisplay()">Create Project</a>
         </li>
     </ul>
 
@@ -33,35 +33,65 @@
     <div class="card-deck mx-3 mt-3 justify-content-center">
         <!-- Card content -->
         <div class="card"  *ngFor="let project of projects.slice(i*3,i*3+3)" style="max-width: 30rem">
-            <!-- Card image-->
-            <img class="card-img-top" src={{project.photo}}>
-            <!-- Popover -->
-            <ng-template #popContent>
-                <div class="btn-group-vertical">
-                    <button type="button" class="btn btn-outline-primary">Edit</button>
-                    <button type="button" class="btn btn-outline-primary">Share</button>
-                    <button type="button" class="btn btn-outline-primary" (click)="deleteProject(project.projectId)">Delete</button>
+            
+            <!-- Read mode -->
+            <div class="card m-0" *ngIf="project.projectId!=null; else elseBlock">
+                <!-- Card image-->
+                <img class="card-img-top" src={{project.photo}}>
+                <!-- Popover -->
+                <ng-template #popContent>
+                    <div class="btn-group-vertical">
+                        <button type="button" class="btn btn-outline-primary">Edit</button>
+                        <button type="button" class="btn btn-outline-primary">Share</button>
+                        <button type="button" class="btn btn-outline-primary"
+                            (click)="deleteProject(project.projectId)">Delete</button>
+                    </div>
+                </ng-template>
+                <button class="card-img-overlay ml-auto badge badge-pill mx-2 my-1"
+                    style="max-height: 8%; max-width: 8%; background-color:rgba(255, 255, 255, 0.0); border:none; padding:0"
+                    placement="bottom" [autoClose]="'outside'" [ngbPopover]="popContent">
+                    <span class="mh-100 mw-100">
+                        <svg viewBox="0 0 16 16" class="bi bi-three-dots h-100 w-100" fill="currentColor"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+                        </svg>
+                    </span>
+                </button>
+                <!-- Card title and description -->
+                <div class="card-body">
+                    <h4 class="card-title">{{project.title}}</h4>
+                    <p class="card-text">{{project.description}}</p>
                 </div>
+                <!--Redirect to project button-->
+                <div class="card-footer">
+                    <a href="/projects" class="btn btn-outline-primary">See Project</a>
+                </div>
+            </div>
+            <!-- Edit mode -->
+            <ng-template #elseBlock>
+                <form [formGroup]="createProjectForm" (ngSubmit)="createProject(createProjectForm.value)" class="h-100">
+                    <div class="custom-file  mb-3 ">
+                        <input #imageInput type="file" accept="image/*" class="custom-file-input" id="customFile" (change)="saveImage(imageInput)">
+                        <label class="custom-file-label" for="customFile">{{selectedImage.placeholder}}</label>
+                    </div>
+                
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Enter the project title" id="title"  formControlName="title">
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" rows="7" placeholder="Enter the project description" id="description" formControlName="description"></textarea>
+                    </div>
+                    <div class="form-group form-check d-flex justify-content-between px-lg-3 px-sm-0 px-3">
+                        <button type="submit" class="btn btn-outline-primary ">Create</button>
+                        <button class="btn btn-outline-secondary justify-content-end" (click)=closeCreationDisplay()>Cancel</button>
+                    </div>
+                </form>
             </ng-template>
-            <button 
-                class="card-img-overlay ml-auto badge badge-pill mx-2 my-1" style="max-height: 8%; max-width: 8%; background-color:rgba(255, 255, 255, 0.0); border:none; padding:0"
-                placement="bottom" [autoClose]="'outside'" [ngbPopover]="popContent">
-                <span class="mh-100 mw-100">
-                    <svg viewBox="0 0 16 16" class="bi bi-three-dots h-100 w-100" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
-                    </svg>
-                </span>
-            </button>
-            <!-- Card title and description -->
-            <div class="card-body">
-                <h4 class="card-title">{{project.title}}</h4>
-                <p class="card-text">{{project.description}}</p>
-            </div>
-            <!--Redirect to project button-->
-            <div class="card-footer">
-                <a href="/projects" class="btn btn-outline-primary">See Project</a>
-            </div>
+
+
         </div>
 
     </div>
 </div>
+

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 
 using WebApi.DataModel;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace WebApi
 {
@@ -38,6 +39,11 @@ namespace WebApi
                        .AllowAnyMethod()
                        .AllowAnyHeader();
             }));
+            services.Configure<FormOptions>(o => {
+                o.ValueLengthLimit = int.MaxValue;
+                o.MultipartBodyLengthLimit = int.MaxValue;
+                o.MemoryBufferThreshold = int.MaxValue;
+            });
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

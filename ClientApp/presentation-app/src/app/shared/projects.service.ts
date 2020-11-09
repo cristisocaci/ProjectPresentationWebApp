@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Project } from './project';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
@@ -49,6 +49,12 @@ export class ProjectsService {
         return true;
       })
     );
+  }
+
+  uploadImage(image: any): Observable<any> {
+    const formData = new FormData();
+    formData.append("file", image.file, image.name);
+    return this.http.post(this.domain+`/api/images`, formData);
   }
 
 }
