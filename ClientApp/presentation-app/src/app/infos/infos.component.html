@@ -1,9 +1,11 @@
 <div class="row container-fluid m-0 p-0" *ngIf="currentProject!=null">
     <div class="col-md-10 bg-light">
-        <div *ngFor="let info of currentProject.infos">
-            <p *ngIf="info.type==='text'">
-                {{info.content}}
-            </p>
+        <div class="shadow bg-light rounded p-2 my-3">
+            <div class="p-0 m-0" *ngFor="let info of currentProject.infos">
+                <p *ngIf="info.type==='text'">
+                    {{info.content}}
+                </p>
+            </div>
         </div>
     </div>
 
@@ -17,12 +19,26 @@
             <input class="form-control form-control-sm" type="text" placeholder="Search">
         </form>
 
-        <ul class="list-group list-group-flush my-2">
+        <!--See other projects - For small screens-->
+        <button class="btn btn-light toggler d-md-none my-2" type="button" data-toggle="collapse" data-target="#collapsible">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="collapse" id="collapsible">
+            <ul class="list-group list-group-flush my-2">
+                <a href="/infos?projectId={{project.projectId}}&userId={{project.userId}}"
+                    *ngFor="let project of projects" class="list-group-item btn bg-dark text-light">
+                    {{project.title}}
+                </a>
+            </ul>
+        </div>
+
+        <!--See other projects - For big screens-->
+        <ul class="list-group list-group-flush my-2 d-none d-md-block">
             <a href="/infos?projectId={{project.projectId}}&userId={{project.userId}}" *ngFor="let project of projects"
                 class="list-group-item btn bg-dark text-light">
                 {{project.title}}
             </a>
         </ul>
-
     </div>
 </div>
