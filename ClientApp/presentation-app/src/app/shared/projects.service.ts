@@ -11,7 +11,8 @@ export class ProjectsService {
 
   domain = 'http://localhost:8888';
   imageFolder='img'
-  public projects: Project[];
+  projects: Project[];
+  currentProject: Project;
 
   constructor(private http : HttpClient) { }
 
@@ -57,4 +58,11 @@ export class ProjectsService {
     return this.http.post(this.domain+`/api/images`, formData);
   }
 
+  loadProjectInfo(userId:string, projectId: number){
+    return this.http.get<any>(this.domain+`/api/users/${userId}/projects/${projectId}`).pipe(
+      map( (data: Project) => {
+        this.currentProject = data;
+        return true;
+      }));
+  }
 }

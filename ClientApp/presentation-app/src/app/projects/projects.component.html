@@ -3,22 +3,6 @@
     <ul class="navbar-nav mx-2">
         <!-- Page title -->
         <a class="navbar-brand text-light text-weight-bolder" href="/projects">My Board</a>
-        
-        <!-- Dropdown -->
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-light" href="#" id="navbardrop" data-toggle="dropdown">
-                Account
-            </a>
-            <div class="dropdown-menu">
-                <a class="dropdown-item" href="#">Account Info</a>
-                <a class="dropdown-item" href="#">Settings</a>
-                <a class="dropdown-item" href="#">Share My Board</a>
-            </div>
-        </li>
-        <!-- Create Project -->
-        <li class="nav-item">
-            <a class="btn text-light" (click)="createProjectDisplay()">Create Project</a>
-        </li>
     </ul>
 
     <!-- Search item -->
@@ -26,6 +10,27 @@
         <input class="form-control mr-md-2 form-control-sm" type="text" placeholder="Search">
         <button class="btn btn-outline-light btn-sm" type="submit">Search</button>
     </form>
+
+  
+    <ul class="navbar-nav mx-2">
+
+        <!-- Create Project -->
+        <li class="nav-item">
+            <a class="btn text-light" (click)="createProjectDisplay()">Create Project</a>
+        </li>
+
+        <!-- Dropdown -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-light" href="#" id="navbardrop" data-toggle="dropdown">
+                Account
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="#">Account Info</a>
+                <a class="dropdown-item" href="#">Settings</a>
+                <a class="dropdown-item" href="#">Share My Board</a>
+            </div>
+        </li>
+    </ul>
 </nav>
 
 <!-- Used to put 3 card on a row -->
@@ -65,7 +70,7 @@
                 </div>
                 <!--Redirect to project button-->
                 <div class="card-footer">
-                    <a href="/projects" class="btn btn-outline-primary">See Project</a>
+                    <a href="/infos?projectId={{project.projectId}}&userId={{userId}}" class="btn btn-outline-primary" >See Project</a>
                 </div>
             </div>
             <!-- Edit mode -->

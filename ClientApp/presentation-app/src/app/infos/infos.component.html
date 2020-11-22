@@ -1,2 +1,17 @@
-<p>infos works!</p>
-{{infoId}}
+<div class="row mx-2" *ngIf="currentProject!=null" >
+    <div class="col-md-10 bg-secondary">
+        <div *ngFor="let info of currentProject.infos">
+            <p *ngIf="info.type==='text'">
+                {{info.content}}
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-2 bg-primary">
+        <ul>
+            <li *ngFor="let project of projects">
+                {{project.title}}
+            </li>
+        </ul>
+    </div>
+</div>

@@ -4,6 +4,7 @@ import { ProjectsService } from '../shared/projects.service';
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import uuidv4 from "uuid/dist/v4";
+import { Router } from '@angular/router';
 
 
 
@@ -22,7 +23,8 @@ export class ProjectsComponent implements OnInit {
   selectedImage = {file: null, name: '', placeholder:'Choose project image'};
 
   constructor(private projectService: ProjectsService, 
-              private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder,
+              private router: Router) {
     this.createProjectForm = this.formBuilder.group({
       title:'',
       description:''
@@ -38,10 +40,8 @@ export class ProjectsComponent implements OnInit {
       }
     })
   }
-  
-  
-  
-  createProjectDisplay(){  // TODO : redirect to project info creation page
+
+  createProjectDisplay(){
     var newproj = new Project();
     newproj.position = this.projects[0].position+1;
     this.projects.unshift(newproj);
@@ -83,13 +83,14 @@ export class ProjectsComponent implements OnInit {
           this.projects = this.projectService.projects;
           this.nbOfDecks = ("a".repeat(Math.ceil(this.projects.length/3))).split("");
           Swal.fire('Created!', '', 'success');
+          this.router.navigate(['/infos'], {queryParams:{projectId: this.projects[0].projectId, userId:this.userId}})
         }
         else{
           Swal.fire('Failed!', '', 'error');
         }
+        this.createProjectForm.reset();
       });
-      this.createProjectForm.reset();
-
+      
     }
   }
 

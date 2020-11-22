@@ -265,3 +265,5 @@ PresentationApp/WebApi/Migrations/*
 *.json
 *.sln
 */Migrations/*
+
+PresentationApp/WebApi/wwwroot/img/*
