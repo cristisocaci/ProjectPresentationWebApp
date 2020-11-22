@@ -1,5 +1,5 @@
-<div class="row mx-2" *ngIf="currentProject!=null" >
-    <div class="col-md-10 bg-secondary">
+<div class="row container-fluid m-0 p-0" *ngIf="currentProject!=null">
+    <div class="col-md-10 bg-light">
         <div *ngFor="let info of currentProject.infos">
             <p *ngIf="info.type==='text'">
                 {{info.content}}
@@ -7,11 +7,22 @@
         </div>
     </div>
 
-    <div class="col-md-2 bg-primary">
-        <ul>
-            <li *ngFor="let project of projects">
+    <div class="col-md-2 bg-dark">
+
+        <div class="d-flex justify-content-center text-light bg-dark my-2">
+            <h5>See Other Projects</h5>
+        </div>
+        <!-- Search item -->
+        <form class="form" action="/projects">
+            <input class="form-control form-control-sm" type="text" placeholder="Search">
+        </form>
+
+        <ul class="list-group list-group-flush my-2">
+            <a href="/infos?projectId={{project.projectId}}&userId={{project.userId}}" *ngFor="let project of projects"
+                class="list-group-item btn bg-dark text-light">
                 {{project.title}}
-            </li>
+            </a>
         </ul>
+
     </div>
 </div>

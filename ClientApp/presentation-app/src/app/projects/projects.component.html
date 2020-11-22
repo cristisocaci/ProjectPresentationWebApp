@@ -8,7 +8,6 @@
     <!-- Search item -->
     <form class="form-inline mx-2 justify-content-end" action="/projects">
         <input class="form-control mr-md-2 form-control-sm" type="text" placeholder="Search">
-        <button class="btn btn-outline-light btn-sm" type="submit">Search</button>
     </form>
 
   
@@ -75,8 +74,8 @@
             </div>
             <!-- Edit mode -->
             <ng-template #elseBlock>
-                <form [formGroup]="createProjectForm" (ngSubmit)="createProject(createProjectForm.value)" class="h-100">
-                    <div class="custom-file  mb-3 ">
+                <form [formGroup]="createProjectForm" (ngSubmit)="createProject(createProjectForm.value)" class="d-flex flex-column h-100">
+                    <div class="custom-file mb-3 ">
                         <input #imageInput type="file" accept="image/*" class="custom-file-input" id="customFile" (change)="saveImage(imageInput)">
                         <label class="custom-file-label" for="customFile">{{selectedImage.placeholder}}</label>
                     </div>
@@ -87,9 +86,9 @@
                     <div class="form-group">
                         <textarea class="form-control" rows="7" placeholder="Enter the project description" id="description" formControlName="description"></textarea>
                     </div>
-                    <div class="form-group form-check d-flex justify-content-between px-lg-3 px-sm-0 px-3">
-                        <button type="submit" class="btn btn-outline-primary ">Create</button>
-                        <button class="btn btn-outline-secondary justify-content-end" (click)=closeCreationDisplay()>Cancel</button>
+                    <div class="form-group form-check flex-fill d-flex  justify-content-between align-items-end  px-lg-3 px-sm-0 px-3">
+                        <button type="submit" class="btn btn-outline-primary mh-50">Create</button>
+                        <button class="btn btn-outline-secondary justify-content-end mh-25" (click)=closeCreationDisplay()>Cancel</button>
                     </div>
                 </form>
             </ng-template>

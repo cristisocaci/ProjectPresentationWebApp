@@ -27,15 +27,17 @@ export class InfosComponent implements OnInit {
     this.projectService.loadProjectInfo(this.userId, this.projectId).subscribe(
       success =>{
         if (success) {
-          this.currentProject = this.projectService.currentProject;
+          this.currentProject = this.projectService.currentProject; // Load current project information
+          // Load the other projects
+          this.projectService.loadProjects(this.userId).subscribe(success =>{
+            if (success) {
+              this.projects = this.projectService.projects.filter(project=>project.projectId!=this.currentProject.projectId);
+            }
+          })
           console.log(this.currentProject);
         }
       })
-    this.projectService.loadProjects(this.userId).subscribe(success =>{
-      if (success) {
-        this.projects = this.projectService.projects.filter(project=>project.projectId!=this.currentProject.projectId);
-      }
-    })
+   
     
   }
 
