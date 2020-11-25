@@ -63,12 +63,12 @@
             <h5>See Other Projects</h5>
         </div>
         <!-- Search item -->
-        <form class="form d-flex justify-content-center" action="/projects">
-            <input class="form-control form-control-sm d-inline-block w-75 " type="text" placeholder="Search">
-            <button class="btn btn-dark d-inline-block mw-25" type="submit">
+        <div class="d-flex justify-content-center"> 
+            <input #myInput class="form-control d-inline-block w-75 h-100" type="text" placeholder="Search" (input)="filterProjects(myInput.value)">
+            <button class="btn btn-dark d-inline-block mw-25" >
                 <i class="fas fa-search bg-dark text-light"></i>
             </button>
-        </form>
+        </div>
 
         <!--See other projects - For small screens-->
         <button class="btn btn-light toggler d-md-none my-2 bg-dark" type="button" data-toggle="collapse" data-target="#collapsible">
@@ -76,17 +76,17 @@
         </button>
 
         <div class="collapse" id="collapsible">
-            <ul class="list-group list-group-flush my-2">
+            <ul class="list-group list-group-flush my-2" >
                 <a href="/infos?projectId={{project.projectId}}&userId={{project.userId}}"
-                    *ngFor="let project of projects" class="list-group-item btn bg-dark text-light">
+                    *ngFor="let project of filteredProjects" class="list-group-item btn bg-dark text-light">
                     {{project.title}}
                 </a>
             </ul>
         </div>
 
         <!--See other projects - For big screens-->
-        <ul class="list-group list-group-flush my-2 d-none d-md-block">
-            <a href="/infos?projectId={{project.projectId}}&userId={{project.userId}}" *ngFor="let project of projects"
+        <ul class="list-group list-group-flush my-2 d-none d-md-block" >
+            <a href="/infos?projectId={{project.projectId}}&userId={{project.userId}}" *ngFor="let project of filteredProjects"
                 class="list-group-item btn bg-dark text-light">
                 {{project.title}}
             </a>

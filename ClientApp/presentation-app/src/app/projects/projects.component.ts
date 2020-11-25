@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 export class ProjectsComponent implements OnInit {
 
   projects: Array<Project>;
+  filteredProjects: Array<Project>;
   nbOfDecks:string[];
   domain = 'http://localhost:8888';
   userId = "0";
@@ -36,7 +37,8 @@ export class ProjectsComponent implements OnInit {
     this.projectService.loadProjects(this.userId).subscribe(success =>{
       if (success) {
         this.projects = this.projectService.projects;
-        this.nbOfDecks = ("a".repeat(Math.ceil(this.projects.length/3))).split("");
+        this.filteredProjects = [...this.projects];
+        this.nbOfDecks = ("a".repeat(Math.ceil(this.filteredProjects.length/3))).split("");
       }
     })
   }
@@ -44,12 +46,12 @@ export class ProjectsComponent implements OnInit {
   createProjectDisplay(){
     var newproj = new Project();
     newproj.position = this.projects[0].position+1;
-    this.projects.unshift(newproj);
-    this.nbOfDecks = ("a".repeat(Math.ceil(this.projects.length/3))).split("");
+    this.filteredProjects.unshift(newproj);
+    this.nbOfDecks = ("a".repeat(Math.ceil(this.filteredProjects.length/3))).split("");
   }
   closeCreationDisplay(){
-    this.projects.shift();
-    this.nbOfDecks = ("a".repeat(Math.ceil(this.projects.length/3))).split("");
+    this.filteredProjects.shift();
+    this.nbOfDecks = ("a".repeat(Math.ceil(this.filteredProjects.length/3))).split("");
   }
   saveImage(imageInput: any) {
     this.selectedImage.file = imageInput.files[0];
@@ -81,12 +83,12 @@ export class ProjectsComponent implements OnInit {
       this.projectService.addProject(project, this.userId).subscribe(success => {
         if(success){
           this.projects = this.projectService.projects;
-          this.nbOfDecks = ("a".repeat(Math.ceil(this.projects.length/3))).split("");
-          Swal.fire('Created!', '', 'success');
+          this.filteredProjects = [...this.projects];
+          this.nbOfDecks = ("a".repeat(Math.ceil(this.filteredProjects.length/3))).split("");
           this.router.navigate(['/infos'], {queryParams:{projectId: this.projects[0].projectId, userId:this.userId}})
         }
         else{
-          Swal.fire('Failed!', '', 'error');
+
         }
         this.createProjectForm.reset();
       });
@@ -108,16 +110,27 @@ export class ProjectsComponent implements OnInit {
           success => {
             if(success){
               this.projects = this.projectService.projects;
-              this.nbOfDecks = ("a".repeat(Math.ceil(this.projects.length/3))).split("");
-              Swal.fire('Deleted!', '', 'success');
+              this.filteredProjects = [...this.projects];
+              this.nbOfDecks = ("a".repeat(Math.ceil(this.filteredProjects.length/3))).split("");
+
             }
             else{
-              Swal.fire('Failed!', '', 'error');
+
             }
         })
       }
     })
   
+  }
+
+  filterProjects(value){
+    if(!value){
+        this.filteredProjects = [...this.projects];
+    } // when nothing has typed
+    console.log(this.filteredProjects)
+    this.filteredProjects = [...this.projects].filter(
+       item => item.title.toLowerCase().indexOf(value.toLowerCase()) > -1
+    )
   }
 
 }

@@ -15,8 +15,10 @@ export class InfosComponent implements OnInit {
   projectId: number;
   userId: any;
   projects: Project[];
+  filteredProjects: Project[];
   currentProject: Project = null;
   modifyProject: boolean = false;
+
 
   constructor(private route: ActivatedRoute,
     private projectService: ProjectsService,) { }
@@ -37,8 +39,10 @@ export class InfosComponent implements OnInit {
           this.projectService.loadProjects(this.userId).subscribe(success => {
             if (success) {
               this.projects = this.projectService.projects.filter(project => project.projectId != this.currentProject.projectId);
+              this.filteredProjects = [...this.projects];
             }
           })
+          console.log(this.filteredProjects)
           console.log(this.currentProject);
         }
 
@@ -117,9 +121,18 @@ export class InfosComponent implements OnInit {
     })
 
   }
-
   deleteInfo(index: number) {
     this.currentProject.infos.splice(index, 1);
   }
+
+  filterProjects(value){
+    if(!value){
+        this.filteredProjects = [...this.projects];
+    } // when nothing has typed
+    console.log(this.filteredProjects)
+    this.filteredProjects = [...this.projects].filter(
+       item => item.title.toLowerCase().indexOf(value.toLowerCase()) > -1
+    )
+ }
 
 }
