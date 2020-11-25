@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { InfosComponent } from './infos/infos.component';
+import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { InfosComponent } from './infos/infos.component';
     NgbModule,
     FormsModule,
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    TextareaAutosizeModule
 
   ],
   providers: [],

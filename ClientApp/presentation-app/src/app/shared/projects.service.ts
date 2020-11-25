@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Project } from './project';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
@@ -62,6 +62,16 @@ export class ProjectsService {
     return this.http.get<any>(this.domain+`/api/users/${userId}/projects/${projectId}`).pipe(
       map( (data: Project) => {
         this.currentProject = data;
+        return true;
+      }));
+  }
+
+  updateProject(userId: string, projectId: number, project: Project){
+  
+    return this.http.put<any>(this.domain+`/api/users/${userId}/projects/${projectId}`, project).pipe(
+      map( (data: Project) => {
+        this.currentProject = data;
+        console.log(data);
         return true;
       }));
   }

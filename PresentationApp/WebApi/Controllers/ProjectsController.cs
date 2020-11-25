@@ -119,7 +119,7 @@ namespace WebApi.Controllers
             {
                 if (repository.UpdateProject(project, userId, id))
                 {
-                    return Ok(new string[] { "Project updated" });
+                    return Ok(project);
                 }
             }
             catch

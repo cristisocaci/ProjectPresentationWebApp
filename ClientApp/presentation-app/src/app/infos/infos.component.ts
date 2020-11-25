@@ -1,9 +1,9 @@
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Info } from '../shared/info';
 import { Project } from '../shared/project';
 import { ProjectsService } from '../shared/projects.service';
+
 @Component({
   selector: 'app-infos',
   templateUrl: './infos.component.html',
@@ -40,8 +40,9 @@ export class InfosComponent implements OnInit {
             }
           })
           console.log(this.currentProject);
+          this.addedInfo = 0;
         }
-        this.addedInfo = 0;
+        
       })
     
   }
@@ -62,9 +63,33 @@ export class InfosComponent implements OnInit {
     var info = new Info();
     info.projectId = this.projectId;
     info.type = type;
-    info.position = this.currentProject.infos[this.currentProject.infos.length - 1].position + 1;
+    if (this.currentProject.infos.length != 0) {
+      info.position = this.currentProject.infos[this.currentProject.infos.length - 1].position + 1;
+    }
+    else{
+      info.position = 0;
+    }
     this.currentProject.infos.push(info)
     this.addedInfo += 1;
+  }
+
+  updateProject(){
+    for(var i = 0; i < this.currentProject.infos.length; ++i){
+      var elem = <HTMLInputElement>document.getElementById(`${i}`);
+      this.currentProject.infos[i].content = elem.value;
+    }
+    this.modifyProject = false;
+    this.addedInfo = 0;
+    this.projectService.updateProject(this.userId, this.projectId, this.currentProject).subscribe(
+      success => {
+        if(success){
+          this.currentProject = this.projectService.currentProject; // Load current project information
+          this.currentProject.infos.sort((a,b) => (a.position < b.position) ? -1 : 1);
+          console.log(this.currentProject);
+        }
+
+      }
+    )
   }
 
 }

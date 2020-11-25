@@ -24,6 +24,7 @@
     "@types/jquery": "^3.5.4",
     "bootstrap": "^4.5.3",
     "jquery": "^3.5.1",
+    "ngx-textarea-autosize": "^2.0.3",
     "rxjs": "~6.6.0",
     "sweetalert2": "^10.9.0",
     "tslib": "^2.0.0",
