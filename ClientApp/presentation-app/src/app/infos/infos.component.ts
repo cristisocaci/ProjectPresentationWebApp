@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import Swal from 'sweetalert2';
 import { Info } from '../shared/info';
 import { Project } from '../shared/project';
 import { ProjectsService } from '../shared/projects.service';
@@ -15,11 +16,10 @@ export class InfosComponent implements OnInit {
   userId: any;
   projects: Project[];
   currentProject: Project = null;
-  modifyProject:boolean = false;
-  addedInfo:number = 0;
+  modifyProject: boolean = false;
 
   constructor(private route: ActivatedRoute,
-              private projectService: ProjectsService,) { }
+    private projectService: ProjectsService,) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(
@@ -29,67 +29,97 @@ export class InfosComponent implements OnInit {
       }
     )
     this.projectService.loadProjectInfo(this.userId, this.projectId).subscribe(
-      success =>{
+      success => {
         if (success) {
           this.currentProject = this.projectService.currentProject; // Load current project information
-          this.currentProject.infos.sort((a,b) => (a.position < b.position) ? -1 : 1)
+          this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1)
           // Load the other projects
-          this.projectService.loadProjects(this.userId).subscribe(success =>{
+          this.projectService.loadProjects(this.userId).subscribe(success => {
             if (success) {
-              this.projects = this.projectService.projects.filter(project=>project.projectId!=this.currentProject.projectId);
+              this.projects = this.projectService.projects.filter(project => project.projectId != this.currentProject.projectId);
             }
           })
           console.log(this.currentProject);
-          this.addedInfo = 0;
         }
-        
+
       })
-    
+
   }
 
-  modify(){
+  modify() {
     this.modifyProject = true;
   }
-  cancel(){
-    
-    for(var i=0; i<this.addedInfo; ++i){
-      this.currentProject.infos.pop();
-    }
-    this.addedInfo = 0;
-    this.modifyProject = false;
+  cancel() {
+    Swal.fire({
+      title: 'Cancel editing?',
+      text: "All your changes will be lost!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.projectService.loadProjectInfo(this.userId, this.projectId).subscribe(
+          success => {
+            if (success) {
+              this.currentProject = this.projectService.currentProject; // Load current project information
+              this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1)
+
+              this.modifyProject = false;
+              console.log(this.currentProject);
+            }
+          })
+      }
+    })
   }
 
-  addInfo(type: string){
+  addInfo(type: string) {
     var info = new Info();
     info.projectId = this.projectId;
     info.type = type;
     if (this.currentProject.infos.length != 0) {
       info.position = this.currentProject.infos[this.currentProject.infos.length - 1].position + 1;
     }
-    else{
+    else {
       info.position = 0;
     }
     this.currentProject.infos.push(info)
-    this.addedInfo += 1;
   }
 
-  updateProject(){
-    for(var i = 0; i < this.currentProject.infos.length; ++i){
-      var elem = <HTMLInputElement>document.getElementById(`${i}`);
-      this.currentProject.infos[i].content = elem.value;
-    }
-    this.modifyProject = false;
-    this.addedInfo = 0;
-    this.projectService.updateProject(this.userId, this.projectId, this.currentProject).subscribe(
-      success => {
-        if(success){
-          this.currentProject = this.projectService.currentProject; // Load current project information
-          this.currentProject.infos.sort((a,b) => (a.position < b.position) ? -1 : 1);
-          console.log(this.currentProject);
-        }
+  updateProject() {
 
+    Swal.fire({
+      title: 'Continue saving?',
+      text: "",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        for (var i = 0; i < this.currentProject.infos.length; ++i) {
+          var elem = <HTMLInputElement>document.getElementById(`${i}`);
+          this.currentProject.infos[i].content = elem.value;
+        }
+        this.modifyProject = false;
+        this.projectService.updateProject(this.userId, this.projectId, this.currentProject).subscribe(
+          success => {
+            if (success) {
+              this.currentProject = this.projectService.currentProject; // Load current project information
+              this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1);
+              console.log(this.currentProject);
+            }
+
+          }
+        )
       }
-    )
+
+    })
+
+  }
+
+  deleteInfo(index: number) {
+    this.currentProject.infos.splice(index, 1);
   }
 
 }
