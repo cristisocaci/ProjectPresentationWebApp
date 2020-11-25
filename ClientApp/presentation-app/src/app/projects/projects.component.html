@@ -1,25 +1,30 @@
 
-<nav class="navbar navbar-expand-md bg-dark text-light justify-content-between">
-    <ul class="navbar-nav mx-2">
+<nav class="navbar navbar-expand-md bg-dark text-light justify-content-between sticky-top">
+    <ul class="navbar-nav mr-5 ml-2">
         <!-- Page title -->
-        <a class="navbar-brand text-light text-weight-bolder" href="/projects">My Board</a>
+        <a class="navbar-brand text-light text-weight-bolder" href="/projects">Logo</a>
+        <a class="navbar-brand text-light text-weight-bolder" href="/projects">Logo</a>
     </ul>
 
     <!-- Search item -->
-    <form class="form-inline mx-2 justify-content-end" action="/projects">
-        <input class="form-control mr-md-2 form-control-sm" type="text" placeholder="Search">
+    <form class="form-inline ml-5 d-flex justify-content-center w-25" action="/projects">
+        <input class="form-control form-control-sm d-inline-block w-75" type="text" placeholder="Search">
+        <button class="btn btn-dark d-inline-block w-25" type="submit">
+            <i class="fas fa-search bg-dark text-light"></i>
+        </button>
+        
     </form>
 
   
-    <ul class="navbar-nav mx-2">
+    <ul class="navbar-nav mx-2 ">
 
         <!-- Create Project -->
-        <li class="nav-item">
+        <li class="nav-item d-inline-block mw-75 ">
             <a class="btn text-light" (click)="createProjectDisplay()">Create Project</a>
         </li>
 
         <!-- Dropdown -->
-        <li class="nav-item dropdown">
+        <li class="nav-item dropdown d-inline-block mw-25">
             <a class="nav-link dropdown-toggle text-light" href="#" id="navbardrop" data-toggle="dropdown">
                 Account
             </a>
