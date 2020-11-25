@@ -1,5 +1,7 @@
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Info } from '../shared/info';
 import { Project } from '../shared/project';
 import { ProjectsService } from '../shared/projects.service';
 @Component({
@@ -13,6 +15,8 @@ export class InfosComponent implements OnInit {
   userId: any;
   projects: Project[];
   currentProject: Project = null;
+  modifyProject:boolean = false;
+  addedInfo:number = 0;
 
   constructor(private route: ActivatedRoute,
               private projectService: ProjectsService,) { }
@@ -28,6 +32,7 @@ export class InfosComponent implements OnInit {
       success =>{
         if (success) {
           this.currentProject = this.projectService.currentProject; // Load current project information
+          this.currentProject.infos.sort((a,b) => (a.position < b.position) ? -1 : 1)
           // Load the other projects
           this.projectService.loadProjects(this.userId).subscribe(success =>{
             if (success) {
@@ -36,9 +41,30 @@ export class InfosComponent implements OnInit {
           })
           console.log(this.currentProject);
         }
+        this.addedInfo = 0;
       })
-   
     
+  }
+
+  modify(){
+    this.modifyProject = true;
+  }
+  cancel(){
+    
+    for(var i=0; i<this.addedInfo; ++i){
+      this.currentProject.infos.pop();
+    }
+    this.addedInfo = 0;
+    this.modifyProject = false;
+  }
+
+  addInfo(type: string){
+    var info = new Info();
+    info.projectId = this.projectId;
+    info.type = type;
+    info.position = this.currentProject.infos[this.currentProject.infos.length - 1].position + 1;
+    this.currentProject.infos.push(info)
+    this.addedInfo += 1;
   }
 
 }

@@ -1,33 +1,54 @@
-
-
-
 <div class="row container-fluid m-0 p-0" *ngIf="currentProject!=null">
 
     <div class="col-md-10 bg-light p-0">
 
         <!-- Navbar -->
-        <nav class="navbar navbar-expand-md bg-dark text-light justify-content-between sticky-top border-right">
+        <nav class="navbar navbar-expand-md bg-dark text-light justify-content-between sticky-top border-right border-secondary">
             <ul class="navbar-nav mx-2">
                 <!-- Page title -->
-                <a class="navbar-brand text-light text-weight-bolder" href="/projects">Logo</a>
+                <a class="navbar-brand text-light text-weight-bolder" href="/projects"><i class="fas fa-project-diagram"></i> {{currentProject.title}}</a>
             </ul>
           
             <ul class="navbar-nav mx-2">
                 <!-- Create Project -->
                 <li class="nav-item">
-                    <a class="btn text-light">Modify</a>
+                    <button class="btn btn-dark text-light" type="button" (click)="modify()">Modify</button>
                 </li>
             </ul>
         </nav>
 
         <!-- Infos -->
-        <div class="shadow bg-light rounded p-2 m-3">
+        <!-- Read mode -->
+        <div class="shadow bg-light rounded p-2 m-3" *ngIf="modifyProject == false; else modifyBlock">
             <div class="p-0 m-0" *ngFor="let info of currentProject.infos">
                 <p *ngIf="info.type==='text'">
                     {{info.content}}
                 </p>
             </div>
         </div>
+
+
+        <!-- Modify mode -->
+        <ng-template #modifyBlock>
+            <form class="form shadow bg-light rounded p-2 m-3">
+                <div class="mt-1" *ngFor="let info of currentProject.infos; index as i">
+                    <input type="text" class="form-control" *ngIf="info.type==='text'" value="{{info.content}}">     
+                </div>
+
+
+
+                <div class="form-group form-check d-flex justify-content-between mt-3 mb-0">
+                    <div class = "btn-group">
+                        <button class = "btn btn-primary" (click)="addInfo('text')">Add</button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-success mr-2">Save</button>
+                        <button class="btn btn-secondary" (click)=cancel()>Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </ng-template>
+
     </div>
 
     <!-- Other projects -->
