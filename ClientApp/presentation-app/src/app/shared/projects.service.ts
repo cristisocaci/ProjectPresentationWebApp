@@ -10,26 +10,17 @@ import { Observable } from 'rxjs';
 export class ProjectsService {
 
   domain = 'http://localhost:8888';
-  imageFolder='img'
   projects: Project[];
   currentProject: Project;
 
   constructor(private http : HttpClient) { }
 
-  changeImages(){
-    this.projects = this.projects.map<Project>(
-      proj=>{
-        proj.photo = this.domain+`/${this.imageFolder}/`+proj.photo;
-        return proj;
-      });
-  }
-
   loadProjects(userId: string): Observable<boolean>{
     return this.http.get<any>(this.domain+`/api/users/${userId}/projects`).pipe(
       map( (data: Project[]) => {
         this.projects = data.sort((a, b)=> ((a.position < b.position) ? 1: -1)); // arrange the project in reverse order according to their position
-        this.changeImages();
-        console.log(this.projects)
+        console.log("Loaded projects");
+        console.log(this.projects);
         return true;
       }));
   }
@@ -37,7 +28,6 @@ export class ProjectsService {
   addProject(project: Project, userId:string){
     return this.http.post<Project>(this.domain+`/api/users/${userId}/projects`, project).pipe(
       map( (data: Project) => {
-        data.photo = this.domain+`/${this.imageFolder}/`+data.photo;
         this.projects.unshift(data);
         return true;
       }));
@@ -67,11 +57,24 @@ export class ProjectsService {
   }
 
   updateProject(userId: string, projectId: number, project: Project){
+
+ 
   
     return this.http.put<any>(this.domain+`/api/users/${userId}/projects/${projectId}`, project).pipe(
       map( (data: Project) => {
         this.currentProject = data;
         console.log(data);
+        return true;
+      }));
+  }
+
+  updateProjects(userId, projects: Project[]){
+
+    return this.http.put<any>(this.domain+`/api/users/${userId}/projects`, projects).pipe(
+      map( (data: Project[]) => {
+        this.projects = data.sort((a, b)=> ((a.position < b.position) ? 1: -1)); // arrange the project in reverse order according to their position
+        console.log("Updated projects:");
+        console.log(this.projects);
         return true;
       }));
   }

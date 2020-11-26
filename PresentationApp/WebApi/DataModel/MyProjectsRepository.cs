@@ -85,11 +85,14 @@ namespace WebApi.DataModel
             foreach (var proj in projects) {
                 var oldProject = GetProject(userId, proj.ProjectId);
                 if (oldProject == null)
+                {
                     return false;
+                }
                 oldProject.Title = proj.Title;
                 oldProject.Photo = proj.Photo;
                 oldProject.Description = proj.Description;
                 oldProject.Position = proj.Position;
+
             }
             return SaveChanges();
         }

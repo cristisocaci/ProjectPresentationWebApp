@@ -18,7 +18,7 @@ export class ProjectsComponent implements OnInit {
   projects: Array<Project>;
   filteredProjects: Array<Project>;
   nbOfDecks:string[];
-  domain = 'http://localhost:8888';
+  imgdomain = 'http://localhost:8888/img/';
   userId = "0";
   createProjectForm: FormGroup;
   selectedImage = {file: null, name: '', placeholder:'Choose project image'};
@@ -39,28 +39,32 @@ export class ProjectsComponent implements OnInit {
       if (success) {
         this.projects = this.projectService.projects;
         this.filteredProjects = [...this.projects];
-        this.nbOfDecks = ("a".repeat(Math.ceil(this.filteredProjects.length/3))).split("");
+        this.nbOfDecks = this.calcNbOfDecks();
+  
       }
     })
   }
 
+  calcNbOfDecks(){
+    return ("a".repeat(Math.ceil(this.filteredProjects.length/3))).split("");
+  }
   createProjectDisplay(){
     if(!this.createmode){
       this.createmode = true;
-      var newproj = new Project();
+      let newproj = new Project();
       newproj.position = this.projects[0].position+1;
       this.filteredProjects.unshift(newproj);
-      this.nbOfDecks = ("a".repeat(Math.ceil(this.filteredProjects.length/3))).split("");
+      this.nbOfDecks =  this.calcNbOfDecks();
     }
   }
   closeCreationDisplay(){
     this.filteredProjects.shift();
-    this.nbOfDecks = ("a".repeat(Math.ceil(this.filteredProjects.length/3))).split("");
+    this.nbOfDecks =  this.calcNbOfDecks();
     this.createmode = false;
   }
   saveImage(imageInput: any) {
     this.selectedImage.file = imageInput.files[0];
-    var extension: string = this.selectedImage.file.name.split('.').pop();
+    let extension: string = this.selectedImage.file.name.split('.').pop();
     this.selectedImage.name = uuidv4() + '.' + extension;
     this.selectedImage.placeholder = this.selectedImage.file.name;
   }
@@ -70,7 +74,7 @@ export class ProjectsComponent implements OnInit {
       this.closeCreationDisplay();
       this.createmode = false;
       // create the new project and assign the form values 
-      var project= new Project();
+      let project= new Project();
       project.title=formValues.title;
       project.description=formValues.description;
       project.userId = this.userId;
@@ -90,7 +94,7 @@ export class ProjectsComponent implements OnInit {
         if(success){
           this.projects = this.projectService.projects;
           this.filteredProjects = [...this.projects];
-          this.nbOfDecks = ("a".repeat(Math.ceil(this.filteredProjects.length/3))).split("");
+          this.nbOfDecks =  this.calcNbOfDecks();
           this.router.navigate(['/infos'], {queryParams:{projectId: this.projects[0].projectId, userId:this.userId}})
         }
         else{
@@ -117,8 +121,8 @@ export class ProjectsComponent implements OnInit {
             if(success){
               this.projects = this.projectService.projects;
               this.filteredProjects = [...this.projects];
-              this.nbOfDecks = ("a".repeat(Math.ceil(this.filteredProjects.length/3))).split("");
-
+              this.nbOfDecks =  this.calcNbOfDecks();
+              this.createmode = false;
             }
             else{
 
@@ -138,7 +142,34 @@ export class ProjectsComponent implements OnInit {
     this.filteredProjects = [...this.projects].filter(
        item => item.title.toLowerCase().indexOf(value.toLowerCase()) > -1
     );
-    this.nbOfDecks = ("a".repeat(Math.ceil(this.filteredProjects.length/3))).split("");
+    this.nbOfDecks =  this.calcNbOfDecks();
   }
 
+  moveLR(position: number, direction:string){
+    for(let i = 0; i < this.projects.length; ++i){
+      if(this.projects[i].position == position){
+        if(direction =='l' && i>0){
+          this.projects[i].position = this.projects[i-1].position;
+          this.projects[i-1].position = position;
+        }
+        else if(direction == 'r' && i<this.projects.length-1){
+          this.projects[i].position = this.projects[i+1].position;
+          this.projects[i+1].position = position;
+        }
+        else{
+          break;
+        }
+        this.projectService.updateProjects(this.userId, this.projects).subscribe(success=>{
+          if(success){
+            this.projects = this.projectService.projects;
+            this.filteredProjects = [...this.projects];
+            this.nbOfDecks = this.calcNbOfDecks();
+            this.createmode = false;
+            
+          }
+        })
+        break;
+      }
+    }
+  }
 }

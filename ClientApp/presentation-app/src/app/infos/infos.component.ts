@@ -78,7 +78,7 @@ export class InfosComponent implements OnInit {
   }
 
   addInfo(type: string) {
-    var info = new Info();
+    let info = new Info();
     info.projectId = this.projectId;
     info.type = type;
     if (this.currentProject.infos.length != 0) {
@@ -101,8 +101,8 @@ export class InfosComponent implements OnInit {
       cancelButtonText: 'No',
     }).then((result) => {
       if (result.isConfirmed) {
-        for (var i = 0; i < this.currentProject.infos.length; ++i) {
-          var elem = <HTMLInputElement>document.getElementById(`${i}`);
+        for (let i = 0; i < this.currentProject.infos.length; ++i) {
+          let elem = <HTMLInputElement>document.getElementById(`${i}`);
           this.currentProject.infos[i].content = elem.value;
         }
         this.modifyProject = false;
@@ -124,7 +124,6 @@ export class InfosComponent implements OnInit {
   deleteInfo(index: number) {
     this.currentProject.infos.splice(index, 1);
   }
-
   filterProjects(value){
     if(!value){
         this.filteredProjects = [...this.projects];

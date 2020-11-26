@@ -45,14 +45,15 @@
             <!-- Read mode -->
             <div class="card m-0" *ngIf="project.projectId!=null; else elseBlock">
                 <!-- Card image-->
-                <img class="card-img-top" style="max-height: 50%;" src={{project.photo}}>
+                <img class="card-img-top" style="max-height: 50%;" src={{imgdomain}}{{project.photo}}>
                 <!-- Popover -->
                 <ng-template #popContent>
                     <div class="btn-group-vertical">
                         <button type="button" class="btn btn-outline-primary">Edit</button>
+                        <button type="button" class="btn btn-outline-primary" (click)="moveLR(project.position, 'l')">Move <i class="fas fa-angle-left"></i></button>
+                        <button type="button" class="btn btn-outline-primary" (click)="moveLR(project.position, 'r')">Move <i class="fas fa-angle-right"></i></button>
                         <button type="button" class="btn btn-outline-primary">Share</button>
-                        <button type="button" class="btn btn-outline-primary"
-                            (click)="deleteProject(project.projectId)">Delete</button>
+                        <button type="button" class="btn btn-outline-primary" (click)="deleteProject(project.projectId)">Delete</button>
                     </div>
                 </ng-template>
                 <button class="card-img-overlay ml-auto badge badge-pill mx-2 my-1"
