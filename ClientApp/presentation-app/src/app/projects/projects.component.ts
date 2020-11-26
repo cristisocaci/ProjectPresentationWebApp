@@ -22,6 +22,7 @@ export class ProjectsComponent implements OnInit {
   userId = "0";
   createProjectForm: FormGroup;
   selectedImage = {file: null, name: '', placeholder:'Choose project image'};
+  createmode: boolean = false;
 
   constructor(private projectService: ProjectsService, 
               private formBuilder: FormBuilder,
@@ -44,14 +45,18 @@ export class ProjectsComponent implements OnInit {
   }
 
   createProjectDisplay(){
-    var newproj = new Project();
-    newproj.position = this.projects[0].position+1;
-    this.filteredProjects.unshift(newproj);
-    this.nbOfDecks = ("a".repeat(Math.ceil(this.filteredProjects.length/3))).split("");
+    if(!this.createmode){
+      this.createmode = true;
+      var newproj = new Project();
+      newproj.position = this.projects[0].position+1;
+      this.filteredProjects.unshift(newproj);
+      this.nbOfDecks = ("a".repeat(Math.ceil(this.filteredProjects.length/3))).split("");
+    }
   }
   closeCreationDisplay(){
     this.filteredProjects.shift();
     this.nbOfDecks = ("a".repeat(Math.ceil(this.filteredProjects.length/3))).split("");
+    this.createmode = false;
   }
   saveImage(imageInput: any) {
     this.selectedImage.file = imageInput.files[0];
@@ -63,6 +68,7 @@ export class ProjectsComponent implements OnInit {
     if (formValues) {
       // hide the form
       this.closeCreationDisplay();
+      this.createmode = false;
       // create the new project and assign the form values 
       var project= new Project();
       project.title=formValues.title;
@@ -71,7 +77,7 @@ export class ProjectsComponent implements OnInit {
       project.position = this.projects[0].position+1;
 
       // save the photo
-      if(this.selectedImage.name ==''){ project.photo = 'project.png'; }
+      if(this.selectedImage.name ==''){ project.photo = 'unnamed1.jpg'; }
       else{ 
         project.photo = this.selectedImage.name;
         this.projectService.uploadImage(this.selectedImage).subscribe( (res) => {}, (err) => {})
@@ -124,13 +130,15 @@ export class ProjectsComponent implements OnInit {
   }
 
   filterProjects(value){
+    this.createmode = false;
     if(!value){
         this.filteredProjects = [...this.projects];
     } // when nothing has typed
     console.log(this.filteredProjects)
     this.filteredProjects = [...this.projects].filter(
        item => item.title.toLowerCase().indexOf(value.toLowerCase()) > -1
-    )
+    );
+    this.nbOfDecks = ("a".repeat(Math.ceil(this.filteredProjects.length/3))).split("");
   }
 
 }

@@ -45,7 +45,7 @@
             <!-- Read mode -->
             <div class="card m-0" *ngIf="project.projectId!=null; else elseBlock">
                 <!-- Card image-->
-                <img class="card-img-top" src={{project.photo}}>
+                <img class="card-img-top" style="max-height: 50%;" src={{project.photo}}>
                 <!-- Popover -->
                 <ng-template #popContent>
                     <div class="btn-group-vertical">
@@ -67,7 +67,7 @@
                     </span>
                 </button>
                 <!-- Card title and description -->
-                <div class="card-body">
+                <div class="card-body h-auto">
                     <h4 class="card-title">{{project.title}}</h4>
                     <p class="card-text">{{project.description}}</p>
                 </div>
@@ -91,8 +91,8 @@
                         <textarea class="form-control" rows="7" placeholder="Enter the project description" id="description" formControlName="description"></textarea>
                     </div>
                     <div class="form-group form-check flex-fill d-flex  justify-content-between align-items-end  px-lg-3 px-sm-0 px-3">
-                        <button type="submit" class="btn btn-outline-primary mh-50">Create</button>
-                        <button class="btn btn-outline-secondary justify-content-end mh-25" (click)=closeCreationDisplay()>Cancel</button>
+                        <button type="submit" class="btn btn-success mh-50">Create</button>
+                        <button class="btn btn-secondary justify-content-end mh-25" (click)=closeCreationDisplay()>Cancel</button>
                     </div>
                 </form>
             </ng-template>
