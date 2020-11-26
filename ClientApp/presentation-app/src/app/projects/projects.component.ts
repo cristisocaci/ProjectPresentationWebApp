@@ -18,7 +18,8 @@ export class ProjectsComponent implements OnInit {
   projects: Array<Project>;
   filteredProjects: Array<Project>;
   nbOfDecks:string[];
-  imgdomain = 'http://localhost:8888/img/';
+  domain = 'http://localhost:8888'
+  imgdomain = this.domain+'/img/';
   userId = "0";
   createProjectForm: FormGroup;
   selectedImage = {file: null, name: '', placeholder:'Choose project image'};

@@ -26,8 +26,7 @@ import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    TextareaAutosizeModule
-
+    TextareaAutosizeModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
