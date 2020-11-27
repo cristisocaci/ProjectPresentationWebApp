@@ -3,16 +3,23 @@
     <div class="col-md-10 bg-light p-0">
 
         <!-- Navbar -->
-        <nav class="navbar navbar-expand-md bg-dark text-light justify-content-between sticky-top border-right border-secondary">
+        <nav
+            class="navbar navbar-expand-md bg-dark text-light justify-content-between sticky-top border-right border-secondary">
             <ul class="navbar-nav mx-2">
                 <!-- Page title -->
-                <a class="navbar-brand text-light text-weight-bolder" href="/projects"><i class="fas fa-project-diagram"></i> {{currentProject.title}}</a>
+                <a class="navbar-brand text-light text-weight-bolder" href="/projects"><i
+                        class="fas fa-project-diagram"></i> Logo</a>
             </ul>
-          
+
             <ul class="navbar-nav mx-2">
                 <!-- Create Project -->
                 <li class="nav-item">
-                    <button class="btn btn-dark text-light" type="button" (click)="modify()">Edit</button>
+                    <button *ngIf="!modifyProject" class="btn btn-dark text-light" type="button"
+                        (click)="modify()">Edit</button>
+                    <div *ngIf="modifyProject" class="btn-group">
+                        <button class="btn btn-outline-success mr-2" (click)=updateProject()>Save</button>
+                        <button class="btn btn-outline-secondary text-light" (click)=cancel()>Cancel</button>
+                    </div>
                 </li>
             </ul>
         </nav>
@@ -20,10 +27,42 @@
         <!-- Infos -->
         <!-- Read mode -->
         <div class="shadow bg-light rounded p-2 m-3" *ngIf="modifyProject == false; else modifyBlock">
+            <div class="row my-2 mx-0 p-0 py-2 border border-muted">
+                
+                <div class="col-md-8">
+
+                    <!-- Title and description-->
+                    <h1>{{currentProject.title}}</h1>
+                    <h5>About</h5>
+                    <p>{{currentProject.description}}</p>
+
+                    <!-- Topics and links-->
+                    <h5 *ngIf="topics">Topics</h5>
+                    <div class="d-inline-block" *ngFor="let info of currentProject.infos">
+                        <pre *ngIf="info.type=='topic'"><b>{{info.content}}</b> </pre>
+                    </div>
+                    <h5 *ngIf="links">Relevant websites</h5>
+                    <div *ngFor="let info of currentProject.infos">
+                        <a *ngIf="info.type=='link'" href={{info.content}}>{{info.content}}</a>
+                    </div>
+
+                    <!-- Start and end time -- TODO -->
+                    <time></time>
+                </div>
+
+                <!-- Image -->
+                <div class="col-md-4 ">
+                    <img class="img-thumbnail img-fluid" src={{imgdomain}}{{currentProject.photo}}>
+                </div>
+
+            </div>
+
+            <!-- Informations -->
+            <br>
             <div class="p-0 m-0 ml-2" *ngFor="let info of currentProject.infos">
                 <p *ngIf="info.type==='text'" style="white-space: pre-line">{{info.content}}</p>
-                <h2 *ngIf="info.type==='title'" >{{info.content}}</h2>
-                <h4 *ngIf="info.type==='subtitle'" >{{info.content}}</h4>
+                <h2 *ngIf="info.type==='title'">{{info.content}}</h2>
+                <h4 *ngIf="info.type==='subtitle'">{{info.content}}</h4>
             </div>
         </div>
 
@@ -31,22 +70,69 @@
         <!-- Modify mode -->
         <ng-template #modifyBlock>
             <div class=" shadow bg-light rounded p-2 m-3">
-                <div class="mt-1 d-flex" *ngFor="let info of currentProject.infos; index as i"> 
-                    <textarea autosize *ngIf="info.type==='text'"  type="text" class="form-control" id="{{i}}" value="{{info.content}}" style="resize: none;" ></textarea>
-                    <input *ngIf="info.type==='title'"  type="text" class="form-control form-control-lg font-weight-bolder" id="{{i}}" value="{{info.content}}">
-                    <input *ngIf="info.type==='subtitle'"  type="text" class="form-control font-weight-bold" id="{{i}}" value="{{info.content}}">
-                    <button class="btn btn-light align-self-center ml-1" (click)="deleteInfo(i)"><i class="fas fa-times text-danger"></i></button>
+                <div class="row my-2 mx-0 p-0 py-2 border border-muted">
+                    <div class="col-md-8">
+
+                        <!-- Title and description -->
+                        <input type="text" class="form-control form-control-lg font-weight-bolder mb-2" id="projTitle" value="{{currentProject.title}}">
+                        <h5>About</h5>
+                        <textarea autosize type="text" class="form-control mb-2" id="projDescription" value="{{currentProject.description}}" style="resize: none;"></textarea>
+
+                        <!-- Topics -->
+                        <h5>Topics</h5>
+                        <form class="form-inline">
+                            <div class="input-group" *ngFor="let info of currentProject.infos; index as i">
+                                <input type="text m-1" class="form-control" *ngIf="info.type=='topic'" id="t{{i}}" value="{{info.content}}">
+                                <button class="btn btn-light" (click)="deleteInfo(i)" *ngIf="info.type=='topic'"><i  class="fas fa-times text-danger"></i></button>
+                            </div>
+                        </form>
+                        <button class="btn btn-outline-primary my-2" (click)="addInfo('topic')">Add topic</button>
+
+                        <!-- Links -->
+                        <h5>Relevant websites</h5>
+                        <div class="d-flex" *ngFor="let info of currentProject.infos; index as i">
+                            <input type="text m-1" class="form-control" *ngIf="info.type=='link'" id="l{{i}}" value="{{info.content}}">
+                            <button class="btn btn-light" (click)="deleteInfo(i)" *ngIf="info.type=='link'"><i  class="fas fa-times text-danger"></i></button>
+                        </div>
+                        <button class="btn btn-outline-primary my-2" (click)="addInfo('link')">Add link</button>
+                    </div>
+                    <!-- Image -->
+                    <div class="col-md-4 ">
+                        <img *ngIf="projectImage.file==null" class="img-thumbnail mb-1" src={{imgdomain}}{{currentProject.photo}}>
+                        <img *ngIf="projectImage.file!=null" class="img-thumbnail mb-1" src={{projectImage.browserImg}}>
+                        <div class="custom-file mb-3 ">
+                            <input #imageInput type="file" accept="image/*" class="custom-file-input" id="customFile" (change)="saveImage(imageInput)">
+                            <label class="custom-file-label" for="customFile">{{projectImage.placeholder}}</label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Information -->
+                <div class="mt-1 d-flex" *ngFor="let info of currentProject.infos; index as i">
+                    <textarea autosize *ngIf="info.type==='text'" type="text" class="form-control" id="{{i}}" value="{{info.content}}" style="resize: none;"></textarea>
+                    <input *ngIf="info.type==='title'" type="text" class="form-control form-control-lg font-weight-bolder" id="{{i}}" value="{{info.content}}">
+                    <input *ngIf="info.type==='subtitle'" type="text" class="form-control font-weight-bold" id="{{i}}" value="{{info.content}}">
+                    <button class="btn btn-light align-self-center ml-1" (click)="deleteInfo(i)"
+                            *ngIf="info.type==='subtitle' || info.type==='title' || info.type==='text'"
+                    ><i  class="fas fa-times text-danger"></i></button>
                 </div>
 
 
-
+                <!-- Info add buttons -->
                 <div class="form-group form-check d-flex justify-content-between mt-3 mb-0 p-0">
-                    <div class = "btn-group">
-                        <button class = "btn btn-outline-primary" (click)="addInfo('text')">Add paragraph</button>
-                        <button class = "btn btn-outline-primary" (click)="addInfo('title')">Add title</button>
-                        <button class = "btn btn-outline-primary" (click)="addInfo('subtitle')">Add subtitle</button>
+                    <div>
+                        <div class="btn-group">
+                            <button class="btn btn-outline-primary" (click)="addInfo('title')">Add title</button>
+                            <button class="btn btn-outline-primary" (click)="addInfo('subtitle')">Add subtitle</button>
+                            <button class="btn btn-outline-primary" (click)="addInfo('text')">Add paragraph</button>
+                        </div><br>
+                        <div class="btn-group mt-2">
+                            <button class="btn btn-outline-primary">Add photo</button>
+                            <button class="btn btn-outline-primary">Add video</button>
+                        </div>
                     </div>
-                    <div class="btn-group">
+                    <div class="btn-group h-50">
                         <button class="btn btn-success mr-2" (click)=updateProject()>Save</button>
                         <button class="btn btn-secondary" (click)=cancel()>Cancel</button>
                     </div>
@@ -63,20 +149,22 @@
             <h5>See Other Projects</h5>
         </div>
         <!-- Search item -->
-        <div class="d-flex justify-content-center"> 
-            <input #myInput class="form-control d-inline-block w-75 h-100" type="text" placeholder="Search" (input)="filterProjects(myInput.value)">
-            <button class="btn btn-dark d-inline-block mw-25" >
+        <div class="d-flex justify-content-center">
+            <input #myInput class="form-control d-inline-block w-75 h-100" type="text" placeholder="Search"
+                (input)="filterProjects(myInput.value)">
+            <button class="btn btn-dark d-inline-block mw-25">
                 <i class="fas fa-search bg-dark text-light"></i>
             </button>
         </div>
 
         <!--See other projects - For small screens-->
-        <button class="btn btn-light toggler d-md-none my-2 bg-dark" type="button" data-toggle="collapse" data-target="#collapsible">
+        <button class="btn btn-light toggler d-md-none my-2 bg-dark" type="button" data-toggle="collapse"
+            data-target="#collapsible">
             <i class="fas fa-bars bg-dark text-light"></i>
         </button>
 
         <div class="collapse" id="collapsible">
-            <ul class="list-group list-group-flush my-2" >
+            <ul class="list-group list-group-flush my-2">
                 <a href="/infos?projectId={{project.projectId}}&userId={{project.userId}}"
                     *ngFor="let project of filteredProjects" class="list-group-item btn bg-dark text-light">
                     {{project.title}}
@@ -85,13 +173,11 @@
         </div>
 
         <!--See other projects - For big screens-->
-        <ul class="list-group list-group-flush my-2 d-none d-md-block" >
-            <a href="/infos?projectId={{project.projectId}}&userId={{project.userId}}" *ngFor="let project of filteredProjects"
-                class="list-group-item btn bg-dark text-light">
+        <ul class="list-group list-group-flush my-2 d-none d-md-block">
+            <a href="/infos?projectId={{project.projectId}}&userId={{project.userId}}"
+                *ngFor="let project of filteredProjects" class="list-group-item btn bg-dark text-light">
                 {{project.title}}
             </a>
         </ul>
     </div>
 </div>
-
-

@@ -74,6 +74,8 @@ namespace WebApi.DataModel
             oldProject.Photo = proj.Photo;
             oldProject.Description = proj.Description;
             oldProject.Position = proj.Position;
+            oldProject.StartDate = proj.StartDate;
+            oldProject.EndDate = proj.EndDate;
             oldProject.Infos =  new List<Info> { };
             context.SaveChanges();
             oldProject.Infos = proj.Infos;
@@ -92,6 +94,8 @@ namespace WebApi.DataModel
                 oldProject.Photo = proj.Photo;
                 oldProject.Description = proj.Description;
                 oldProject.Position = proj.Position;
+                oldProject.StartDate = proj.StartDate;
+                oldProject.EndDate = proj.EndDate;
 
             }
             return SaveChanges();

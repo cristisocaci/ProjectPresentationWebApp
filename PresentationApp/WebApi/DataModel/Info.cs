@@ -11,6 +11,7 @@ namespace WebApi.DataModel
         public string Type { get; set; }
         public string Content { get; set; }
         public int Position { get; set; }
+        public string AdditionalData { get; set; }
 
         public int ProjectId { get; set; }
         public Project Project { get; set; }

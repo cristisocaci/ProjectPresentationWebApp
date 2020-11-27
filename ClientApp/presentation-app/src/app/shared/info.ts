@@ -4,4 +4,5 @@ export class Info {
     content: string;
     position: number;
     projectId: number;
+    additionalData: string;
 }
