@@ -45,11 +45,10 @@
             <!-- Read mode -->
             <div class="card m-0" *ngIf="project.projectId!=null; else elseBlock">
                 <!-- Card image-->
-                <img class="card-img-top" style="max-height: 50%;" src={{imgdomain}}{{project.photo}}>
+                <img class="card-img-top img-thumbnail" style="max-height: 50%;" src={{imgdomain}}{{project.photo}}>
                 <!-- Popover -->
                 <ng-template #popContent>
                     <div class="btn-group-vertical">
-                        <button type="button" class="btn btn-outline-primary">Edit</button>
                         <button type="button" class="btn btn-outline-primary" (click)="moveLR(project.position, 'l')">Move <i class="fas fa-angle-left"></i></button>
                         <button type="button" class="btn btn-outline-primary" (click)="moveLR(project.position, 'r')">Move <i class="fas fa-angle-right"></i></button>
                         <button type="button" class="btn btn-outline-primary">Share</button>
@@ -80,6 +79,8 @@
             <!-- Edit mode -->
             <ng-template #elseBlock>
                 <form [formGroup]="createProjectForm" (ngSubmit)="createProject(createProjectForm.value)" class="d-flex flex-column h-100">
+                    <img *ngIf="selectedImage.file==null" class="img-thumbnail mb-1" src={{imgdomain}}{{defaultimg}}>
+                    <img *ngIf="selectedImage.file!=null" class="img-thumbnail mb-1" src={{selectedImage.browserImg}}>
                     <div class="custom-file mb-3 ">
                         <input #imageInput type="file" accept="image/*" class="custom-file-input" id="customFile" (change)="saveImage(imageInput)">
                         <label class="custom-file-label" for="customFile">{{selectedImage.placeholder}}</label>
@@ -89,7 +90,7 @@
                         <input type="text" class="form-control" placeholder="Enter the project title" id="title"  formControlName="title">
                     </div>
                     <div class="form-group">
-                        <textarea class="form-control" rows="7" placeholder="Enter the project description" id="description" formControlName="description"></textarea>
+                        <textarea class="form-control" rows="7" placeholder="Enter the project description" id="description" formControlName="description" style="resize:none;"></textarea>
                     </div>
                     <div class="form-group form-check flex-fill d-flex  justify-content-between align-items-end  px-lg-3 px-sm-0 px-3">
                         <button type="submit" class="btn btn-success mh-50">Create</button>

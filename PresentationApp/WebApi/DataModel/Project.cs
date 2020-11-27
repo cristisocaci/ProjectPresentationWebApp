@@ -14,6 +14,10 @@ namespace WebApi.DataModel
         public string Description { get; set; }
         public int Position { get; set; }
 
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+
+
         public string UserId { get; set; }
         public User User { get; set; }
         

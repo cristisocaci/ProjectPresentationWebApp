@@ -20,9 +20,10 @@ export class ProjectsComponent implements OnInit {
   nbOfDecks:string[];
   domain = 'http://localhost:8888'
   imgdomain = this.domain+'/img/';
+  defaultimg = 'unnamed1.jpg';
   userId = "0";
   createProjectForm: FormGroup;
-  selectedImage = {file: null, name: '', placeholder:'Choose project image'};
+  selectedImage = {file: null, name: '', placeholder:'Choose project image', browserImg: null};
   createmode: boolean = false;
 
   constructor(private projectService: ProjectsService, 
@@ -64,10 +65,15 @@ export class ProjectsComponent implements OnInit {
     this.createmode = false;
   }
   saveImage(imageInput: any) {
+    let me = this;
     this.selectedImage.file = imageInput.files[0];
     let extension: string = this.selectedImage.file.name.split('.').pop();
     this.selectedImage.name = uuidv4() + '.' + extension;
     this.selectedImage.placeholder = this.selectedImage.file.name;
+    let reader = new FileReader();
+    reader.readAsDataURL(this.selectedImage.file);
+    reader.onload = function(){ me.selectedImage.browserImg = reader.result}
+
   }
   createProject(formValues){
     if (formValues) {
@@ -82,11 +88,11 @@ export class ProjectsComponent implements OnInit {
       project.position = this.projects[0].position+1;
 
       // save the photo
-      if(this.selectedImage.name ==''){ project.photo = 'unnamed1.jpg'; }
+      if(this.selectedImage.name ==''){ project.photo = this.defaultimg; }
       else{ 
         project.photo = this.selectedImage.name;
         this.projectService.uploadImage(this.selectedImage).subscribe( (res) => {}, (err) => {})
-        this.selectedImage = {file: null, name: '', placeholder:'Choose project image'};
+        this.selectedImage = {file: null, name: '', placeholder:'Choose project image', browserImg: null};
        }
        console.log(project);
 
