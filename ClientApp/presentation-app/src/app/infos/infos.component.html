@@ -43,6 +43,7 @@
                     </div>
                     <h5 *ngIf="links">Relevant websites</h5>
                     <div *ngFor="let info of currentProject.infos">
+                        <div class="d-inline">{{info.additionalData}}</div>
                         <a *ngIf="info.type=='link'" href={{info.content}}>{{info.content}}</a>
                     </div>
 
@@ -82,8 +83,8 @@
                         <h5>Topics</h5>
                         <form class="form-inline">
                             <div class="input-group" *ngFor="let info of currentProject.infos; index as i">
-                                <input type="text m-1" class="form-control" *ngIf="info.type=='topic'" id="t{{i}}" value="{{info.content}}">
-                                <button class="btn btn-light" (click)="deleteInfo(i)" *ngIf="info.type=='topic'"><i  class="fas fa-times text-danger"></i></button>
+                                <input class="form-control mt-1" type="text" *ngIf="info.type=='topic'" id="t{{i}}" value="{{info.content}}">
+                                <button class="btn btn-light mr-1" (click)="deleteInfo(i)" *ngIf="info.type=='topic'"><i  class="fas fa-times text-danger"></i></button>
                             </div>
                         </form>
                         <button class="btn btn-outline-primary my-2" (click)="addInfo('topic')">Add topic</button>
@@ -91,7 +92,10 @@
                         <!-- Links -->
                         <h5>Relevant websites</h5>
                         <div class="d-flex" *ngFor="let info of currentProject.infos; index as i">
-                            <input type="text m-1" class="form-control" *ngIf="info.type=='link'" id="l{{i}}" value="{{info.content}}">
+                            <form class="form-inline w-100">
+                                <input type="text" class="form-control w-25" *ngIf="info.type=='link'" id="ladd{{i}}" value="{{info.additionalData}}">
+                                <input type="text" class="form-control w-75" *ngIf="info.type=='link'" id="lcon{{i}}" value="{{info.content}}">
+                            </form>
                             <button class="btn btn-light" (click)="deleteInfo(i)" *ngIf="info.type=='link'"><i  class="fas fa-times text-danger"></i></button>
                         </div>
                         <button class="btn btn-outline-primary my-2" (click)="addInfo('link')">Add link</button>

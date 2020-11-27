@@ -40,18 +40,7 @@ export class InfosComponent implements OnInit {
         if (success) {
           this.currentProject = this.projectService.currentProject; // Load current project information
           this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1);
-          for(let i=0; i < this.currentProject.infos.length; ++i){
-            if(this.currentProject.infos[i].type == "topic"){
-              this.topics = true;
-            }
-            else if(this.currentProject.infos[i].type == "link"){
-              this.links = true;
-            }
-            else if(i == this.currentProject.infos.length-1){
-              this.topics = false;
-              this.links = false;
-            }
-          }
+          this.checkIfTopicOrLink()
           // Load the other projects
           this.projectService.loadProjects(this.userId).subscribe(success => {
             if (success) {
@@ -65,6 +54,22 @@ export class InfosComponent implements OnInit {
 
       })
 
+  }
+
+  checkIfTopicOrLink(){
+    this.topics = false;
+    this.links = false;
+    for(let i=0; i < this.currentProject.infos.length; ++i){
+      if(this.currentProject.infos[i].type == "topic"){
+        this.topics = true;
+        console.log("topic");
+      }
+      else if(this.currentProject.infos[i].type == "link"){
+        this.links = true;
+        console.log("link");
+      }
+    }
+    
   }
 
   modify() {
@@ -85,20 +90,7 @@ export class InfosComponent implements OnInit {
             if (success) {
               this.currentProject = this.projectService.currentProject; // Load current project information
               this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1)
-
-              for(let i=0; i < this.currentProject.infos.length; ++i){
-                if(this.currentProject.infos[i].type == "topic"){
-                  this.topics = true;
-                }
-                else if(this.currentProject.infos[i].type == "link"){
-                  this.links = true;
-                }
-                else if(i == this.currentProject.infos.length-1){
-                  this.topics = false;
-                  this.links = false;
-                }
-              }
-
+              this.checkIfTopicOrLink(); 
               this.modifyProject = false;
               console.log(this.currentProject);
             }
@@ -138,8 +130,10 @@ export class InfosComponent implements OnInit {
             continue;
           }
           else if(this.currentProject.infos[i].type == "link"){
-            let elem = <HTMLInputElement>document.getElementById(`l${i}`);
-            this.currentProject.infos[i].content = elem.value;
+            let label = <HTMLInputElement>document.getElementById(`ladd${i}`);
+            let link = <HTMLInputElement>document.getElementById(`lcon${i}`);
+            this.currentProject.infos[i].additionalData = label.value;
+            this.currentProject.infos[i].content = link.value;
             continue;
           }
           let elem = <HTMLInputElement>document.getElementById(`${i}`);
@@ -159,6 +153,7 @@ export class InfosComponent implements OnInit {
                 if (success) {
                   this.currentProject = this.projectService.currentProject; // Load current project information
                   this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1);
+                  this.checkIfTopicOrLink();
                   console.log(this.currentProject);
                 }
               }
@@ -172,12 +167,12 @@ export class InfosComponent implements OnInit {
               if (success) {
                 this.currentProject = this.projectService.currentProject; // Load current project information
                 this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1);
+                this.checkIfTopicOrLink();
                 console.log(this.currentProject);
               }
             }
           )
          }
-
         this.modifyProject = false;
       }
 
@@ -197,16 +192,16 @@ export class InfosComponent implements OnInit {
     )
  }
 
- saveImage(imageInput: any) {
-  let me = this;
-  this.projectImage.file = imageInput.files[0];
-  let extension: string = this.projectImage.file.name.split('.').pop();
-  this.projectImage.name = uuidv4() + '.' + extension;
-  this.projectImage.placeholder = this.projectImage.file.name;
-  let reader = new FileReader();
-  reader.readAsDataURL(this.projectImage.file);
-  reader.onload = function(){ me.projectImage.browserImg = reader.result}
+  saveImage(imageInput: any) {
+    let me = this;
+    this.projectImage.file = imageInput.files[0];
+    let extension: string = this.projectImage.file.name.split('.').pop();
+    this.projectImage.name = uuidv4() + '.' + extension;
+    this.projectImage.placeholder = this.projectImage.file.name;
+    let reader = new FileReader();
+    reader.readAsDataURL(this.projectImage.file);
+    reader.onload = function () { me.projectImage.browserImg = reader.result }
 
-}
+  }
 
 }
