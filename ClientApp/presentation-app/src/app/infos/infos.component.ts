@@ -5,6 +5,7 @@ import { Info } from '../shared/info';
 import { Project } from '../shared/project';
 import { ProjectsService } from '../shared/projects.service';
 import uuidv4 from "uuid/dist/v4";
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-infos',
@@ -25,8 +26,11 @@ export class InfosComponent implements OnInit {
   links: boolean = false;
   projectImage = {file: null, name: '', placeholder:'Change project image', browserImg: null};
 
+
   constructor(private route: ActivatedRoute,
-    private projectService: ProjectsService,) { }
+    private projectService: ProjectsService,
+    private sanitizer: DomSanitizer) {
+    }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(
@@ -103,6 +107,7 @@ export class InfosComponent implements OnInit {
     let info = new Info();
     info.projectId = this.projectId;
     info.type = type;
+    info.content = '';
     if (this.currentProject.infos.length != 0) {
       info.position = this.currentProject.infos[this.currentProject.infos.length - 1].position + 1;
     }
@@ -134,6 +139,23 @@ export class InfosComponent implements OnInit {
             let link = <HTMLInputElement>document.getElementById(`lcon${i}`);
             this.currentProject.infos[i].additionalData = label.value;
             this.currentProject.infos[i].content = link.value;
+            continue;
+          }
+          else if(this.currentProject.infos[i].type == "ytvideo"){
+            let label = <HTMLInputElement>document.getElementById(`ytlabel${i}`);
+            let link = <HTMLInputElement>document.getElementById(`ytlink${i}`);
+            this.currentProject.infos[i].additionalData = label.value;
+            let watchtemplate = "https://www.youtube.com/watch?v=";
+            let embedtemplate = "https://www.youtube.com/embed/";
+            let linkval = "";
+            if(link.value.substring(0,embedtemplate.length) == embedtemplate){
+              linkval = link.value;
+            }
+            else{
+              linkval = embedtemplate + link.value.substring(watchtemplate.length);
+            }
+            this.currentProject.infos[i].content = linkval;
+
             continue;
           }
           let elem = <HTMLInputElement>document.getElementById(`${i}`);

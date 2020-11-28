@@ -27,7 +27,7 @@
         <!-- Infos -->
         <!-- Read mode -->
         <div class="shadow bg-light rounded p-2 m-3" *ngIf="modifyProject == false; else modifyBlock">
-            <div class="row my-2 mx-0 p-0 py-2 border border-muted">
+            <div class="row my-2 mx-0 p-0 py-2 border-top border-bottom border-muted">
                 
                 <div class="col-md-8">
 
@@ -43,7 +43,7 @@
                     </div>
                     <h5 *ngIf="links">Relevant websites</h5>
                     <div *ngFor="let info of currentProject.infos">
-                        <div class="d-inline">{{info.additionalData}}</div>
+                        <div *ngIf="info.type=='link'" class="d-inline mr-2">{{info.additionalData}}</div>
                         <a *ngIf="info.type=='link'" href={{info.content}}>{{info.content}}</a>
                     </div>
 
@@ -57,13 +57,24 @@
                 </div>
 
             </div>
-
+            
             <!-- Informations -->
             <br>
             <div class="p-0 m-0 ml-2" *ngFor="let info of currentProject.infos">
+                <!-- Paragraph -->
                 <p *ngIf="info.type==='text'" style="white-space: pre-line">{{info.content}}</p>
+                <!-- Title -->
                 <h2 *ngIf="info.type==='title'">{{info.content}}</h2>
+                <!-- Subtitle -->
                 <h4 *ngIf="info.type==='subtitle'">{{info.content}}</h4>
+                <!-- Youtube video -->
+                <div *ngIf="info.type==='ytvideo'" class="d-flex justify-content-center border-top border-muted pt-2 mt-2 w-100">
+                    <iframe  width="560" height="315" [src]='sanitizer.bypassSecurityTrustResourceUrl(info.content)' frameborder="0" allowfullscreen></iframe>
+                </div>
+                <!-- Additional info for youtube video -->
+                <div *ngIf="info.type==='ytvideo'" class="d-flex justify-content-center border-bottom border-muted py-2 mb-2 w-100">
+                    <i>{{info.additionalData}}</i>
+                </div>
             </div>
         </div>
 
@@ -83,7 +94,7 @@
                         <h5>Topics</h5>
                         <form class="form-inline">
                             <div class="input-group" *ngFor="let info of currentProject.infos; index as i">
-                                <input class="form-control mt-1" type="text" *ngIf="info.type=='topic'" id="t{{i}}" value="{{info.content}}">
+                                <input class="form-control mt-1" type="text" *ngIf="info.type=='topic'" id="t{{i}}" value="{{info.content}}" placeholder="Enter the topic">
                                 <button class="btn btn-light mr-1" (click)="deleteInfo(i)" *ngIf="info.type=='topic'"><i  class="fas fa-times text-danger"></i></button>
                             </div>
                         </form>
@@ -93,8 +104,8 @@
                         <h5>Relevant websites</h5>
                         <div class="d-flex" *ngFor="let info of currentProject.infos; index as i">
                             <form class="form-inline w-100">
-                                <input type="text" class="form-control w-25" *ngIf="info.type=='link'" id="ladd{{i}}" value="{{info.additionalData}}">
-                                <input type="text" class="form-control w-75" *ngIf="info.type=='link'" id="lcon{{i}}" value="{{info.content}}">
+                                <input type="text" class="form-control w-25" *ngIf="info.type=='link'" id="ladd{{i}}" value="{{info.additionalData}}" placeholder="Label">
+                                <input type="text" class="form-control w-75" *ngIf="info.type=='link'" id="lcon{{i}}" value="{{info.content}}" placeholder="Enter the link">
                             </form>
                             <button class="btn btn-light" (click)="deleteInfo(i)" *ngIf="info.type=='link'"><i  class="fas fa-times text-danger"></i></button>
                         </div>
@@ -111,21 +122,32 @@
                     </div>
 
                 </div>
-
+                
                 <!-- Information -->
                 <div class="mt-1 d-flex" *ngFor="let info of currentProject.infos; index as i">
-                    <textarea autosize *ngIf="info.type==='text'" type="text" class="form-control" id="{{i}}" value="{{info.content}}" style="resize: none;"></textarea>
-                    <input *ngIf="info.type==='title'" type="text" class="form-control form-control-lg font-weight-bolder" id="{{i}}" value="{{info.content}}">
-                    <input *ngIf="info.type==='subtitle'" type="text" class="form-control font-weight-bold" id="{{i}}" value="{{info.content}}">
+                    <!-- Pargraph -->
+                    <textarea autosize *ngIf="info.type==='text'" type="text" class="form-control" id="{{i}}" value="{{info.content}}" style="resize: none;" placeholder="Enter the paragraph"></textarea>
+                    <!-- Title -->
+                    <input *ngIf="info.type==='title'" type="text" class="form-control form-control-lg font-weight-bolder" id="{{i}}" value="{{info.content}}" placeholder="Enter the title">
+                    <!-- Subtitle -->
+                    <input *ngIf="info.type==='subtitle'" type="text" class="form-control font-weight-bold" id="{{i}}" value="{{info.content}}" placeholder="Enter the subtitle">
+                    <!-- Youtube video -->
+                    <form *ngIf="info.type==='ytvideo'" class="form-inline mb-1 w-100" >
+                        <input type="text" class="form-control w-25"  id="ytlabel{{i}}" value="{{info.additionalData}}" placeholder="Video information">
+                        <input type="text" class="form-control w-75"  id="ytlink{{i}}" value="{{info.content}}" placeholder="Enter the youtube link">
+                    </form>
+                    <!-- Delete button -->
                     <button class="btn btn-light align-self-center ml-1" (click)="deleteInfo(i)"
-                            *ngIf="info.type==='subtitle' || info.type==='title' || info.type==='text'"
+                            *ngIf="info.type==='subtitle' || info.type==='title' || info.type==='text' || info.type==='photo' || info.type==='video' || info.type==='ytvideo'"
                     ><i  class="fas fa-times text-danger"></i></button>
                 </div>
 
 
-                <!-- Info add buttons -->
+                
                 <div class="form-group form-check d-flex justify-content-between mt-3 mb-0 p-0">
-                    <div>
+
+                    <!-- Info add buttons for big screens -- currently disabeled -->
+                    <div class="d-none">
                         <div class="btn-group">
                             <button class="btn btn-outline-primary" (click)="addInfo('title')">Add title</button>
                             <button class="btn btn-outline-primary" (click)="addInfo('subtitle')">Add subtitle</button>
@@ -136,6 +158,32 @@
                             <button class="btn btn-outline-primary">Add video</button>
                         </div>
                     </div>
+
+                    <!-- Info add buttons for small screens-->
+                    <div class="">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown">
+                                Add text
+                            </button>
+                            <div class="dropdown-menu">
+                                <button class="btn btn-outline-primary dropdown-item" (click)="addInfo('title')">Add title</button>
+                                <button class="btn btn-outline-primary dropdown-item" (click)="addInfo('subtitle')">Add subtitle</button>
+                                <button class="btn btn-outline-primary dropdown-item" (click)="addInfo('text')">Add paragraph</button>
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown">
+                                Add media
+                            </button>
+                            <div class="dropdown-menu mt-2">
+                                <button class="btn btn-outline-primary dropdown-item">Add photo</button>
+                                <button class="btn btn-outline-primary dropdown-item">Add video</button>
+                                <button class="btn btn-outline-primary dropdown-item" (click)="addInfo('ytvideo')">Add youtube video</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- save cancel buttons-->
                     <div class="btn-group h-50">
                         <button class="btn btn-success mr-2" (click)=updateProject()>Save</button>
                         <button class="btn btn-secondary" (click)=cancel()>Cancel</button>
