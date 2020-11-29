@@ -56,7 +56,12 @@
 
                 <!-- Image -->
                 <div class="col-md-4 ">
-                    <img class="img-thumbnail img-fluid" src={{imgdomain}}{{currentProject.photo}}>
+                    <!-- For big screens -->
+                    <img class="img-thumbnail img-fluid d-none d-md-block" src={{imgdomain}}{{currentProject.photo}}>
+                    <!-- For small screens -->
+                    <div class="d-md-none d-flex justify-content-center">
+                        <img class="img-thumbnail img-fluid" width="300" src={{imgdomain}}{{currentProject.photo}}>
+                    </div>
                 </div>
 
             </div>
@@ -98,13 +103,15 @@
                         <h5>Project duration</h5>
                         <form class="form-inline w-100">
                             <label class="mr-2">Start date:</label>
-                            <input *ngIf="currentProject.startDate != null" type="month" min="1980-01-01" class="form-control w-50" id="startdate" value='{{currentProject.startDate.getFullYear()}}-{{("0"+(currentProject.startDate.getMonth()+1)).slice(-2)}}'>
-                            <input *ngIf="currentProject.startDate == null" type="month" min="1980-01-01" class="form-control w-50" id="startdate">
+                            <input *ngIf="currentProject.startDate != null" type="month" min="1980-01" max="{{thisMonth}}" class="form-control w-50" id="startdate" 
+                                    value='{{currentProject.startDate.getFullYear()}}-{{("0"+(currentProject.startDate.getMonth()+1)).slice(-2)}}'>
+                            <input *ngIf="currentProject.startDate == null" type="month" min="1980-01" max="{{thisMonth}}" class="form-control w-50" id="startdate">
                         </form>
                         <form class="form-inline w-100 mb-3">
                             <label class="mr-3">End date:</label>
-                            <input *ngIf="currentProject.endDate != null" type="month" min="1980-01-01" class="form-control w-50" id="enddate" value='{{currentProject.endDate.getFullYear()}}-{{("0"+(currentProject.endDate.getMonth()+1)).slice(-2)}}'>
-                            <input *ngIf="currentProject.endDate == null" type="month" min="1980-01-01" class="form-control w-50" id="enddate">
+                            <input *ngIf="currentProject.endDate != null" type="month" min="1980-01" max="{{thisMonth}}" class="form-control w-50" id="enddate" 
+                                    value='{{currentProject.endDate.getFullYear()}}-{{("0"+(currentProject.endDate.getMonth()+1)).slice(-2)}}'>
+                            <input *ngIf="currentProject.endDate == null" type="month" min="1980-01" max="{{thisMonth}}"class="form-control w-50" id="enddate">
                             <button class="btn btn-light" ngbPopover="Let empty if you are currently working on the project" placement="bottom">
                                 <i  class="fas fa-question-circle"></i>
                             </button>
@@ -136,8 +143,15 @@
 
                     <!-- Image -->
                     <div class="col-md-4">
-                        <img *ngIf="projectImage.file==null" class="img-thumbnail mb-1" src={{imgdomain}}{{currentProject.photo}}>
-                        <img *ngIf="projectImage.file!=null" class="img-thumbnail mb-1" src={{projectImage.browserImg}}>
+                        <!-- For big screens -->
+                        <img *ngIf="projectImage.file==null" class="img-thumbnail mb-1 img-fluid d-none d-md-block" src={{imgdomain}}{{currentProject.photo}}>
+                        <img *ngIf="projectImage.file!=null" class="img-thumbnail mb-1 img-fluid d-none d-md-block" src={{projectImage.browserImg}}>
+                        <!-- For small screens -->
+                        <div class="d-md-none d-flex justify-content-center">
+                            <img *ngIf="projectImage.file==null" class="img-thumbnail img-fluid mb-1 img-fluid" width="300" src={{imgdomain}}{{currentProject.photo}}>
+                            <img *ngIf="projectImage.file!=null" class="img-thumbnail img-fluid mb-1 img-fluid" width="300" src={{projectImage.browserImg}}>
+                        </div>
+
                         <div class="custom-file mb-3 ">
                             <input #imageInput type="file" accept="image/*" class="custom-file-input" id="customFile" (change)="saveImage(imageInput)">
                             <label class="custom-file-label overflow-hidden" for="customFile">{{projectImage.placeholder}}</label>

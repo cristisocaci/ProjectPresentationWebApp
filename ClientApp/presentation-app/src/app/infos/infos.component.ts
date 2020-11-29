@@ -26,10 +26,17 @@ export class InfosComponent implements OnInit {
   links: boolean = false;
   projectImage = {file: null, name: '', placeholder:'Change project image', browserImg: null};
   months: Array<string> =  ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  thisMonth: string;
 
   constructor(private route: ActivatedRoute,
     private projectService: ProjectsService,
-    private sanitizer: DomSanitizer) { }
+    private sanitizer: DomSanitizer) {
+      let d = new Date();
+      let month = d.getMonth() + 1;
+      let year = d.getFullYear();
+      this.thisMonth = "" + year + "-" + ("0"+(month)).slice(-2);
+      console.log(this.thisMonth)
+     }
 
 
   ngOnInit(): void {
