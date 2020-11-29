@@ -50,10 +50,21 @@ export class ProjectsService {
     );
   }
 
-  uploadImage(image: any): Observable<any> {
+  uploadImages(images: any[]): Observable<any> {
     const formData = new FormData();
-    formData.append("file", image.file, image.name);
+    for(let i=0; i < images.length; ++i){
+      formData.append("file", images[i].file, images[i].name);
+    }
     return this.http.post(this.domain+`/api/images`, formData);
+  }
+
+  deleteImage(name: string){
+    return this.http.post(this.domain+`/api/images/`+ name, null).pipe(
+      map( (data:any)=>{
+        console.log(data);
+        return true;
+      })
+    )
   }
 
   loadProjectInfo(userId:string, projectId: number){

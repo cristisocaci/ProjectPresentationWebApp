@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
+
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
@@ -25,37 +26,59 @@ namespace WebApi.Controllers
         // Upload image
         // POST api/images
         [HttpPost, DisableRequestSizeLimit]
-        public IActionResult UploadImage()
+        public IActionResult UploadImages()
         {
             try
             {
-                var file = Request.Form.Files[0];
-                var folderName = Path.Combine("wwwroot", "img");
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                if (file.Length > 0)
-                {
-                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    var fullPath = Path.Combine(pathToSave, fileName);
-                    var dbPath = Path.Combine(folderName, fileName);
-                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                foreach(var file in Request.Form.Files) {
+                    
+                    var folderName = Path.Combine("wwwroot", "img");
+                    var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                    if (file.Length > 0)
                     {
-                        file.CopyTo(stream);
+                        var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                        var fullPath = Path.Combine(pathToSave, fileName);
+                        var dbPath = Path.Combine(folderName, fileName);
+                        using (var stream = new FileStream(fullPath, FileMode.Create))
+                        {
+                            file.CopyTo(stream);
+                        }
+                        return Ok(new { dbPath });
                     }
-                    return Ok(new { dbPath });
+                    else
+                    {
+                        return BadRequest("One of the photos is null");
+                    }
                 }
-                else
-                {
-                    return BadRequest();
-                }
+                return BadRequest("No photos in the form");
             }
             catch
             {
-                logger.LogInformation("Failed to save photo");
-                return BadRequest("Failed to save photo");
+                logger.LogInformation("Failed to save photos");
+                return BadRequest("Failed to save photos");
 
             }
 
+        }
 
+        [HttpPost("{name}")]
+        public IActionResult DeleteImage(string name)
+        {
+            try
+            {
+                string folderName = Path.Combine("wwwroot", "img");
+                string pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                string fullPath = Path.Combine(pathToSave, name);
+                System.IO.File.Delete(fullPath);
+                return Ok(new string[] { "Photo deleted" });
+
+
+            }
+            catch
+            {
+                return BadRequest("Failed to delete the photo");
+            }
+            
         }
     }
 }

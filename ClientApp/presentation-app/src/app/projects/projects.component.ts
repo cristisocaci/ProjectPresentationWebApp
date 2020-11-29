@@ -42,7 +42,6 @@ export class ProjectsComponent implements OnInit {
         this.projects = this.projectService.projects;
         this.filteredProjects = [...this.projects];
         this.nbOfDecks = this.calcNbOfDecks();
-  
       }
     })
   }
@@ -91,7 +90,7 @@ export class ProjectsComponent implements OnInit {
       if(this.selectedImage.name ==''){ project.photo = this.defaultimg; }
       else{ 
         project.photo = this.selectedImage.name;
-        this.projectService.uploadImage(this.selectedImage).subscribe( (res) => {}, (err) => {})
+        this.projectService.uploadImages([this.selectedImage]).subscribe( (res) => {}, (err) => {})
         this.selectedImage = {file: null, name: '', placeholder:'Choose project image', browserImg: null};
        }
        console.log(project);

@@ -180,7 +180,7 @@ export class InfosComponent implements OnInit {
         // save the photo
         if(this.projectImage.name !=''){
           this.currentProject.photo = this.projectImage.name;
-          this.projectService.uploadImage(this.projectImage).subscribe( (res) => {
+          this.projectService.uploadImages([this.projectImage]).subscribe( (res) => {
             // after the photo is saved, update the project
             this.projectService.updateProject(this.userId, this.projectId, this.currentProject).subscribe(
               success => {
