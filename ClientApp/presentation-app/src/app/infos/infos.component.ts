@@ -50,10 +50,7 @@ export class InfosComponent implements OnInit {
     this.projectService.loadProjectInfo(this.userId, this.projectId).subscribe(
       success => {
         if (success) {
-          this.currentProject = this.projectService.currentProject; // Load current project information
-          this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1);
-          this.checkIfTopicOrLink()
-          this.populateInfoImages();
+          this.assignCurrentProject();
           // Load the other projects
           this.projectService.loadProjects(this.userId).subscribe(success => {
             if (success) {
@@ -86,9 +83,32 @@ export class InfosComponent implements OnInit {
     
   }
 
+  populateInfoImages(){
+    for(let i = 0; i < this.currentProject.infos.length; ++i){
+      if(this.currentProject.infos[i].type=="image"){
+        let aux = { file: null, name: null, placeholder: null, browserImg: null, index: i, oldname: null ,new: false, deleted:false};
+        aux.name = this.currentProject.infos[i].content;
+        aux.placeholder = aux.name;
+        aux.new = false;
+        this.infoImages.push(aux)
+      }
+    }
+  }
+
+
+  assignCurrentProject(){
+    this.currentProject = this.projectService.currentProject; // Load current project information
+    this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1);
+    this.populateInfoImages();
+    this.checkIfTopicOrLink();
+    this.modifyProject = false;
+    console.log(this.currentProject);
+  }
+
   modify() {
     this.modifyProject = true;
   }
+
   cancel() {
     Swal.fire({
       title: 'Cancel editing?',
@@ -100,16 +120,8 @@ export class InfosComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.projectService.loadProjectInfo(this.userId, this.projectId).subscribe(
-          success => {
-            if (success) {
-              this.currentProject = this.projectService.currentProject; // Load current project information
-              this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1)
-              this.checkIfTopicOrLink(); 
-              this.populateInfoImages();
-              this.modifyProject = false;
-              console.log(this.currentProject);
-            }
-          })
+          success => { if (success) { this.assignCurrentProject() }}
+        )
       }
     })
   }
@@ -128,6 +140,16 @@ export class InfosComponent implements OnInit {
     }
     this.currentProject.infos.push(info);
 
+  }
+
+  deleteInfo(index: number) {
+    if(this.currentProject.infos[index].type == 'image'){
+      let i = this.infoImages.findIndex(x=>x.index==index);
+      if(i != -1){
+        this.infoImages[i].deleted = true;
+      }
+    }
+    this.currentProject.infos.splice(index, 1);
   }
 
   updateProject() {
@@ -212,39 +234,11 @@ export class InfosComponent implements OnInit {
 
         // update the project
         this.projectService.updateProject(this.userId, this.projectId, this.currentProject).subscribe(
-          success => {
-            if (success) {
-              this.currentProject = this.projectService.currentProject; // Load current project information
-              this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1);
-              this.populateInfoImages();
-              this.checkIfTopicOrLink();
-              console.log(this.currentProject);
-            }
-          }
+           success => { if (success) { this.assignCurrentProject() }}
         )
-        this.modifyProject = false;
       }
-
     })
   }
-  deleteInfo(index: number) {
-    if(this.currentProject.infos[index].type == 'image'){
-      let i = this.infoImages.findIndex(x=>x.index==index);
-      if(i != -1){
-        this.infoImages[i].deleted = true;
-      }
-    }
-    this.currentProject.infos.splice(index, 1);
-  }
-  filterProjects(value){
-    if(!value){
-        this.filteredProjects = [...this.projects];
-    } // when nothing has typed
-    console.log(this.filteredProjects)
-    this.filteredProjects = [...this.projects].filter(
-       item => item.title.toLowerCase().indexOf(value.toLowerCase()) > -1
-    )
- }
 
   saveProjectImage(imageInput: any) {
     let me = this;
@@ -288,17 +282,14 @@ export class InfosComponent implements OnInit {
     
   }
 
-  populateInfoImages(){
-    for(let i = 0; i < this.currentProject.infos.length; ++i){
-      if(this.currentProject.infos[i].type=="image"){
-        let aux = { file: null, name: null, placeholder: null, browserImg: null, index: i, oldname: null ,new: false, deleted:false};
-        aux.name = this.currentProject.infos[i].content;
-        aux.placeholder = aux.name;
-        aux.new = false;
-        this.infoImages.push(aux)
-      }
-    }
-  }
-
+  filterProjects(value){
+    if(!value){
+        this.filteredProjects = [...this.projects];
+    } // when nothing has typed
+    console.log(this.filteredProjects)
+    this.filteredProjects = [...this.projects].filter(
+       item => item.title.toLowerCase().indexOf(value.toLowerCase()) > -1
+    )
+ }
 
 }
