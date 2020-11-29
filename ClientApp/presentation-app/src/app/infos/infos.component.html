@@ -1,4 +1,4 @@
-<div class="row container-fluid m-0 p-0" *ngIf="currentProject!=null">
+<div class="row container-fluid m-0 p-0" *ngIf="currentProject!=null" >
 
     <div class="col-md-10 bg-light p-0">
 
@@ -68,7 +68,7 @@
             
             <!-- Informations -->
             <br>
-            <div class="p-0 m-0 ml-2" *ngFor="let info of currentProject.infos">
+            <div class="p-0 m-0 ml-2" *ngFor="let info of currentProject.infos; index as i">
                 <!-- Paragraph -->
                 <p *ngIf="info.type==='text'" style="white-space: pre-line">{{info.content}}</p>
                 <!-- Title -->
@@ -83,6 +83,17 @@
                 <div *ngIf="info.type==='ytvideo'" class="d-flex justify-content-center border-bottom border-muted py-2 mb-2 w-100">
                     <i>{{info.additionalData}}</i>
                 </div>
+
+                <!-- Image -->
+                <div class="w-100" *ngIf="info.type==='image'">
+                    <div class="d-flex justify-content-center border-top border-muted pt-2 mt-2 w-100">
+                        <img class="img-thumbnail mb-1 img-fluid" src={{imgdomain}}{{info.content}} width="400">
+                    </div>
+                    <div class="d-flex justify-content-center border-bottom border-muted py-2 mb-2 w-100">
+                        <i>{{info.additionalData}}</i>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -141,7 +152,7 @@
                         <br> 
                     </div>
 
-                    <!-- Image -->
+                    <!-- Project Image -->
                     <div class="col-md-4">
                         <!-- For big screens -->
                         <img *ngIf="projectImage.file==null" class="img-thumbnail mb-1 img-fluid d-none d-md-block" src={{imgdomain}}{{currentProject.photo}}>
@@ -153,7 +164,7 @@
                         </div>
 
                         <div class="custom-file mb-3 ">
-                            <input #imageInput type="file" accept="image/*" class="custom-file-input" id="customFile" (change)="saveImage(imageInput)">
+                            <input #imageInput type="file" accept="image/*" class="custom-file-input" id="customFile" (change)="saveProjectImage(imageInput)">
                             <label class="custom-file-label overflow-hidden" for="customFile">{{projectImage.placeholder}}</label>
                         </div>
                     </div>
@@ -161,6 +172,7 @@
                 </div>
                 
                 <!-- Information -->
+
                 <div class="mt-1 d-flex" *ngFor="let info of currentProject.infos; index as i">
                     <!-- Pargraph -->
                     <textarea autosize *ngIf="info.type==='text'" type="text" class="form-control" id="{{i}}" value="{{info.content}}" style="resize: none;" placeholder="Enter the paragraph"></textarea>
@@ -173,30 +185,38 @@
                         <input type="text" class="form-control w-25"  id="ytlabel{{i}}" value="{{info.additionalData}}" placeholder="Video information">
                         <input type="text" class="form-control w-75"  id="ytlink{{i}}" value="{{info.content}}" placeholder="Enter the youtube link">
                     </form>
+                    <!-- Image -->
+                    <div class="w-100" *ngIf="info.type==='image'">
+                        <div>
+                            <div *ngFor="let img of infoImages; index as j"
+                                class="d-flex justify-content-center border-top border-muted pt-2 mt-2 w-100">
+                                <img *ngIf="img.index == i && img.browserImg!=null" class="img-thumbnail mb-1 img-fluid d-none d-md-block" src={{img.browserImg}}
+                                    width="400">
+                                <img *ngIf="img.index == i && img.browserImg==null" class="img-thumbnail mb-1 img-fluid d-none d-md-block" src={{imgdomain}}{{info.content}}
+                                    width="400">
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center border-bottom border-muted py-2 mb-2 w-100">
+                            <form class="form-inline mb-1">
+                                <input type="text" class="form-control w-50" id="imglabel{{i}}" value="{{info.additionalData}}"
+                                    placeholder="Image information">
+                                <div class="custom-file w-50">
+                                    <input #imageInput type="file" accept="image/*" class="custom-file-input" id="img{{i}}"
+                                        (change)="saveImage(imageInput, i)">
+                                    <label class="custom-file-label overflow-hidden justify-content-start" for="img{{i}}">Choose image</label>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                     <!-- Delete button -->
                     <button class="btn btn-light align-self-center ml-1" (click)="deleteInfo(i)"
-                            *ngIf="info.type==='subtitle' || info.type==='title' || info.type==='text' || info.type==='photo' || info.type==='video' || info.type==='ytvideo'"
+                            *ngIf="info.type==='subtitle' || info.type==='title' || info.type==='text' || info.type==='image' || info.type==='video' || info.type==='ytvideo'"
                     ><i  class="fas fa-times text-danger"></i></button>
                 </div>
 
-
-                
+                <!-- Buttons -->
                 <div class="form-group form-check d-flex justify-content-between mt-3 mb-0 p-0">
-
-                    <!-- Info add buttons for big screens -- currently disabeled -->
-                    <div class="d-none">
-                        <div class="btn-group">
-                            <button class="btn btn-outline-primary" (click)="addInfo('title')">Add title</button>
-                            <button class="btn btn-outline-primary" (click)="addInfo('subtitle')">Add subtitle</button>
-                            <button class="btn btn-outline-primary" (click)="addInfo('text')">Add paragraph</button>
-                        </div><br>
-                        <div class="btn-group mt-2">
-                            <button class="btn btn-outline-primary">Add photo</button>
-                            <button class="btn btn-outline-primary">Add video</button>
-                        </div>
-                    </div>
-
-                    <!-- Info add buttons for small screens-->
+                    <!-- Info add buttons-->
                     <div class="">
                         <div class="btn-group">
                             <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown">
@@ -213,7 +233,7 @@
                                 Add media
                             </button>
                             <div class="dropdown-menu mt-2">
-                                <button class="btn btn-outline-primary dropdown-item">Add photo</button>
+                                <button class="btn btn-outline-primary dropdown-item" (click)="addInfo('image')">Add image</button>
                                 <button class="btn btn-outline-primary dropdown-item">Add video</button>
                                 <button class="btn btn-outline-primary dropdown-item" (click)="addInfo('ytvideo')">Add youtube video</button>
                             </div>
@@ -226,7 +246,8 @@
                         <button class="btn btn-secondary" (click)=cancel()>Cancel</button>
                     </div>
                 </div>
-            </div>
+                
+        </div>
         </ng-template>
 
     </div>
@@ -270,3 +291,4 @@
         </ul>
     </div>
 </div>
+

@@ -13,7 +13,7 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./infos.component.css']
 })
 export class InfosComponent implements OnInit {
-
+  
   projectId: number;
   userId: any;
   projects: Project[];
@@ -27,6 +27,7 @@ export class InfosComponent implements OnInit {
   projectImage = {file: null, name: '', placeholder:'Change project image', browserImg: null};
   months: Array<string> =  ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   thisMonth: string;
+  infoImages:Array<any> = new Array<any> ();
 
   constructor(private route: ActivatedRoute,
     private projectService: ProjectsService,
@@ -52,6 +53,7 @@ export class InfosComponent implements OnInit {
           this.currentProject = this.projectService.currentProject; // Load current project information
           this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1);
           this.checkIfTopicOrLink()
+          this.populateInfoImages();
           // Load the other projects
           this.projectService.loadProjects(this.userId).subscribe(success => {
             if (success) {
@@ -65,10 +67,8 @@ export class InfosComponent implements OnInit {
         }
 
       })
-
-      
-
   }
+  
 
   checkIfTopicOrLink(){
     this.topics = false;
@@ -105,6 +105,7 @@ export class InfosComponent implements OnInit {
               this.currentProject = this.projectService.currentProject; // Load current project information
               this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1)
               this.checkIfTopicOrLink(); 
+              this.populateInfoImages();
               this.modifyProject = false;
               console.log(this.currentProject);
             }
@@ -112,6 +113,7 @@ export class InfosComponent implements OnInit {
       }
     })
   }
+
 
   addInfo(type: string) {
     let info = new Info();
@@ -124,7 +126,8 @@ export class InfosComponent implements OnInit {
     else {
       info.position = 0;
     }
-    this.currentProject.infos.push(info)
+    this.currentProject.infos.push(info);
+
   }
 
   updateProject() {
@@ -139,17 +142,16 @@ export class InfosComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         for (let i = 0; i < this.currentProject.infos.length; ++i) {
+
           if(this.currentProject.infos[i].type == "topic"  ){
             let elem = <HTMLInputElement>document.getElementById(`t${i}`);
             this.currentProject.infos[i].content = elem.value;
-            continue;
           }
           else if(this.currentProject.infos[i].type == "link"){
             let label = <HTMLInputElement>document.getElementById(`ladd${i}`);
             let link = <HTMLInputElement>document.getElementById(`lcon${i}`);
             this.currentProject.infos[i].additionalData = label.value;
             this.currentProject.infos[i].content = link.value;
-            continue;
           }
           else if(this.currentProject.infos[i].type == "ytvideo"){
             let label = <HTMLInputElement>document.getElementById(`ytlabel${i}`);
@@ -165,55 +167,73 @@ export class InfosComponent implements OnInit {
               linkval = embedtemplate + link.value.substring(watchtemplate.length);
             }
             this.currentProject.infos[i].content = linkval;
-
-            continue;
           }
-          let elem = <HTMLInputElement>document.getElementById(`${i}`);
-          this.currentProject.infos[i].content = elem.value;
+          else if(this.currentProject.infos[i].type == "image"){
+            let content = this.infoImages[this.infoImages.findIndex(x=>x.index == i)];
+            if( content != null){
+              let label = <HTMLInputElement>document.getElementById(`imglabel${i}`);
+              this.currentProject.infos[i].additionalData = label.value;
+              this.currentProject.infos[i].content = content.name;
+            }
+          }
+          else{
+            let elem = <HTMLInputElement>document.getElementById(`${i}`);
+            this.currentProject.infos[i].content = elem.value;
+          }
         }
         this.currentProject.title = (<HTMLInputElement>document.getElementById(`projTitle`)).value;
         this.currentProject.description = (<HTMLInputElement>document.getElementById(`projDescription`)).value;
-        
         this.currentProject.startDate = new Date((<HTMLInputElement>document.getElementById(`startdate`)).value);
         this.currentProject.endDate = new Date((<HTMLInputElement>document.getElementById(`enddate`)).value);
         
-        // save the photo
-        if(this.projectImage.name !=''){
+        // save the project photo
+        if (this.projectImage.name != '') {
+          this.projectService.deleteImage(this.currentProject.photo).subscribe();
           this.currentProject.photo = this.projectImage.name;
-          this.projectService.uploadImages([this.projectImage]).subscribe( (res) => {
-            // after the photo is saved, update the project
-            this.projectService.updateProject(this.userId, this.projectId, this.currentProject).subscribe(
-              success => {
-                if (success) {
-                  this.currentProject = this.projectService.currentProject; // Load current project information
-                  this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1);
-                  this.checkIfTopicOrLink();
-                  console.log(this.currentProject);
-                }
-              }
-            )
-          }, (err) => {})
-          this.projectImage = {file: null, name: '', placeholder:'Choose project image', browserImg: null};
-         }
-         else{
-          this.projectService.updateProject(this.userId, this.projectId, this.currentProject).subscribe(
-            success => {
-              if (success) {
-                this.currentProject = this.projectService.currentProject; // Load current project information
-                this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1);
-                this.checkIfTopicOrLink();
-                console.log(this.currentProject);
-              }
+          this.projectService.uploadImages([this.projectImage]).subscribe()
+          this.projectImage = { file: null, name: '', placeholder: 'Choose project image', browserImg: null };
+        }
+
+        // save the info photos
+        if(this.infoImages.length != 0){
+          // delete changed photos
+          for(let i=0; i < this.infoImages.length; ++i){
+            if(this.infoImages[i].oldname != null ){
+              this.projectService.deleteImage(this.infoImages[i].oldname).subscribe();
             }
-          )
-         }
+            if(this.infoImages[i].deleted && !this.infoImages[i].new){
+              this.projectService.deleteImage(this.infoImages[i].name).subscribe();
+            }
+          }
+          this.projectService.uploadImages(this.infoImages.filter(img=>img.new==true)).subscribe();
+          this.infoImages = new Array<any> ();
+
+        }
+
+        // update the project
+        this.projectService.updateProject(this.userId, this.projectId, this.currentProject).subscribe(
+          success => {
+            if (success) {
+              this.currentProject = this.projectService.currentProject; // Load current project information
+              this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1);
+              this.populateInfoImages();
+              this.checkIfTopicOrLink();
+              console.log(this.currentProject);
+            }
+          }
+        )
         this.modifyProject = false;
       }
 
     })
-
   }
   deleteInfo(index: number) {
+    if(this.currentProject.infos[index].type == 'image'){
+      let i = this.infoImages.findIndex(x=>x.index==index);
+      if(i != -1){
+        this.infoImages[i].deleted = true;
+      }
+    }
     this.currentProject.infos.splice(index, 1);
   }
   filterProjects(value){
@@ -226,7 +246,7 @@ export class InfosComponent implements OnInit {
     )
  }
 
-  saveImage(imageInput: any) {
+  saveProjectImage(imageInput: any) {
     let me = this;
     this.projectImage.file = imageInput.files[0];
     let extension: string = this.projectImage.file.name.split('.').pop();
@@ -237,5 +257,48 @@ export class InfosComponent implements OnInit {
     reader.onload = function () { me.projectImage.browserImg = reader.result }
 
   }
+
+  saveImage(imageInput: any, index: number){
+    let imagesIndex = this.infoImages.findIndex(x => x.index == index);
+    if (imagesIndex == -1) {
+      let me = this;
+      let aux = { file: null, name: null, placeholder: null, browserImg: null, index: index, oldname: null ,new: false, deleted: false};
+      aux.file = imageInput.files[0];
+      let extension: string = aux.file.name.split('.').pop();
+      aux.name = uuidv4() + '.' + extension;
+      aux.placeholder = aux.file.name;
+      aux.new = true;
+      this.infoImages.push(aux)
+      let reader = new FileReader();
+      reader.readAsDataURL(this.infoImages[this.infoImages.length - 1].file);
+      reader.onload = function () { me.infoImages[me.infoImages.length-1].browserImg = reader.result }
+    }
+    else{
+      let me = this;
+      this.infoImages[imagesIndex].oldname = this.infoImages[imagesIndex].name;
+      this.infoImages[imagesIndex].file = imageInput.files[0];
+      let extension: string = this.infoImages[imagesIndex].file.name.split('.').pop();
+      this.infoImages[imagesIndex].name = uuidv4() + '.' + extension;
+      this.infoImages[imagesIndex].placeholder = this.infoImages[imagesIndex].file.name;
+      this.infoImages[imagesIndex].new = true;
+      let reader = new FileReader();
+      reader.readAsDataURL(this.infoImages[imagesIndex].file);
+      reader.onload = function () { me.infoImages[imagesIndex].browserImg = reader.result }
+    }
+    
+  }
+
+  populateInfoImages(){
+    for(let i = 0; i < this.currentProject.infos.length; ++i){
+      if(this.currentProject.infos[i].type=="image"){
+        let aux = { file: null, name: null, placeholder: null, browserImg: null, index: i, oldname: null ,new: false, deleted:false};
+        aux.name = this.currentProject.infos[i].content;
+        aux.placeholder = aux.name;
+        aux.new = false;
+        this.infoImages.push(aux)
+      }
+    }
+  }
+
 
 }

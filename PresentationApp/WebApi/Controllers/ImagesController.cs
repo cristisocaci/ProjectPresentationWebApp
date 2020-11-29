@@ -43,14 +43,11 @@ namespace WebApi.Controllers
                         {
                             file.CopyTo(stream);
                         }
-                        return Ok(new { dbPath });
+                        
                     }
-                    else
-                    {
-                        return BadRequest("One of the photos is null");
-                    }
+
                 }
-                return BadRequest("No photos in the form");
+                return Ok(new string[] { "Photos uploaded" });
             }
             catch
             {
@@ -70,7 +67,7 @@ namespace WebApi.Controllers
                 string pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
                 string fullPath = Path.Combine(pathToSave, name);
                 System.IO.File.Delete(fullPath);
-                return Ok(new string[] { "Photo deleted" });
+                return Ok(new string[] { "Photo deleted", name});
 
 
             }

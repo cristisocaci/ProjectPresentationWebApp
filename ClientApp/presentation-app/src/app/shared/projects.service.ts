@@ -12,6 +12,7 @@ export class ProjectsService {
   domain = 'http://localhost:8888';
   projects: Project[];
   currentProject: Project;
+  defaultimg = 'unnamed1.jpg';
 
   constructor(private http : HttpClient) { }
 
@@ -59,12 +60,15 @@ export class ProjectsService {
   }
 
   deleteImage(name: string){
-    return this.http.post(this.domain+`/api/images/`+ name, null).pipe(
-      map( (data:any)=>{
-        console.log(data);
-        return true;
-      })
-    )
+    if (name != this.defaultimg) {
+      return this.http.post(this.domain + `/api/images/` + name, null).pipe(
+        map((data: any) => {
+          console.log(data);
+          return true;
+        })
+      )
+    }
+    return null;
   }
 
   loadProjectInfo(userId:string, projectId: number){

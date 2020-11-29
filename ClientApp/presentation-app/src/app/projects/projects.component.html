@@ -52,7 +52,7 @@
                         <button type="button" class="btn btn-outline-primary" (click)="moveLR(project.position, 'l')">Move <i class="fas fa-angle-left"></i></button>
                         <button type="button" class="btn btn-outline-primary" (click)="moveLR(project.position, 'r')">Move <i class="fas fa-angle-right"></i></button>
                         <button type="button" class="btn btn-outline-primary">Share</button>
-                        <button type="button" class="btn btn-outline-primary" (click)="deleteProject(project.projectId)">Delete</button>
+                        <button type="button" class="btn btn-outline-primary" (click)="deleteProject(project.projectId, project.photo)">Delete</button>
                     </div>
                 </ng-template>
                 <button class="card-img-overlay ml-auto badge badge-pill mx-2 my-1"

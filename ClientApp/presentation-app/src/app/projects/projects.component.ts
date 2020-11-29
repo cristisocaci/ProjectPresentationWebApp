@@ -112,7 +112,7 @@ export class ProjectsComponent implements OnInit {
     }
   }
 
-  deleteProject(id: number){
+  deleteProject(id: number, photoName: string){
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -122,6 +122,7 @@ export class ProjectsComponent implements OnInit {
       cancelButtonText: 'No, cancel!',
     }).then((result) => {
       if (result.isConfirmed) {
+        this.projectService.deleteImage(photoName).subscribe();
         this.projectService.deleteProject(id, this.userId).subscribe(
           success => {
             if(success){
