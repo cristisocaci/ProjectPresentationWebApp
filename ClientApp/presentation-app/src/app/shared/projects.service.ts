@@ -18,6 +18,14 @@ export class ProjectsService {
   loadProjects(userId: string): Observable<boolean>{
     return this.http.get<any>(this.domain+`/api/users/${userId}/projects`).pipe(
       map( (data: Project[]) => {
+        for(let i=0; i < data.length; i++){
+          if(data[i].startDate != null){
+          data[i].startDate = new Date(data[i].startDate);
+          }
+          if(data[i].endDate != null){
+            data[i].endDate = new Date(data[i].endDate);
+          }
+        }
         this.projects = data.sort((a, b)=> ((a.position < b.position) ? 1: -1)); // arrange the project in reverse order according to their position
         console.log("Loaded projects");
         console.log(this.projects);
@@ -51,17 +59,26 @@ export class ProjectsService {
   loadProjectInfo(userId:string, projectId: number){
     return this.http.get<any>(this.domain+`/api/users/${userId}/projects/${projectId}`).pipe(
       map( (data: Project) => {
+        if(data.startDate != null){
+          data.startDate = new Date(data.startDate);
+        }
+        if(data.endDate != null){
+          data.endDate = new Date(data.endDate);
+        }
         this.currentProject = data;
         return true;
       }));
   }
 
   updateProject(userId: string, projectId: number, project: Project){
-
- 
-  
     return this.http.put<any>(this.domain+`/api/users/${userId}/projects/${projectId}`, project).pipe(
       map( (data: Project) => {
+        if(data.startDate != null){
+          data.startDate = new Date(data.startDate);
+        }
+        if(data.endDate != null){
+          data.endDate = new Date(data.endDate);
+        }
         this.currentProject = data;
         console.log(data);
         return true;
@@ -72,6 +89,14 @@ export class ProjectsService {
 
     return this.http.put<any>(this.domain+`/api/users/${userId}/projects`, projects).pipe(
       map( (data: Project[]) => {
+        for(let i=0; i < data.length; i++){
+          if(data[i].startDate != null){
+            data[i].startDate = new Date(data[i].startDate);
+          }
+          if(data[i].endDate != null){
+            data[i].endDate = new Date(data[i].endDate);
+          }
+        }
         this.projects = data.sort((a, b)=> ((a.position < b.position) ? 1: -1)); // arrange the project in reverse order according to their position
         console.log("Updated projects:");
         console.log(this.projects);

@@ -27,14 +27,20 @@
         <!-- Infos -->
         <!-- Read mode -->
         <div class="shadow bg-light rounded p-2 m-3" *ngIf="modifyProject == false; else modifyBlock">
-            <div class="row my-2 mx-0 p-0 py-2 border-top border-bottom border-muted">
+            <div class="row my-1 mx-0 p-0 py-2 border-top border-bottom border-muted">
                 
-                <div class="col-md-8">
+                <div class="col-md-8 mb-2">
 
                     <!-- Title and description-->
                     <h1>{{currentProject.title}}</h1>
-                    <h5>About</h5>
-                    <p>{{currentProject.description}}</p>
+                    <p class="overflow-auto">{{currentProject.description}}</p>
+
+                    <!-- Start and end time -->
+                    <div *ngIf="currentProject.startDate != null" class="mt-0 mb-3">
+                        <div class="d-inline-block"><i>{{months[currentProject.startDate.getMonth()]}} {{currentProject.startDate.getFullYear()}} -</i></div>
+                        <div class="d-inline-block ml-1" *ngIf="currentProject.endDate != null"><i>{{months[currentProject.endDate.getMonth()]}} {{currentProject.endDate.getFullYear()}}</i></div>
+                        <div class="d-inline-block ml-1" *ngIf="currentProject.endDate == null"><i>Present</i></div>
+                    </div>
 
                     <!-- Topics and links-->
                     <h5 *ngIf="topics">Topics</h5>
@@ -42,13 +48,10 @@
                         <pre *ngIf="info.type=='topic'"><b>{{info.content}}</b> </pre>
                     </div>
                     <h5 *ngIf="links">Relevant websites</h5>
-                    <div *ngFor="let info of currentProject.infos">
+                    <div *ngFor="let info of currentProject.infos" class="overflow-hidden">
                         <div *ngIf="info.type=='link'" class="d-inline mr-2">{{info.additionalData}}</div>
                         <a *ngIf="info.type=='link'" href={{info.content}}>{{info.content}}</a>
                     </div>
-
-                    <!-- Start and end time -- TODO -->
-                    <time></time>
                 </div>
 
                 <!-- Image -->
@@ -82,13 +85,30 @@
         <!-- Modify mode -->
         <ng-template #modifyBlock>
             <div class=" shadow bg-light rounded p-2 m-3">
-                <div class="row my-2 mx-0 p-0 py-2 border border-muted">
+                <div class="row mt-2 mb-3 mx-0 p-0 py-2 border-top border-bottom border-muted">
                     <div class="col-md-8">
 
                         <!-- Title and description -->
-                        <input type="text" class="form-control form-control-lg font-weight-bolder mb-2" id="projTitle" value="{{currentProject.title}}">
-                        <h5>About</h5>
-                        <textarea autosize type="text" class="form-control mb-2" id="projDescription" value="{{currentProject.description}}" style="resize: none;"></textarea>
+                        <h5>Title</h5>
+                        <input type="text" class="form-control form-control-lg font-weight-bolder mb-3" id="projTitle" value="{{currentProject.title}}">
+                        <h5>Description</h5>
+                        <textarea autosize type="text" class="form-control mb-3" id="projDescription" value="{{currentProject.description}}" style="resize: none;"></textarea>
+
+                        <!-- Project duration -->
+                        <h5>Project duration</h5>
+                        <form class="form-inline w-100">
+                            <label class="mr-2">Start date:</label>
+                            <input *ngIf="currentProject.startDate != null" type="month" min="1980-01-01" class="form-control w-50" id="startdate" value='{{currentProject.startDate.getFullYear()}}-{{("0"+(currentProject.startDate.getMonth()+1)).slice(-2)}}'>
+                            <input *ngIf="currentProject.startDate == null" type="month" min="1980-01-01" class="form-control w-50" id="startdate">
+                        </form>
+                        <form class="form-inline w-100 mb-3">
+                            <label class="mr-3">End date:</label>
+                            <input *ngIf="currentProject.endDate != null" type="month" min="1980-01-01" class="form-control w-50" id="enddate" value='{{currentProject.endDate.getFullYear()}}-{{("0"+(currentProject.endDate.getMonth()+1)).slice(-2)}}'>
+                            <input *ngIf="currentProject.endDate == null" type="month" min="1980-01-01" class="form-control w-50" id="enddate">
+                            <button class="btn btn-light" ngbPopover="Let empty if you are currently working on the project" placement="bottom">
+                                <i  class="fas fa-question-circle"></i>
+                            </button>
+                        </form>
 
                         <!-- Topics -->
                         <h5>Topics</h5>
@@ -98,7 +118,7 @@
                                 <button class="btn btn-light mr-1" (click)="deleteInfo(i)" *ngIf="info.type=='topic'"><i  class="fas fa-times text-danger"></i></button>
                             </div>
                         </form>
-                        <button class="btn btn-outline-primary my-2" (click)="addInfo('topic')">Add topic</button>
+                        <button class="btn btn-outline-primary mt-2 mb-3" (click)="addInfo('topic')">Add topic</button>
 
                         <!-- Links -->
                         <h5>Relevant websites</h5>
@@ -110,14 +130,17 @@
                             <button class="btn btn-light" (click)="deleteInfo(i)" *ngIf="info.type=='link'"><i  class="fas fa-times text-danger"></i></button>
                         </div>
                         <button class="btn btn-outline-primary my-2" (click)="addInfo('link')">Add link</button>
+
+                        <br> 
                     </div>
+
                     <!-- Image -->
-                    <div class="col-md-4 ">
+                    <div class="col-md-4">
                         <img *ngIf="projectImage.file==null" class="img-thumbnail mb-1" src={{imgdomain}}{{currentProject.photo}}>
                         <img *ngIf="projectImage.file!=null" class="img-thumbnail mb-1" src={{projectImage.browserImg}}>
                         <div class="custom-file mb-3 ">
                             <input #imageInput type="file" accept="image/*" class="custom-file-input" id="customFile" (change)="saveImage(imageInput)">
-                            <label class="custom-file-label" for="customFile">{{projectImage.placeholder}}</label>
+                            <label class="custom-file-label overflow-hidden" for="customFile">{{projectImage.placeholder}}</label>
                         </div>
                     </div>
 

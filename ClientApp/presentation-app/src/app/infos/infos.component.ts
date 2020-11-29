@@ -25,12 +25,12 @@ export class InfosComponent implements OnInit {
   topics:boolean = false;
   links: boolean = false;
   projectImage = {file: null, name: '', placeholder:'Change project image', browserImg: null};
-
+  months: Array<string> =  ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   constructor(private route: ActivatedRoute,
     private projectService: ProjectsService,
-    private sanitizer: DomSanitizer) {
-    }
+    private sanitizer: DomSanitizer) { }
+
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(
@@ -50,13 +50,16 @@ export class InfosComponent implements OnInit {
             if (success) {
               this.projects = this.projectService.projects.filter(project => project.projectId != this.currentProject.projectId);
               this.filteredProjects = [...this.projects];
+              console.log(this.filteredProjects);
             }
           })
-          console.log(this.filteredProjects)
           console.log(this.currentProject);
+          
         }
 
       })
+
+      
 
   }
 
@@ -163,8 +166,10 @@ export class InfosComponent implements OnInit {
         }
         this.currentProject.title = (<HTMLInputElement>document.getElementById(`projTitle`)).value;
         this.currentProject.description = (<HTMLInputElement>document.getElementById(`projDescription`)).value;
-
-
+        
+        this.currentProject.startDate = new Date((<HTMLInputElement>document.getElementById(`startdate`)).value);
+        this.currentProject.endDate = new Date((<HTMLInputElement>document.getElementById(`enddate`)).value);
+        
         // save the photo
         if(this.projectImage.name !=''){
           this.currentProject.photo = this.projectImage.name;
