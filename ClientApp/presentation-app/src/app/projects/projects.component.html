@@ -37,15 +37,15 @@
 </nav>
 
 <!-- Used to put 3 card on a row -->
-<div *ngFor="let deck of nbOfDecks; let i=index">
+<div *ngFor="let deck of nbOfDecks; let i=index" class="d-none d-md-block">
     <div class="card-deck mx-3 mt-3 justify-content-center">
         <!-- Card content -->
-        <div class="card"  *ngFor="let project of filteredProjects.slice(i*3,i*3+3)" style="max-width: 30rem">
+        <div class="card"  *ngFor="let project of filteredProjects.slice(i*3,(i+1)*3)" style="max-width: 25rem; height: 35rem; ">
             
             <!-- Read mode -->
             <div class="card m-0" *ngIf="project.projectId!=null; else elseBlock">
                 <!-- Card image-->
-                <img class="card-img-top img-thumbnail" style="max-height: 50%;" src={{imgdomain}}{{project.photo}}>
+                <img class="card-img-top img-thumbnail" style="height: 15rem;" src={{imgdomain}}{{project.photo}}>
                 <!-- Popover -->
                 <ng-template #popContent>
                     <div class="btn-group-vertical">
@@ -67,12 +67,12 @@
                     </span>
                 </button>
                 <!-- Card title and description -->
-                <div class="card-body h-auto">
+                <div class="card-body" style="height: 15rem; overflow: auto;">
                     <h4 class="card-title">{{project.title}}</h4>
-                    <p class="card-text">{{project.description}}</p>
+                    <p class="card-text" >{{project.description}}</p>
                 </div>
                 <!--Redirect to project button-->
-                <div class="card-footer">
+                <div class="card-footer ">
                     <a href="/infos?projectId={{project.projectId}}&userId={{userId}}" class="btn btn-outline-primary" >See Project</a>
                 </div>
             </div>

@@ -106,27 +106,27 @@
 
                         <!-- Title and description -->
                         <h5>Title</h5>
-                        <input type="text" class="form-control form-control-lg font-weight-bolder mb-3" id="projTitle" value="{{currentProject.title}}">
+                        <input type="text" class="form-control form-control-lg font-weight-bolder mb-3" id="projTitle"  [(ngModel)]="currentProject.title" required>
                         <h5>Description</h5>
                         <textarea autosize type="text" class="form-control mb-3" id="projDescription" value="{{currentProject.description}}" style="resize: none;"></textarea>
 
                         <!-- Project duration -->
                         <h5>Project duration</h5>
-                        <form class="form-inline w-100">
-                            <label class="mr-2">Start date:</label>
-                            <input *ngIf="currentProject.startDate != null" type="month" min="1980-01" max="{{thisMonth}}" class="form-control w-50" id="startdate" 
+                        <div class="col-12 form-inline w-100 p-0">
+                            <label class="col-2 justify-content-start p-0">Start date:</label>
+                            <input *ngIf="currentProject.startDate != null" type="month" min="1980-01" max="{{thisMonth}}" class="form-control col-4 w-50" id="startdate" 
                                     value='{{currentProject.startDate.getFullYear()}}-{{("0"+(currentProject.startDate.getMonth()+1)).slice(-2)}}'>
-                            <input *ngIf="currentProject.startDate == null" type="month" min="1980-01" max="{{thisMonth}}" class="form-control w-50" id="startdate">
-                        </form>
-                        <form class="form-inline w-100 mb-3">
-                            <label class="mr-3">End date:</label>
-                            <input *ngIf="currentProject.endDate != null" type="month" min="1980-01" max="{{thisMonth}}" class="form-control w-50" id="enddate" 
+                            <input *ngIf="currentProject.startDate == null" type="month" min="1980-01" max="{{thisMonth}}" class="form-control col-4 w-50" id="startdate">
+                        </div>
+                        <div class="col-12 form-inline w-100 p-0">
+                            <label class="col-2 justify-content-start p-0">End date:</label>
+                            <input *ngIf="currentProject.endDate != null" type="month" min="1980-01" max="{{thisMonth}}" class="form-control col-4 w-50" id="enddate" 
                                     value='{{currentProject.endDate.getFullYear()}}-{{("0"+(currentProject.endDate.getMonth()+1)).slice(-2)}}'>
-                            <input *ngIf="currentProject.endDate == null" type="month" min="1980-01" max="{{thisMonth}}"class="form-control w-50" id="enddate">
+                            <input *ngIf="currentProject.endDate == null" type="month" min="1980-01" max="{{thisMonth}}"class="form-control col-4 w-50" id="enddate">
                             <button class="btn btn-light" ngbPopover="Let empty if you are currently working on the project" placement="bottom">
                                 <i  class="fas fa-question-circle"></i>
                             </button>
-                        </form>
+                        </div>
 
                         <!-- Topics -->
                         <h5>Topics</h5>

@@ -31,7 +31,7 @@ namespace WebApi.Controllers
                     issuer: "http://localhost:8888",
                     audience: "http://localhost:8888",
                     claims: new List<Claim>(),
-                    expires: DateTime.Now.AddMinutes(5),
+                    expires: DateTime.Now.AddMinutes(60),
                     signingCredentials: signinCredentials
                 );
                 var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);

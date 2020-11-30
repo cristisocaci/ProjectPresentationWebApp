@@ -55,9 +55,9 @@ namespace WebApi
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
 
-                    ValidIssuer = "http://localhost:8888",
-                    ValidAudience = "http://localhost:8888",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("r9LY+6bxt@c6CGTA"))
+                    ValidIssuer = Configuration.GetSection("Security:Issuer").Value,
+                    ValidAudience = Configuration.GetSection("Security:Audience").Value,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetSection("Security:SecretKey").Value))
               
                 };
             });
