@@ -18,6 +18,7 @@ export class InfosComponent implements OnInit {
   userId: any;
   projects: Project[];
   filteredProjects: Project[];
+  projectsToBeDisplayed: number = 20;
   currentProject: Project = null;
   modifyProject: boolean = false;
   domain = 'http://localhost:8888'
@@ -28,6 +29,7 @@ export class InfosComponent implements OnInit {
   months: Array<string> =  ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   thisMonth: string;
   infoImages:Array<any> = new Array<any> ();
+
 
   constructor(private route: ActivatedRoute,
     private projectService: ProjectsService,
@@ -54,8 +56,8 @@ export class InfosComponent implements OnInit {
           // Load the other projects
           this.projectService.loadProjects(this.userId).subscribe(success => {
             if (success) {
-              this.projects = this.projectService.projects.filter(project => project.projectId != this.currentProject.projectId);
-              this.filteredProjects = [...this.projects];
+              this.projects = this.projectService.projects;
+              this.filteredProjects = this.projects.slice(0,this.projectsToBeDisplayed);
               console.log(this.filteredProjects);
             }
           })
@@ -284,12 +286,32 @@ export class InfosComponent implements OnInit {
 
   filterProjects(value){
     if(!value){
-        this.filteredProjects = [...this.projects];
+        this.filteredProjects = this.projects.slice(0,this.projectsToBeDisplayed);
     } // when nothing has typed
     console.log(this.filteredProjects)
-    this.filteredProjects = [...this.projects].filter(
+    this.filteredProjects = this.projects.filter(
        item => item.title.toLowerCase().indexOf(value.toLowerCase()) > -1
-    )
+    ).slice(0,this.projectsToBeDisplayed);
+    
+ }
+
+ showMoreLessProjects(choice: string){
+   let step = 10;
+   if(this.projectsToBeDisplayed < this.projects.length && choice == "m"){
+     this.projectsToBeDisplayed += step;
+     let value = (<HTMLInputElement>document.getElementById("filter")).value;
+     this.filterProjects(value);
+   }
+   else if(choice == "l"){
+     if(this.projectsToBeDisplayed-step < 0){
+        this.projectsToBeDisplayed = 0;
+     }
+     else{
+       this.projectsToBeDisplayed -= step;
+     }
+     let value = (<HTMLInputElement>document.getElementById("filter")).value;
+     this.filterProjects(value);
+   }
  }
 
 }

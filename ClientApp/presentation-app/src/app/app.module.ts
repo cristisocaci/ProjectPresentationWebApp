@@ -11,12 +11,14 @@ import { AppComponent } from './app.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { InfosComponent } from './infos/infos.component';
 import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ProjectsComponent,
     InfosComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,

@@ -25,6 +25,7 @@ export class ProjectsComponent implements OnInit {
   createProjectForm: FormGroup;
   selectedImage = {file: null, name: '', placeholder:'Choose project image', browserImg: null};
   createmode: boolean = false;
+  projectsToBeDisplayed: number = 18;
 
   constructor(private projectService: ProjectsService, 
               private formBuilder: FormBuilder,
@@ -39,11 +40,15 @@ export class ProjectsComponent implements OnInit {
 
     this.projectService.loadProjects(this.userId).subscribe(success =>{
       if (success) {
-        this.projects = this.projectService.projects;
-        this.filteredProjects = [...this.projects];
-        this.nbOfDecks = this.calcNbOfDecks();
+        this.assignProjects();
       }
     })
+  }
+
+  assignProjects(){
+    this.projects = this.projectService.projects;
+    this.filteredProjects = this.projects.slice(0,this.projectsToBeDisplayed);
+    this.nbOfDecks = this.calcNbOfDecks();
   }
 
   calcNbOfDecks(){
@@ -98,9 +103,7 @@ export class ProjectsComponent implements OnInit {
        // save the project
       this.projectService.addProject(project, this.userId).subscribe(success => {
         if(success){
-          this.projects = this.projectService.projects;
-          this.filteredProjects = [...this.projects];
-          this.nbOfDecks =  this.calcNbOfDecks();
+          this.assignProjects();
           this.router.navigate(['/infos'], {queryParams:{projectId: this.projects[0].projectId, userId:this.userId}})
         }
         else{
@@ -126,9 +129,7 @@ export class ProjectsComponent implements OnInit {
         this.projectService.deleteProject(id, this.userId).subscribe(
           success => {
             if(success){
-              this.projects = this.projectService.projects;
-              this.filteredProjects = [...this.projects];
-              this.nbOfDecks =  this.calcNbOfDecks();
+              this.assignProjects();
               this.createmode = false;
             }
             else{
@@ -143,15 +144,34 @@ export class ProjectsComponent implements OnInit {
   filterProjects(value){
     this.createmode = false;
     if(!value){
-        this.filteredProjects = [...this.projects];
+      this.filteredProjects = this.projects.slice(0,this.projectsToBeDisplayed);
     } // when nothing has typed
     console.log(this.filteredProjects)
-    this.filteredProjects = [...this.projects].filter(
+    this.filteredProjects = this.projects.filter(
        item => item.title.toLowerCase().indexOf(value.toLowerCase()) > -1
-    );
+    ).slice(0,this.projectsToBeDisplayed);
     this.nbOfDecks =  this.calcNbOfDecks();
   }
 
+  showMoreLessProjects(choice: string){
+    let step = 18;
+    if(this.projectsToBeDisplayed < this.projects.length && choice == "m"){
+      this.projectsToBeDisplayed += step;
+      let value = (<HTMLInputElement>document.getElementById("filter")).value;
+      this.filterProjects(value);
+    }
+    else if(choice == "l"){
+      if(this.projectsToBeDisplayed-step < 0){
+         this.projectsToBeDisplayed = 0;
+      }
+      else{
+        this.projectsToBeDisplayed -= step;
+      }
+      let value = (<HTMLInputElement>document.getElementById("filter")).value;
+      this.filterProjects(value);
+    }
+  }
+  
   moveLR(position: number, direction:string){
     for(let i = 0; i < this.projects.length; ++i){
       if(this.projects[i].position == position){
@@ -168,9 +188,7 @@ export class ProjectsComponent implements OnInit {
         }
         this.projectService.updateProjects(this.userId, this.projects).subscribe(success=>{
           if(success){
-            this.projects = this.projectService.projects;
-            this.filteredProjects = [...this.projects];
-            this.nbOfDecks = this.calcNbOfDecks();
+            this.assignProjects()
             this.createmode = false;
             
           }

@@ -13,6 +13,9 @@ using Microsoft.EntityFrameworkCore;
 
 using WebApi.DataModel;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace WebApi
 {
@@ -33,12 +36,32 @@ namespace WebApi
             services.AddEntityFrameworkSqlServer();
             services.AddDbContextPool<MyProjectsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyProjectsDb")));
             services.AddScoped<IMyProjectsRepository, MyProjectsRepository>();
-            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            services.AddCors(opt => opt.AddPolicy("MyPolicy", builder =>
             {
                 builder.AllowAnyOrigin()
                        .AllowAnyMethod()
                        .AllowAnyHeader();
             }));
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(opt =>
+            {
+                opt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+
+                    ValidIssuer = "http://localhost:8888",
+                    ValidAudience = "http://localhost:8888",
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("r9LY+6bxt@c6CGTA"))
+              
+                };
+            });
+
             services.Configure<FormOptions>(o => {
                 o.ValueLengthLimit = int.MaxValue;
                 o.MultipartBodyLengthLimit = int.MaxValue;
@@ -54,9 +77,9 @@ namespace WebApi
                 app.UseDeveloperExceptionPage();
             }
             app.UseCors("MyPolicy");
+            app.UseAuthentication();
             app.UseStaticFiles();
             app.UseMvc();
-            
         }
     }
 }

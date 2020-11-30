@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -49,7 +50,7 @@ namespace WebApi.Controllers
         // read a project of a user
         // GET api/users/{userId}/projects/{id}
         [HttpGet("{id:int}")]
-        public IActionResult GetUser(string userId, int id)
+        public IActionResult GetProject(string userId, int id)
         {
             try
             {
@@ -71,7 +72,7 @@ namespace WebApi.Controllers
 
         // create project
         // POST api/users/{userId}/projects
-        [HttpPost]
+        [HttpPost, Authorize]
         public IActionResult CreateProject(string userId, [FromBody] Project project)
         {
             try
@@ -91,7 +92,7 @@ namespace WebApi.Controllers
 
         // delete project
         // POST api/users/{userId}/projects/{id}
-        [HttpPost("{id}")]
+        [HttpPost("{id}"), Authorize]
         public IActionResult Delete(string userId, int id)
         {
             try
@@ -112,7 +113,7 @@ namespace WebApi.Controllers
 
         // update project
         // PUT api/users/{userId}/projects/{id}
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public IActionResult Update(string userId, int id, [FromBody] Project project)
         {
             try
@@ -131,7 +132,7 @@ namespace WebApi.Controllers
 
         // update multiple projects
         // PUT api/users/{userId}/projects
-        [HttpPut]
+        [HttpPut, Authorize]
         public IActionResult UpdateMultiple(string userId, [FromBody] Project[] projects)
         {
             try

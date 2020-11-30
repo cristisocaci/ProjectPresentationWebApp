@@ -188,15 +188,14 @@
                     <!-- Image -->
                     <div class="w-100" *ngIf="info.type==='image'">
                         <div>
-                            <div *ngFor="let img of infoImages; index as j"
-                                class="d-flex justify-content-center border-top border-muted pt-2 mt-2 w-100">
-                                <img *ngIf="img.index == i && img.browserImg!=null" class="img-thumbnail mb-1 img-fluid d-none d-md-block" src={{img.browserImg}}
-                                    width="400">
-                                <img *ngIf="img.index == i && img.browserImg==null" class="img-thumbnail mb-1 img-fluid d-none d-md-block" src={{imgdomain}}{{info.content}}
-                                    width="400">
+                            <div *ngFor="let img of infoImages; index as j">
+                                <div *ngIf="img.index == i && !img.deleted" class="d-flex justify-content-center border-top border-muted pt-2 mt-2 w-100">
+                                    <img *ngIf="img.browserImg!=null" class="img-thumbnail mb-1 img-fluid d-none d-md-block" src={{img.browserImg}} width="400">
+                                    <img *ngIf="img.browserImg==null" class="img-thumbnail mb-1 img-fluid d-none d-md-block" src={{imgdomain}}{{info.content}} width="400">
+                                </div>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-center border-bottom border-muted py-2 mb-2 w-100">
+                        <div class="d-flex justify-content-center border-bottom border-muted py-2 mb-2 w-100 ">
                             <form class="form-inline mb-1">
                                 <input type="text" class="form-control w-50" id="imglabel{{i}}" value="{{info.additionalData}}"
                                     placeholder="Image information">
@@ -255,12 +254,12 @@
     <!-- Other projects -->
     <div class="col-md-2 bg-dark">
 
-        <div class="d-flex justify-content-center text-light bg-dark my-4 ">
+        <div class="d-flex justify-content-center text-light bg-dark my-4">
             <h5>See Other Projects</h5>
         </div>
         <!-- Search item -->
         <div class="d-flex justify-content-center">
-            <input #myInput class="form-control d-inline-block w-75 h-100" type="text" placeholder="Search"
+            <input #myInput class="form-control d-inline-block w-75 h-100" type="text" placeholder="Search" id="filter"
                 (input)="filterProjects(myInput.value)">
             <button class="btn btn-dark d-inline-block mw-25">
                 <i class="fas fa-search bg-dark text-light"></i>
@@ -273,22 +272,48 @@
             <i class="fas fa-bars bg-dark text-light"></i>
         </button>
 
-        <div class="collapse" id="collapsible">
+        <div class="collapse d-md-none my-2 bg-dark" id="collapsible">
             <ul class="list-group list-group-flush my-2">
                 <a href="/infos?projectId={{project.projectId}}&userId={{project.userId}}"
                     *ngFor="let project of filteredProjects" class="list-group-item btn bg-dark text-light">
                     {{project.title}}
                 </a>
             </ul>
+            <div class="btn-group d-flex justify-content-center">
+                <button class="btn btn-dark text-light" (click)="showMoreLessProjects('m')">
+                    <i class="fas fa-angle-down"></i>
+                </button>
+                <button class="btn btn-dark text-light" (click)="showMoreLessProjects('l')">
+                    <i class="fas fa-angle-up"></i>
+                </button>
+            </div>
         </div>
 
         <!--See other projects - For big screens-->
         <ul class="list-group list-group-flush my-2 d-none d-md-block">
-            <a href="/infos?projectId={{project.projectId}}&userId={{project.userId}}"
-                *ngFor="let project of filteredProjects" class="list-group-item btn bg-dark text-light">
-                {{project.title}}
-            </a>
+    
+            <div *ngFor="let project of filteredProjects ">
+                <a href="/infos?projectId={{project.projectId}}&userId={{project.userId}}"
+                    *ngIf="project.projectId != currentProject.projectId"
+                    class="list-group-item btn bg-dark text-light">
+                    {{project.title}}
+                </a>
+                <a href="/infos?projectId={{project.projectId}}&userId={{project.userId}}"
+                    *ngIf="project.projectId == currentProject.projectId"
+                    class="list-group-item btn bg-dark text-primary disabled">
+                    {{project.title}}
+                </a>
+            </div>
+            <div class="btn-group d-flex justify-content-center">
+                <button class="btn btn-dark text-light" (click)="showMoreLessProjects('m')">
+                    <i class="fas fa-angle-down"></i>
+                </button>
+                <button class="btn btn-dark text-light" (click)="showMoreLessProjects('l')">
+                    <i class="fas fa-angle-up"></i>
+                </button>
+            </div>
         </ul>
+        
     </div>
 </div>
 
