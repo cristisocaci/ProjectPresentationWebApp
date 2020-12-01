@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.DataModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApi.Controllers
 {
@@ -23,27 +24,9 @@ namespace WebApi.Controllers
             this.logger = logger;
         }
 
-        // read all users without projects
-        // GET api/users
-        [HttpGet]
-        public IActionResult Get()
-        {
-            try
-            {
-                var users = repository.GetAllUsers();
-                logger.LogInformation("Users returned");
-                return Ok(users);
-            }
-            catch(Exception e)
-            {
-                logger.LogError("Failed to get users: " + e.Message);
-                return BadRequest("Failed to get users");
-            }
-        }
-
         // read a user 
         // GET api/users/{id}
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public IActionResult GetUser(string id)
         {
             try
@@ -85,7 +68,7 @@ namespace WebApi.Controllers
 
         // Delete User
         // POST api/users/{id}
-        [HttpPost("{id}")]
+        [HttpPost("{id}"), Authorize]
         public IActionResult Delete(string id)
         {
             try
@@ -105,7 +88,7 @@ namespace WebApi.Controllers
 
         // Update User
         // PUT api/users/{id}
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public IActionResult Update(string id, [FromBody] User newUser)
         {
             return Ok();

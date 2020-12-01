@@ -7,11 +7,11 @@
             class="navbar navbar-expand-md bg-dark text-light justify-content-between sticky-top border-right border-secondary">
             <ul class="navbar-nav mx-2">
                 <!-- Page title -->
-                <a class="navbar-brand text-light text-weight-bolder" href="/projects"><i
+                <a class="navbar-brand text-light text-weight-bolder" href="/projects?userId={{userId}}"><i
                         class="fas fa-project-diagram"></i> Logo</a>
             </ul>
 
-            <ul class="navbar-nav mx-2">
+            <ul *ngIf="isUserAuthenticated()" class="navbar-nav mx-2">
                 <!-- Create Project -->
                 <li class="nav-item">
                     <button *ngIf="!modifyProject" class="btn btn-dark text-light" type="button"
@@ -55,9 +55,13 @@
                 </div>
 
                 <!-- Image -->
-                <div class="col-md-4 ">
+                <div class="col-md-4">
                     <!-- For big screens -->
-                    <img class="img-thumbnail img-fluid d-none d-md-block" src={{imgdomain}}{{currentProject.photo}}>
+                    <div class="d-flex justify-content-end ">
+                        <div class="d-none d-md-block ">
+                            <img class="img-thumbnail img-fluid"  width="400" src={{imgdomain}}{{currentProject.photo}}>
+                        </div> 
+                    </div> 
                     <!-- For small screens -->
                     <div class="d-md-none d-flex justify-content-center">
                         <img class="img-thumbnail img-fluid" width="300" src={{imgdomain}}{{currentProject.photo}}>
@@ -100,15 +104,15 @@
 
         <!-- Modify mode -->
         <ng-template #modifyBlock>
-            <div class=" shadow bg-light rounded p-2 m-3">
+            <div *ngIf="isUserAuthenticated()" class=" shadow bg-light rounded p-2 m-3">
                 <div class="row mt-2 mb-3 mx-0 p-0 py-2 border-top border-bottom border-muted">
                     <div class="col-md-8">
 
                         <!-- Title and description -->
                         <h5>Title</h5>
-                        <input type="text" class="form-control form-control-lg font-weight-bolder mb-3" id="projTitle"  [(ngModel)]="currentProject.title" required>
+                        <input type="text" class="form-control form-control-lg font-weight-bolder mb-3"  [(ngModel)]="currentProject.title" required>
                         <h5>Description</h5>
-                        <textarea autosize type="text" class="form-control mb-3" id="projDescription" value="{{currentProject.description}}" style="resize: none;"></textarea>
+                        <textarea autosize type="text" class="form-control mb-3" [(ngModel)]="currentProject.description" style="resize: none;"></textarea>
 
                         <!-- Project duration -->
                         <h5>Project duration</h5>
@@ -130,21 +134,21 @@
 
                         <!-- Topics -->
                         <h5>Topics</h5>
-                        <form class="form-inline">
+                        <div class="form-inline">
                             <div class="input-group" *ngFor="let info of currentProject.infos; index as i">
-                                <input class="form-control mt-1" type="text" *ngIf="info.type=='topic'" id="t{{i}}" value="{{info.content}}" placeholder="Enter the topic">
+                                <input class="form-control mt-1" type="text" *ngIf="info.type=='topic'" [(ngModel)]="currentProject.infos[i].content" placeholder="Enter the topic">
                                 <button class="btn btn-light mr-1" (click)="deleteInfo(i)" *ngIf="info.type=='topic'"><i  class="fas fa-times text-danger"></i></button>
                             </div>
-                        </form>
+                        </div>
                         <button class="btn btn-outline-primary mt-2 mb-3" (click)="addInfo('topic')">Add topic</button>
 
                         <!-- Links -->
                         <h5>Relevant websites</h5>
                         <div class="d-flex" *ngFor="let info of currentProject.infos; index as i">
-                            <form class="form-inline w-100">
-                                <input type="text" class="form-control w-25" *ngIf="info.type=='link'" id="ladd{{i}}" value="{{info.additionalData}}" placeholder="Label">
-                                <input type="text" class="form-control w-75" *ngIf="info.type=='link'" id="lcon{{i}}" value="{{info.content}}" placeholder="Enter the link">
-                            </form>
+                            <div class="form-inline w-100">
+                                <input type="text" class="form-control w-25" *ngIf="info.type=='link'" [(ngModel)]="currentProject.infos[i].additionalData" placeholder="Label">
+                                <input type="text" class="form-control w-75" *ngIf="info.type=='link'" [(ngModel)]="currentProject.infos[i].content" placeholder="Enter the link">
+                            </div>
                             <button class="btn btn-light" (click)="deleteInfo(i)" *ngIf="info.type=='link'"><i  class="fas fa-times text-danger"></i></button>
                         </div>
                         <button class="btn btn-outline-primary my-2" (click)="addInfo('link')">Add link</button>
@@ -155,8 +159,12 @@
                     <!-- Project Image -->
                     <div class="col-md-4">
                         <!-- For big screens -->
-                        <img *ngIf="projectImage.file==null" class="img-thumbnail mb-1 img-fluid d-none d-md-block" src={{imgdomain}}{{currentProject.photo}}>
-                        <img *ngIf="projectImage.file!=null" class="img-thumbnail mb-1 img-fluid d-none d-md-block" src={{projectImage.browserImg}}>
+                        <div class="d-flex justify-content-center">
+                            <div class="d-none d-md-block ">
+                                <img *ngIf="projectImage.file==null" class="img-thumbnail mb-1 img-fluid " width="400" src={{imgdomain}}{{currentProject.photo}}>
+                                <img *ngIf="projectImage.file!=null" class="img-thumbnail mb-1 img-fluid " width="400" src={{projectImage.browserImg}}>
+                            </div>
+                        </div>
                         <!-- For small screens -->
                         <div class="d-md-none d-flex justify-content-center">
                             <img *ngIf="projectImage.file==null" class="img-thumbnail img-fluid mb-1 img-fluid" width="300" src={{imgdomain}}{{currentProject.photo}}>
@@ -175,16 +183,16 @@
 
                 <div class="mt-1 d-flex" *ngFor="let info of currentProject.infos; index as i">
                     <!-- Pargraph -->
-                    <textarea autosize *ngIf="info.type==='text'" type="text" class="form-control" id="{{i}}" value="{{info.content}}" style="resize: none;" placeholder="Enter the paragraph"></textarea>
+                    <textarea autosize *ngIf="info.type==='text'" type="text" class="form-control" [(ngModel)]="currentProject.infos[i].content" style="resize: none;" placeholder="Enter the paragraph"></textarea>
                     <!-- Title -->
-                    <input *ngIf="info.type==='title'" type="text" class="form-control form-control-lg font-weight-bolder" id="{{i}}" value="{{info.content}}" placeholder="Enter the title">
+                    <input *ngIf="info.type==='title'" type="text" class="form-control form-control-lg font-weight-bolder" [(ngModel)]="currentProject.infos[i].content" placeholder="Enter the title">
                     <!-- Subtitle -->
-                    <input *ngIf="info.type==='subtitle'" type="text" class="form-control font-weight-bold" id="{{i}}" value="{{info.content}}" placeholder="Enter the subtitle">
+                    <input *ngIf="info.type==='subtitle'" type="text" class="form-control font-weight-bold" [(ngModel)]="currentProject.infos[i].content" placeholder="Enter the subtitle">
                     <!-- Youtube video -->
-                    <form *ngIf="info.type==='ytvideo'" class="form-inline mb-1 w-100" >
-                        <input type="text" class="form-control w-25"  id="ytlabel{{i}}" value="{{info.additionalData}}" placeholder="Video information">
-                        <input type="text" class="form-control w-75"  id="ytlink{{i}}" value="{{info.content}}" placeholder="Enter the youtube link">
-                    </form>
+                    <div *ngIf="info.type==='ytvideo'" class="form-inline mb-1 w-100" >
+                        <input type="text" class="form-control w-25"  [(ngModel)]="currentProject.infos[i].additionalData" placeholder="Video information">
+                        <input type="text" class="form-control w-75"  [(ngModel)]="currentProject.infos[i].content" placeholder="Enter the youtube link">
+                    </div>
                     <!-- Image -->
                     <div class="w-100" *ngIf="info.type==='image'">
                         <div>
@@ -196,15 +204,15 @@
                             </div>
                         </div>
                         <div class="d-flex justify-content-center border-bottom border-muted py-2 mb-2 w-100 ">
-                            <form class="form-inline mb-1">
-                                <input type="text" class="form-control w-50" id="imglabel{{i}}" value="{{info.additionalData}}"
+                            <div class="form-inline mb-1">
+                                <input type="text" class="form-control w-50" [(ngModel)]="this.currentProject.infos[i].additionalData"
                                     placeholder="Image information">
                                 <div class="custom-file w-50">
                                     <input #imageInput type="file" accept="image/*" class="custom-file-input" id="img{{i}}"
                                         (change)="saveImage(imageInput, i)">
                                     <label class="custom-file-label overflow-hidden justify-content-start" for="img{{i}}">Choose image</label>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                     <!-- Delete button -->
@@ -246,7 +254,7 @@
                     </div>
                 </div>
                 
-        </div>
+            </div>
         </ng-template>
 
     </div>

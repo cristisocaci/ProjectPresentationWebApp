@@ -23,19 +23,19 @@ namespace WebApi.Controllers
             {
                 return BadRequest("Invalid client request");
             }
-            if (user.UserName == "user" && user.Password == "pass")
+            if (user.UserName == "user" && user.Password == "hadsaa123")
             {
                 var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("r9LY+6bxt@c6CGTA"));
                 var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
                 var tokeOptions = new JwtSecurityToken(
                     issuer: "http://localhost:8888",
-                    audience: "http://localhost:8888",
+                    audience: "http://localhost:4200",
                     claims: new List<Claim>(),
-                    expires: DateTime.Now.AddMinutes(60),
+                    expires: DateTime.Now.AddMinutes(120),
                     signingCredentials: signinCredentials
                 );
                 var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
-                return Ok(new { Token = tokenString });
+                return Ok(new { Token = tokenString, UserId = "0" });
             }
             else
             {

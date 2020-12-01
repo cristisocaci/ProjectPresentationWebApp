@@ -6,6 +6,7 @@ import { Project } from '../shared/project';
 import { ProjectsService } from '../shared/projects.service';
 import uuidv4 from "uuid/dist/v4";
 import { DomSanitizer } from '@angular/platform-browser';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Component({
   selector: 'app-infos',
@@ -28,12 +29,12 @@ export class InfosComponent implements OnInit {
   projectImage = {file: null, name: '', placeholder:'Change project image', browserImg: null};
   months: Array<string> =  ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   thisMonth: string;
-  infoImages:Array<any> = new Array<any> ();
-
+  infoImages:Array<any>;
 
   constructor(private route: ActivatedRoute,
     private projectService: ProjectsService,
-    private sanitizer: DomSanitizer) {
+    private sanitizer: DomSanitizer,
+    private jwtHelper: JwtHelperService) {
       let d = new Date();
       let month = d.getMonth() + 1;
       let year = d.getFullYear();
@@ -47,8 +48,7 @@ export class InfosComponent implements OnInit {
       params => {
         this.projectId = params.projectId;
         this.userId = params.userId;
-      }
-    )
+      });
     this.projectService.loadProjectInfo(this.userId, this.projectId).subscribe(
       success => {
         if (success) {
@@ -61,31 +61,44 @@ export class InfosComponent implements OnInit {
               console.log(this.filteredProjects);
             }
           })
-          console.log(this.currentProject);
-          
         }
+      });
+  }
 
-      })
+  isUserAuthenticated() {
+    const token: string = sessionStorage.getItem("jwt");
+    if (token && !this.jwtHelper.isTokenExpired(token)) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
   
+  assignCurrentProject(){ // used after the data came from the server
+    this.currentProject = this.projectService.currentProject; // Load current project information
+    this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1);
+    this.populateInfoImages();
+    this.checkIfTopicOrLink();
+    this.modifyProject = false;
+    console.log(this.currentProject);
+  }
 
-  checkIfTopicOrLink(){
+  checkIfTopicOrLink(){ // check if there is a topic or a link in order to display "Topics" or "Relevant websites" on the page
     this.topics = false;
     this.links = false;
     for(let i=0; i < this.currentProject.infos.length; ++i){
       if(this.currentProject.infos[i].type == "topic"){
         this.topics = true;
-        console.log("topic");
       }
       else if(this.currentProject.infos[i].type == "link"){
         this.links = true;
-        console.log("link");
       }
     }
-    
   }
 
-  populateInfoImages(){
+  populateInfoImages(){ // create an array with all the photos from the infos section of the project 
+    this.infoImages =  new Array<any> ();
     for(let i = 0; i < this.currentProject.infos.length; ++i){
       if(this.currentProject.infos[i].type=="image"){
         let aux = { file: null, name: null, placeholder: null, browserImg: null, index: i, oldname: null ,new: false, deleted:false};
@@ -97,21 +110,11 @@ export class InfosComponent implements OnInit {
     }
   }
 
-
-  assignCurrentProject(){
-    this.currentProject = this.projectService.currentProject; // Load current project information
-    this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1);
-    this.populateInfoImages();
-    this.checkIfTopicOrLink();
-    this.modifyProject = false;
-    console.log(this.currentProject);
-  }
-
-  modify() {
+  modify() { // open the edit mode
     this.modifyProject = true;
   }
 
-  cancel() {
+  cancel() { // cancel the edit mode
     Swal.fire({
       title: 'Cancel editing?',
       text: "All your changes will be lost!",
@@ -128,8 +131,7 @@ export class InfosComponent implements OnInit {
     })
   }
 
-
-  addInfo(type: string) {
+  addInfo(type: string) { // add a new info to the project
     let info = new Info();
     info.projectId = this.projectId;
     info.type = type;
@@ -141,21 +143,61 @@ export class InfosComponent implements OnInit {
       info.position = 0;
     }
     this.currentProject.infos.push(info);
+  }
 
+  saveProjectImage(imageInput: any) { // when an image is uploaded for the project image, save it in the projectImage object
+    let me = this;
+    this.projectImage.file = imageInput.files[0];
+    let extension: string = this.projectImage.file.name.split('.').pop();
+    this.projectImage.name = uuidv4() + '.' + extension;
+    this.projectImage.placeholder = this.projectImage.file.name;
+    let reader = new FileReader();
+    reader.readAsDataURL(this.projectImage.file);
+    reader.onload = function () { me.projectImage.browserImg = reader.result }
+  }
+
+  saveImage(imageInput: any, index: number){ // when an image is uploaded for the info section, save it in the images array
+    let imagesIndex = this.infoImages.findIndex(x => x.index == index); // check if the image is already in the array
+
+    if (imagesIndex == -1) { // if it isn`t, create a new object and append it 
+      let aux = { file: null, name: null, placeholder: null, browserImg: null, index: index, oldname: null ,new: false, deleted: false};
+      this.infoImages.push(aux)
+      imagesIndex = this.infoImages.length-1;
+    }
+    else{ //  save the old photo name for deleting
+      this.infoImages[imagesIndex].oldname = this.infoImages[imagesIndex].name;
+    }
+
+    // save the info
+    this.infoImages[imagesIndex].file = imageInput.files[0];
+    let extension: string = this.infoImages[imagesIndex].file.name.split('.').pop();
+    this.infoImages[imagesIndex].name = uuidv4() + '.' + extension;
+    this.infoImages[imagesIndex].placeholder = this.infoImages[imagesIndex].file.name;
+    this.infoImages[imagesIndex].new = true;
+    let me = this;
+    let reader = new FileReader();
+    reader.readAsDataURL(this.infoImages[imagesIndex].file);
+    reader.onload = function () { me.infoImages[imagesIndex].browserImg = reader.result }
   }
 
   deleteInfo(index: number) {
-    if(this.currentProject.infos[index].type == 'image'){
+    if(this.currentProject.infos[index].type == 'image'){ // if info is an image, mark it to be deleted
       let i = this.infoImages.findIndex(x=>x.index==index);
       if(i != -1){
         this.infoImages[i].deleted = true;
+      }
+    }
+    else{ // change indexes saved in the images array to match those from the info array
+      for(let i = 0; i < this.infoImages.length; ++i){
+        if(this.infoImages[i].index > index){
+          this.infoImages[i].index -= 1;
+        }
       }
     }
     this.currentProject.infos.splice(index, 1);
   }
 
   updateProject() {
-
     Swal.fire({
       title: 'Continue saving?',
       text: "",
@@ -165,75 +207,23 @@ export class InfosComponent implements OnInit {
       cancelButtonText: 'No',
     }).then((result) => {
       if (result.isConfirmed) {
-        for (let i = 0; i < this.currentProject.infos.length; ++i) {
-
-          if(this.currentProject.infos[i].type == "topic"  ){
-            let elem = <HTMLInputElement>document.getElementById(`t${i}`);
-            this.currentProject.infos[i].content = elem.value;
-          }
-          else if(this.currentProject.infos[i].type == "link"){
-            let label = <HTMLInputElement>document.getElementById(`ladd${i}`);
-            let link = <HTMLInputElement>document.getElementById(`lcon${i}`);
-            this.currentProject.infos[i].additionalData = label.value;
-            this.currentProject.infos[i].content = link.value;
-          }
-          else if(this.currentProject.infos[i].type == "ytvideo"){
-            let label = <HTMLInputElement>document.getElementById(`ytlabel${i}`);
-            let link = <HTMLInputElement>document.getElementById(`ytlink${i}`);
-            this.currentProject.infos[i].additionalData = label.value;
-            let watchtemplate = "https://www.youtube.com/watch?v=";
-            let embedtemplate = "https://www.youtube.com/embed/";
-            let linkval = "";
-            if(link.value.substring(0,embedtemplate.length) == embedtemplate){
-              linkval = link.value;
-            }
-            else{
-              linkval = embedtemplate + link.value.substring(watchtemplate.length);
-            }
-            this.currentProject.infos[i].content = linkval;
-          }
-          else if(this.currentProject.infos[i].type == "image"){
-            let content = this.infoImages[this.infoImages.findIndex(x=>x.index == i)];
-            if( content != null){
-              let label = <HTMLInputElement>document.getElementById(`imglabel${i}`);
-              this.currentProject.infos[i].additionalData = label.value;
-              this.currentProject.infos[i].content = content.name;
-            }
-          }
-          else{
-            let elem = <HTMLInputElement>document.getElementById(`${i}`);
-            this.currentProject.infos[i].content = elem.value;
-          }
-        }
-        this.currentProject.title = (<HTMLInputElement>document.getElementById(`projTitle`)).value;
-        this.currentProject.description = (<HTMLInputElement>document.getElementById(`projDescription`)).value;
-        this.currentProject.startDate = new Date((<HTMLInputElement>document.getElementById(`startdate`)).value);
-        this.currentProject.endDate = new Date((<HTMLInputElement>document.getElementById(`enddate`)).value);
         
-        // save the project photo
+        this.changesBeforeUploadOnServer();
+
+        // save the project images
         if (this.projectImage.name != '') {
-          this.projectService.deleteImage(this.currentProject.photo).subscribe();
+          this.projectService.deleteImage(this.currentProject.photo);
           this.currentProject.photo = this.projectImage.name;
           this.projectService.uploadImages([this.projectImage]).subscribe()
           this.projectImage = { file: null, name: '', placeholder: 'Choose project image', browserImg: null };
         }
 
-        // save the info photos
+        // save the info images
         if(this.infoImages.length != 0){
-          // delete changed photos
-          for(let i=0; i < this.infoImages.length; ++i){
-            if(this.infoImages[i].oldname != null ){
-              this.projectService.deleteImage(this.infoImages[i].oldname).subscribe();
-            }
-            if(this.infoImages[i].deleted && !this.infoImages[i].new){
-              this.projectService.deleteImage(this.infoImages[i].name).subscribe();
-            }
-          }
+          this.deleteChangedImages();
           this.projectService.uploadImages(this.infoImages.filter(img=>img.new==true)).subscribe();
           this.infoImages = new Array<any> ();
-
         }
-
         // update the project
         this.projectService.updateProject(this.userId, this.projectId, this.currentProject).subscribe(
            success => { if (success) { this.assignCurrentProject() }}
@@ -242,49 +232,40 @@ export class InfosComponent implements OnInit {
     })
   }
 
-  saveProjectImage(imageInput: any) {
-    let me = this;
-    this.projectImage.file = imageInput.files[0];
-    let extension: string = this.projectImage.file.name.split('.').pop();
-    this.projectImage.name = uuidv4() + '.' + extension;
-    this.projectImage.placeholder = this.projectImage.file.name;
-    let reader = new FileReader();
-    reader.readAsDataURL(this.projectImage.file);
-    reader.onload = function () { me.projectImage.browserImg = reader.result }
-
+  changesBeforeUploadOnServer(){
+    for (let i = 0; i < this.currentProject.infos.length; ++i) {
+      if(this.currentProject.infos[i].type == "ytvideo"){ // verify that the link is saved with embed/videoId so it can be userd by iframe
+        let watchtemplate = "https://www.youtube.com/watch?v=";
+        let embedtemplate = "https://www.youtube.com/embed/";
+        let idLength = 11;
+        if(this.currentProject.infos[i].content.substring(0,embedtemplate.length) != embedtemplate){
+          this.currentProject.infos[i].content = embedtemplate + this.currentProject.infos[i].content.substring(watchtemplate.length, watchtemplate.length+idLength);;
+        }
+      }
+      else if(this.currentProject.infos[i].type == "image"){ // save the name of the image in the info array 
+        let content = this.infoImages[this.infoImages.findIndex(x=>x.index == i)];
+        if( content != null){
+          this.currentProject.infos[i].content = content.name;
+        }
+      }
+    }
+    this.currentProject.startDate = new Date((<HTMLInputElement>document.getElementById(`startdate`)).value);
+    this.currentProject.endDate = new Date((<HTMLInputElement>document.getElementById(`enddate`)).value);
   }
 
-  saveImage(imageInput: any, index: number){
-    let imagesIndex = this.infoImages.findIndex(x => x.index == index);
-    if (imagesIndex == -1) {
-      let me = this;
-      let aux = { file: null, name: null, placeholder: null, browserImg: null, index: index, oldname: null ,new: false, deleted: false};
-      aux.file = imageInput.files[0];
-      let extension: string = aux.file.name.split('.').pop();
-      aux.name = uuidv4() + '.' + extension;
-      aux.placeholder = aux.file.name;
-      aux.new = true;
-      this.infoImages.push(aux)
-      let reader = new FileReader();
-      reader.readAsDataURL(this.infoImages[this.infoImages.length - 1].file);
-      reader.onload = function () { me.infoImages[me.infoImages.length-1].browserImg = reader.result }
+
+  deleteChangedImages(){ // delete the images marked as changed or deleted
+    for(let i=0; i < this.infoImages.length; ++i){
+      if(this.infoImages[i].oldname != null ){
+        this.projectService.deleteImage(this.infoImages[i].oldname);
+      }
+      if(this.infoImages[i].deleted && !this.infoImages[i].new){
+        this.projectService.deleteImage(this.infoImages[i].name);
+      }
     }
-    else{
-      let me = this;
-      this.infoImages[imagesIndex].oldname = this.infoImages[imagesIndex].name;
-      this.infoImages[imagesIndex].file = imageInput.files[0];
-      let extension: string = this.infoImages[imagesIndex].file.name.split('.').pop();
-      this.infoImages[imagesIndex].name = uuidv4() + '.' + extension;
-      this.infoImages[imagesIndex].placeholder = this.infoImages[imagesIndex].file.name;
-      this.infoImages[imagesIndex].new = true;
-      let reader = new FileReader();
-      reader.readAsDataURL(this.infoImages[imagesIndex].file);
-      reader.onload = function () { me.infoImages[imagesIndex].browserImg = reader.result }
-    }
-    
   }
 
-  filterProjects(value){
+  filterProjects(value){ // filter the projects displayed on the right side
     if(!value){
         this.filteredProjects = this.projects.slice(0,this.projectsToBeDisplayed);
     } // when nothing has typed
@@ -295,7 +276,7 @@ export class InfosComponent implements OnInit {
     
  }
 
- showMoreLessProjects(choice: string){
+ showMoreLessProjects(choice: string){ // change the number of projects displayed
    let step = 10;
    if(this.projectsToBeDisplayed < this.projects.length && choice == "m"){
      this.projectsToBeDisplayed += step;

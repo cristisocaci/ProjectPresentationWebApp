@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Project } from '../shared/project';
-import { ProjectsService } from '../shared/projects.service';
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import uuidv4 from "uuid/dist/v4";
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
+import { Project } from '../shared/project';
+import { ProjectsService } from '../shared/projects.service';
+import { LoginComponent } from '../login/login.component';
 
 
 @Component({
@@ -21,7 +23,7 @@ export class ProjectsComponent implements OnInit {
   domain = 'http://localhost:8888'
   imgdomain = this.domain+'/img/';
   defaultimg = 'unnamed1.jpg';
-  userId = "0";
+  userId: string;
   createProjectForm: FormGroup;
   selectedImage = {file: null, name: '', placeholder:'Choose project image', browserImg: null};
   createmode: boolean = false;
@@ -29,20 +31,39 @@ export class ProjectsComponent implements OnInit {
 
   constructor(private projectService: ProjectsService, 
               private formBuilder: FormBuilder,
-              private router: Router) {
+              private router: Router,
+              private route: ActivatedRoute,
+              private jwtHelper: JwtHelperService) {
     this.createProjectForm = this.formBuilder.group({
       title:'',
       description:''
     })  
+    
   }
 
-  ngOnInit(): void {
 
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(
+      params => {
+        this.userId = params.userId;
+      });
+      
     this.projectService.loadProjects(this.userId).subscribe(success =>{
       if (success) {
         this.assignProjects();
       }
     })
+  }
+
+  isUserAuthenticated() {
+    const token: string = sessionStorage.getItem("jwt");
+    if (token && !this.jwtHelper.isTokenExpired(token)) {
+      (<any>$("#login")).modal('hide');
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
   assignProjects(){
@@ -106,12 +127,35 @@ export class ProjectsComponent implements OnInit {
           this.assignProjects();
           this.router.navigate(['/infos'], {queryParams:{projectId: this.projects[0].projectId, userId:this.userId}})
         }
-        else{
-
-        }
         this.createProjectForm.reset();
       });
       
+    }
+  }
+
+  moveLR(position: number, direction:string){
+    for(let i = 0; i < this.projects.length; ++i){
+      if(this.projects[i].position == position){
+        if(direction =='l' && i>0){
+          this.projects[i].position = this.projects[i-1].position;
+          this.projects[i-1].position = position;
+        }
+        else if(direction == 'r' && i<this.projects.length-1){
+          this.projects[i].position = this.projects[i+1].position;
+          this.projects[i+1].position = position;
+        }
+        else{
+          break;
+        }
+        this.projectService.updateProjects(this.userId, this.projects).subscribe(success=>{
+          if(success){
+            this.assignProjects()
+            this.createmode = false;
+            
+          }
+        })
+        break;
+      }
     }
   }
 
@@ -125,7 +169,7 @@ export class ProjectsComponent implements OnInit {
       cancelButtonText: 'No, cancel!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.projectService.deleteImage(photoName).subscribe();
+        this.projectService.deleteImage(photoName);
         this.projectService.deleteProject(id, this.userId).subscribe(
           success => {
             if(success){
@@ -172,29 +216,10 @@ export class ProjectsComponent implements OnInit {
     }
   }
   
-  moveLR(position: number, direction:string){
-    for(let i = 0; i < this.projects.length; ++i){
-      if(this.projects[i].position == position){
-        if(direction =='l' && i>0){
-          this.projects[i].position = this.projects[i-1].position;
-          this.projects[i-1].position = position;
-        }
-        else if(direction == 'r' && i<this.projects.length-1){
-          this.projects[i].position = this.projects[i+1].position;
-          this.projects[i+1].position = position;
-        }
-        else{
-          break;
-        }
-        this.projectService.updateProjects(this.userId, this.projects).subscribe(success=>{
-          if(success){
-            this.assignProjects()
-            this.createmode = false;
-            
-          }
-        })
-        break;
-      }
-    }
+  logOut() {
+    console.log("Logging out")
+    sessionStorage.removeItem("jwt");
   }
+
+
 }

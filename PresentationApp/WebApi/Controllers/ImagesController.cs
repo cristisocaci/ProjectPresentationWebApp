@@ -26,7 +26,7 @@ namespace WebApi.Controllers
 
         // Upload image
         // POST api/images
-        [HttpPost, DisableRequestSizeLimit]
+        [HttpPost, DisableRequestSizeLimit, Authorize]
         public IActionResult UploadImages()
         {
             try

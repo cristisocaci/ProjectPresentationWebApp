@@ -5,13 +5,19 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { JwtModule } from "@auth0/angular-jwt";
+import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { InfosComponent } from './infos/infos.component';
-import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
 import { LoginComponent } from './login/login.component';
+import { WelcomeComponent } from './welcome/welcome.component';
+
+export function tokenGetter() {
+  return sessionStorage.getItem("jwt");
+}
 
 @NgModule({
   declarations: [
@@ -19,6 +25,7 @@ import { LoginComponent } from './login/login.component';
     ProjectsComponent,
     InfosComponent,
     LoginComponent,
+    WelcomeComponent,
   ],
   imports: [
     BrowserModule,
@@ -29,6 +36,13 @@ import { LoginComponent } from './login/login.component';
     ReactiveFormsModule,
     CommonModule,
     TextareaAutosizeModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        whitelistedDomains: ["localhost:8888"],
+        blacklistedRoutes: []
+      }
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

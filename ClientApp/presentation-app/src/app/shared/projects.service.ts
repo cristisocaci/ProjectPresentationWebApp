@@ -61,14 +61,13 @@ export class ProjectsService {
 
   deleteImage(name: string){
     if (name != this.defaultimg) {
-      return this.http.post(this.domain + `/api/images/` + name, null).pipe(
+      this.http.post(this.domain + `/api/images/` + name, null).pipe(
         map((data: any) => {
           console.log(data);
           return true;
         })
-      )
+      ).subscribe();
     }
-    return null;
   }
 
   loadProjectInfo(userId:string, projectId: number){
