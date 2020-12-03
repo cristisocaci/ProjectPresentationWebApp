@@ -50,8 +50,8 @@
         <!-- Read mode -->
         <div *ngIf="project.projectId!=null; else elseBlock">
             <!-- Card image-->
-            <div class="card-img-top img-thumbnail bg-light" id="img">
-                <img class="img-fluid" src={{imgdomain}}{{project.photo}}>
+            <div class="card-img-top bg-light" id="img">
+                <img src={{imgdomain}}{{project.photo}}>
             </div>
             <!-- Popover -->
             <ng-template #popContent>
@@ -65,7 +65,7 @@
                         (click)="deleteProject(project.projectId, project.photo)">Delete</button>
                 </div>
             </ng-template>
-            <a *ngIf="isUserAuthenticated()" class="card-img-overlay badge badge-pill text-dark" placement="bottom"
+            <a *ngIf="isUserAuthenticated()" class="card-img-overlay badge badge-pill text-secondary" placement="bottom"
                 [autoClose]="'outside'" [ngbPopover]="popContent">
                 <i class="fa fa-ellipsis-v"></i>
             </a>

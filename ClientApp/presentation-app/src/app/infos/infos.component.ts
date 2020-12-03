@@ -214,7 +214,7 @@ export class InfosComponent implements OnInit {
         if (this.projectImage.name != '') {
           this.projectService.deleteImage(this.currentProject.photo);
           this.currentProject.photo = this.projectImage.name;
-          this.projectService.uploadImages([this.projectImage]).subscribe()
+          this.projectService.uploadImages([this.projectImage]).subscribe();
           this.projectImage = { file: null, name: '', placeholder: 'Choose project image', browserImg: null };
         }
 

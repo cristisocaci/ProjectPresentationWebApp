@@ -103,7 +103,7 @@ namespace WebApi.DataModel
 
         public bool SaveChanges()
         {
-            return context.SaveChanges() > 0;
+            return context.SaveChanges() >= 0;
         }
 
         public bool UserHasProject(string userId, int id)
