@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApi.DataModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace WebApi.Controllers
 {
@@ -58,9 +59,9 @@ namespace WebApi.Controllers
                 if (repository.SaveChanges())
                     return Created($"api/users/{user.UserId}", user);
             }
-            catch
+            catch(Exception e)
             {
-                logger.LogInformation("Failed to add a new user");
+                logger.LogInformation("Failed to add a new user\n" + e);
             }
             return BadRequest("Failed to add a new user");
 
@@ -73,14 +74,17 @@ namespace WebApi.Controllers
         {
             try
             {
-                repository.DeleteUser(id);
-                if (repository.SaveChanges())
-                    return Ok("User deleted");
+                if (VerifyUserId(id))
+                {
+                    repository.DeleteUser(id);
+                    if (repository.SaveChanges())
+                        return Ok("User deleted");
+                }
   
             }
-            catch
+            catch(Exception e)
             {
-                logger.LogInformation("Failed to delete user");
+                logger.LogInformation("Failed to delete user\n"+e);
             }
             return BadRequest("Failed to delete user");
 
@@ -92,6 +96,24 @@ namespace WebApi.Controllers
         public IActionResult Update(string id, [FromBody] User newUser)
         {
             return Ok();
+        }
+
+
+        private bool VerifyUserId(string userId)
+        {
+            Microsoft.Extensions.Primitives.StringValues jwt;
+            HttpContext.Request.Headers.TryGetValue("Authorization", out jwt);
+            var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(jwt.ToString().Substring(7));
+
+            if (token.Claims.FirstOrDefault(c => c.Type == "UserId").Value == userId)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
     }

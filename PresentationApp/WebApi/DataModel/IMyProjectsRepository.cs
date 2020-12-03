@@ -23,5 +23,6 @@ namespace WebApi.DataModel
   
         bool SaveChanges();
         bool UserHasProject(string userId, int id);
+        string GetOwnerOfImage(string imgName);
     }
 }

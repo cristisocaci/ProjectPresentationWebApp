@@ -61,6 +61,7 @@ namespace WebApi
               
                 };
             });
+            services.AddAuthorization();
 
             services.Configure<FormOptions>(o => {
                 o.ValueLengthLimit = int.MaxValue;
@@ -78,6 +79,7 @@ namespace WebApi
             }
             app.UseCors("MyPolicy");
             app.UseAuthentication();
+            
             app.UseStaticFiles();
             app.UseMvc();
         }

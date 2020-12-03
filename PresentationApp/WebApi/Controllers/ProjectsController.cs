@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -77,14 +79,19 @@ namespace WebApi.Controllers
         {
             try
             {
-                project.UserId = userId;
-                repository.AddEntity(project);
-                if (repository.SaveChanges())
-                    return Created($"api/users/{userId}/projects/{project.ProjectId}", project);
+                if (VerifyUserId(userId))
+                {
+                    project.UserId = userId;
+                    repository.AddEntity(project);
+                    if (repository.SaveChanges())
+                        return Created($"api/users/{userId}/projects/{project.ProjectId}", project);
+                }
+                else return Unauthorized();
+                
             }
-            catch
+            catch(Exception e)
             {
-                logger.LogInformation("Failed to add a new project");
+                logger.LogInformation("Failed to add a new project:\n " + e);
             }
 
             return BadRequest("Failed to add a new project");
@@ -97,16 +104,20 @@ namespace WebApi.Controllers
         {
             try
             {
-                if (repository.UserHasProject(userId, id))
+                if (VerifyUserId(userId))
                 {
-                    repository.DeleteProject(id);
-                    if (repository.SaveChanges())
-                        return Ok(new string[] { "Project deleted" });
+                    if (repository.UserHasProject(userId, id))
+                    {
+                        repository.DeleteProject(id);
+                        if (repository.SaveChanges())
+                            return Ok(new string[] { "Project deleted" });
+                    }
                 }
+                else return Unauthorized();
             }
-            catch
+            catch(Exception e)
             {
-                logger.LogInformation("Failed to delete project");
+                logger.LogInformation("Failed to delete project:\n" + e);
             }
             return BadRequest("Failed to delete project");
         }
@@ -118,14 +129,18 @@ namespace WebApi.Controllers
         {
             try
             {
-                if (repository.UpdateProject(project, userId, id))
+                if (VerifyUserId(userId))
                 {
-                    return Ok(project);
+                    if (repository.UpdateProject(project, userId, id))
+                    {
+                        return Ok(project);
+                    }
                 }
+                else return Unauthorized();
             }
-            catch
+            catch(Exception e)
             {
-                logger.LogInformation("Failed to update the project");
+                logger.LogInformation("Failed to update the project\n"+e);
             }
             return BadRequest("Failed to update the project");
         }
@@ -137,18 +152,39 @@ namespace WebApi.Controllers
         {
             try
             {
-                if (repository.UpdateProjects(projects, userId))
+                if (VerifyUserId(userId))
                 {
-                    return Ok(projects);
+                    if (repository.UpdateProjects(projects, userId))
+                    {
+                        return Ok(projects);
+                    }
                 }
+                else return Unauthorized();
             }
-            catch
+            catch(Exception e)
             {
-                logger.LogInformation("Failed to update the projects");
+                logger.LogInformation("Failed to update the projects\n" + e);
                
             }
             return BadRequest("Failed to update the projects");
 
+        }
+
+        private bool VerifyUserId(string userId)
+        {
+            Microsoft.Extensions.Primitives.StringValues jwt;
+            HttpContext.Request.Headers.TryGetValue("Authorization", out jwt);
+            var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(jwt.ToString().Substring(7));
+
+            if (token.Claims.FirstOrDefault(c => c.Type == "UserId").Value == userId)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

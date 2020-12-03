@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace WebApi.Controllers
@@ -15,6 +16,13 @@ namespace WebApi.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
+        private readonly IConfiguration configuration;
+
+        public LoginController(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         // POST api/login
         [HttpPost]
         public IActionResult Login([FromBody] LoginModel user)
@@ -25,12 +33,16 @@ namespace WebApi.Controllers
             }
             if (user.UserName == "user" && user.Password == "hadsaa123")
             {
-                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("r9LY+6bxt@c6CGTA"));
+                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("Security:SecretKey").Value));
                 var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+                var claims = new List<Claim>
+                {
+                    new Claim("UserId", "0")
+                };
                 var tokeOptions = new JwtSecurityToken(
-                    issuer: "http://localhost:8888",
-                    audience: "http://localhost:4200",
-                    claims: new List<Claim>(),
+                    issuer: configuration.GetSection("Security:Issuer").Value,
+                    audience: configuration.GetSection("Security:Audience").Value,
+                    claims: claims,
                     expires: DateTime.Now.AddMinutes(120),
                     signingCredentials: signinCredentials
                 );

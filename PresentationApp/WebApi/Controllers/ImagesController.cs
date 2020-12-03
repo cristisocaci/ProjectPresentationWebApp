@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -9,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
-
+using WebApi.DataModel;
 
 namespace WebApi.Controllers
 {
@@ -17,10 +18,12 @@ namespace WebApi.Controllers
     [ApiController]
     public class ImagesController : ControllerBase
     {
+        private readonly IMyProjectsRepository repository;
         private readonly ILogger<UsersController> logger;
 
-        public ImagesController(ILogger<UsersController> logger)
+        public ImagesController(IMyProjectsRepository repository, ILogger<UsersController> logger)
         {
+            this.repository = repository;
             this.logger = logger;
         }
 
@@ -50,9 +53,9 @@ namespace WebApi.Controllers
                 }
                 return Ok(new string[] { "Photos uploaded" });
             }
-            catch
+            catch(Exception e)
             {
-                logger.LogInformation("Failed to save photos");
+                logger.LogInformation("Failed to save photos\n" + e);
                 return BadRequest("Failed to save photos");
 
             }
@@ -64,19 +67,43 @@ namespace WebApi.Controllers
         {
             try
             {
-                string folderName = Path.Combine("wwwroot", "img");
-                string pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                string fullPath = Path.Combine(pathToSave, name);
-                System.IO.File.Delete(fullPath);
-                return Ok(new string[] { "Photo deleted", name});
-
-
+                var userId = repository.GetOwnerOfImage(name);
+                if (name != null)
+                {
+                    if (VerifyUserId(userId))
+                    {
+                        string folderName = Path.Combine("wwwroot", "img");
+                        string pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                        string fullPath = Path.Combine(pathToSave, name);
+                        System.IO.File.Delete(fullPath);
+                        return Ok(new string[] { "Photo deleted", name });
+                    }
+                    else return Unauthorized();
+                }
             }
-            catch
+            catch(Exception e)
             {
-                return BadRequest("Failed to delete the photo");
+                logger.LogInformation("Failed to delete the photo\n" + e);
             }
-            
+            return BadRequest("Failed to delete the photo");
+
+        }
+
+        private bool VerifyUserId(string userId)
+        {
+            Microsoft.Extensions.Primitives.StringValues jwt;
+            HttpContext.Request.Headers.TryGetValue("Authorization", out jwt);
+            var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(jwt.ToString().Substring(7));
+
+            if (token.Claims.FirstOrDefault(c => c.Type == "UserId").Value == userId)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

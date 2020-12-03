@@ -110,6 +110,23 @@ namespace WebApi.DataModel
         {
             return context.Projects.Find(id).UserId == userId;
         }
+        public string GetOwnerOfImage(string imgName)
+        {
+            var projImg = context.Projects
+                .Where(p => p.Photo == imgName)
+                .FirstOrDefault();
+            if (projImg != null)
+                return projImg.UserId;
+            var infoImg = context.Infos
+                .Where(i => i.Content == imgName && i.Type == "Image")
+                .FirstOrDefault();
+            if (infoImg != null)
+                return context.Projects
+                    .Where(p => p.ProjectId == infoImg.ProjectId)
+                    .Select(p => p.UserId)
+                    .FirstOrDefault();
+            return null;
+        }
     }
        
 }
