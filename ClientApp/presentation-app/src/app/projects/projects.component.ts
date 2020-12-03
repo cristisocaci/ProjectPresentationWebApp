@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import uuidv4 from "uuid/dist/v4";
 import { ActivatedRoute, Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import * as $AB from 'jquery';
 
 import { Project } from '../shared/project';
 import { ProjectsService } from '../shared/projects.service';
@@ -19,7 +20,6 @@ export class ProjectsComponent implements OnInit {
 
   projects: Array<Project>;
   filteredProjects: Array<Project>;
-  nbOfDecks:string[];
   domain = 'http://localhost:8888'
   imgdomain = this.domain+'/img/';
   defaultimg = 'unnamed1.jpg';
@@ -69,24 +69,18 @@ export class ProjectsComponent implements OnInit {
   assignProjects(){
     this.projects = this.projectService.projects;
     this.filteredProjects = this.projects.slice(0,this.projectsToBeDisplayed);
-    this.nbOfDecks = this.calcNbOfDecks();
   }
 
-  calcNbOfDecks(){
-    return ("a".repeat(Math.ceil(this.filteredProjects.length/3))).split("");
-  }
   createProjectDisplay(){
     if(!this.createmode){
       this.createmode = true;
       let newproj = new Project();
       newproj.position = this.projects[0].position+1;
       this.filteredProjects.unshift(newproj);
-      this.nbOfDecks =  this.calcNbOfDecks();
     }
   }
   closeCreationDisplay(){
     this.filteredProjects.shift();
-    this.nbOfDecks =  this.calcNbOfDecks();
     this.createmode = false;
   }
   saveImage(imageInput: any) {
@@ -194,11 +188,10 @@ export class ProjectsComponent implements OnInit {
     this.filteredProjects = this.projects.filter(
        item => item.title.toLowerCase().indexOf(value.toLowerCase()) > -1
     ).slice(0,this.projectsToBeDisplayed);
-    this.nbOfDecks =  this.calcNbOfDecks();
   }
 
   showMoreLessProjects(choice: string){
-    let step = 18;
+    let step = 6;
     if(this.projectsToBeDisplayed < this.projects.length && choice == "m"){
       this.projectsToBeDisplayed += step;
       let value = (<HTMLInputElement>document.getElementById("filter")).value;

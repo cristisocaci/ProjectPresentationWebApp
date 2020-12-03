@@ -45,7 +45,7 @@
                     <!-- Topics and links-->
                     <h5 *ngIf="topics">Topics</h5>
                     <div class="d-inline-block" *ngFor="let info of currentProject.infos">
-                        <pre *ngIf="info.type=='topic'"><b>{{info.content}}</b> </pre>
+                        <pre *ngIf="info.type=='topic'" class="mr-3"><b>{{info.content}}</b> </pre>
                     </div>
                     <h5 *ngIf="links">Relevant websites</h5>
                     <div *ngFor="let info of currentProject.infos" class="overflow-hidden">

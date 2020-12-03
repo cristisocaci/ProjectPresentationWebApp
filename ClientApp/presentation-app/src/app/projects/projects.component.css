@@ -1,0 +1,51 @@
+main{
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(23rem, 23rem));
+    grid-gap: 1.5rem;
+    justify-content: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    
+}
+main .card{
+    width: 100%; 
+    height: 35rem;
+}
+
+main #img{
+    height: 14rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+main img{
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+}
+
+main .card-body{
+    height: 17rem; 
+    overflow: auto;
+    padding-top: 1rem;
+}
+
+main .card-footer{
+   height: 4rem;
+}
+main .card-img-overlay{
+    height: 3rem; 
+    width: 1.5rem; 
+    background-color:rgba(255, 255, 255, 0.0); 
+    border:none; 
+    font-size: 1.5rem;
+    cursor:pointer;
+    padding: 0;
+    padding-top: 0.7rem;
+    margin-left: auto;
+    margin-right: 0.3rem;
+    margin-top: 0.01rem;
+
+}
