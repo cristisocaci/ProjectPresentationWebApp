@@ -14,6 +14,7 @@ import { ProjectsComponent } from './projects/projects.component';
 import { InfosComponent } from './infos/infos.component';
 import { LoginComponent } from './login/login.component';
 import { WelcomeComponent } from './welcome/welcome.component';
+import { CreateAccountComponent } from './create-account/create-account.component';
 
 export function tokenGetter() {
   return sessionStorage.getItem("jwt");
@@ -26,6 +27,7 @@ export function tokenGetter() {
     InfosComponent,
     LoginComponent,
     WelcomeComponent,
+    CreateAccountComponent,
   ],
   imports: [
     BrowserModule,

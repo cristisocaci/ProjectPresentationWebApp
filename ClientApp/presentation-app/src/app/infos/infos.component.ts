@@ -49,7 +49,7 @@ export class InfosComponent implements OnInit {
         this.projectId = params.projectId;
         this.userId = params.userId;
       });
-    this.projectService.loadProjectInfo(this.userId, this.projectId).subscribe(
+    this.projectService.loadProjectInfo(this.userId, this.projectId).subscribe(  // TODO: invalid user id or project id
       success => {
         if (success) {
           this.assignCurrentProject();
@@ -78,6 +78,7 @@ export class InfosComponent implements OnInit {
   assignCurrentProject(){ // used after the data came from the server
     this.currentProject = this.projectService.currentProject; // Load current project information
     this.currentProject.infos.sort((a, b) => (a.position < b.position) ? -1 : 1);
+    this.projectImage = { file: null, name: '', placeholder: 'Choose project image', browserImg: null };
     this.populateInfoImages();
     this.checkIfTopicOrLink();
     this.modifyProject = false;
@@ -209,24 +210,25 @@ export class InfosComponent implements OnInit {
       if (result.isConfirmed) {
         
         this.changesBeforeUploadOnServer();
+        
+        // delete info images marked for deletion
+        this.deleteChangedImages();
 
-        // save the project images
-        if (this.projectImage.name != '') {
-          this.projectService.deleteImage(this.currentProject.photo);
-          this.currentProject.photo = this.projectImage.name;
-          this.projectService.uploadImages([this.projectImage]).subscribe();
-          this.projectImage = { file: null, name: '', placeholder: 'Choose project image', browserImg: null };
+        // save the images
+        let saveInfoImg = this.infoImages.filter(img=>img.new==true);
+        if (this.projectImage.file != null || saveInfoImg.length != 0) {
+
+          if(this.projectImage.file != null){
+            this.projectService.deleteImage(this.currentProject.photo);
+            this.currentProject.photo = this.projectImage.name;
+            saveInfoImg = saveInfoImg.concat([this.projectImage]);
+          }
+          this.projectService.uploadImages(saveInfoImg).subscribe(success => { if (success) { this.assignCurrentProject() }});
         }
 
-        // save the info images
-        if(this.infoImages.length != 0){
-          this.deleteChangedImages();
-          this.projectService.uploadImages(this.infoImages.filter(img=>img.new==true)).subscribe();
-          this.infoImages = new Array<any> ();
-        }
         // update the project
         this.projectService.updateProject(this.userId, this.projectId, this.currentProject).subscribe(
-           success => { if (success) { this.assignCurrentProject() }}
+          success => { if (success) { this.assignCurrentProject() }}
         )
       }
     })

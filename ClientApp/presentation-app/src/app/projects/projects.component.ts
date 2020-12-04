@@ -46,9 +46,12 @@ export class ProjectsComponent implements OnInit {
     this.route.queryParams.subscribe(
       params => {
         this.userId = params.userId;
+        if(this.userId == null){
+          this.router.navigate([''])
+        }
       });
       
-    this.projectService.loadProjects(this.userId).subscribe(success =>{
+    this.projectService.loadProjects(this.userId).subscribe(success =>{  // TODO: invalid user id 
       if (success) {
         this.assignProjects();
       }
@@ -69,6 +72,7 @@ export class ProjectsComponent implements OnInit {
   assignProjects(){
     this.projects = this.projectService.projects;
     this.filteredProjects = this.projects.slice(0,this.projectsToBeDisplayed);
+    this.createmode = false;
   }
 
   createProjectDisplay(){
@@ -98,7 +102,6 @@ export class ProjectsComponent implements OnInit {
     if (formValues) {
       // hide the form
       this.closeCreationDisplay();
-      this.createmode = false;
       // create the new project and assign the form values 
       let project= new Project();
       project.title=formValues.title;
@@ -142,11 +145,7 @@ export class ProjectsComponent implements OnInit {
           break;
         }
         this.projectService.updateProjects(this.userId, this.projects).subscribe(success=>{
-          if(success){
-            this.assignProjects()
-            this.createmode = false;
-            
-          }
+          if(success){ this.assignProjects() }
         })
         break;
       }
@@ -163,17 +162,11 @@ export class ProjectsComponent implements OnInit {
       cancelButtonText: 'No, cancel!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.projectService.deleteImage(photoName);
-        this.projectService.deleteProject(id, this.userId).subscribe(
-          success => {
-            if(success){
-              this.assignProjects();
-              this.createmode = false;
-            }
-            else{
+        this.projectService.deleteImage(photoName); //delete the project image
 
-            }
-        })
+        this.projectService.deleteProject(id, this.userId).subscribe( 
+          success =>{ if(success){ this.assignProjects(); } })
+        
       }
     })
   

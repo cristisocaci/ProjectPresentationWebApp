@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -108,6 +109,7 @@ namespace WebApi.Controllers
                 {
                     if (repository.UserHasProject(userId, id))
                     {
+                        DeleteInfoImages(userId, id);
                         repository.DeleteProject(id);
                         if (repository.SaveChanges())
                             return Ok(new string[] { "Project deleted" });
@@ -169,6 +171,21 @@ namespace WebApi.Controllers
             return BadRequest("Failed to update the projects");
 
         }
+
+        private void DeleteInfoImages(string userId, int projId)
+        {
+            var project = repository.GetProject(userId, projId);
+
+            foreach(var info in project.Infos) {
+                if (info.Type == "image") {
+                    string folderName = Path.Combine("wwwroot", "img");
+                    string pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                    string fullPath = Path.Combine(pathToSave, info.Content);
+                    System.IO.File.Delete(fullPath);
+                }
+            }
+        }
+
 
         private bool VerifyUserId(string userId)
         {
