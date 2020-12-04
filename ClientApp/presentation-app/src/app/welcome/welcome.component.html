@@ -1,15 +1,44 @@
-<h1>Welcome!</h1>
+<nav class="navbar navbar-expand-md bg-dark text-light justify-content-between sticky-top">
+    <ul class="navbar-nav mr-2 ml-2">
+        <!-- Page title -->
+        <a class="navbar-brand text-light text-weight-bolder" href=""><i class="fas fa-project-diagram"></i>
+            Logo</a>
+    </ul>
+
 <a href="/projects?userId=0">go</a>
-<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#login">
-    Log In
-</button>
-<!-- Log In -->
-<div class="modal fade" id="login">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body">
-                <app-login></app-login>
+
+<div *ngIf="!isUserAuthenticated()">
+    <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#login">
+        Log In
+    </button>
+    <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#create">
+        Create account
+    </button>
+    <!-- Log In -->
+    <div class="modal fade" id="login">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <app-login redirect="true"></app-login>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Create account-->
+    <div class="modal fade" id="create">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <app-create-account></app-create-account>
+                </div>
             </div>
         </div>
     </div>
 </div>
+<div *ngIf="isUserAuthenticated()">
+    <a class="btn btn-dark" href="/projects?userId={{getCurrentUserId()}}">My Page</a>
+    <a class="btn btn-dark" (click)="logOut()">Log Out</a>
+</div>
+</nav>
+
+<h1>Welcome</h1>

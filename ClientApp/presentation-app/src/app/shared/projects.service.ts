@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class ProjectsService {
 
-  domain = 'http://localhost:8888';
+  domain = sessionStorage.getItem('domain');
   projects: Project[];
   currentProject: Project;
   defaultimg = 'unnamed1.jpg';

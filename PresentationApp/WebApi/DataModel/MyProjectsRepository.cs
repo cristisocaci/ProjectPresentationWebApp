@@ -19,10 +19,7 @@ namespace WebApi.DataModel
             this.logger = logger;
         }
 
-        public IEnumerable<User> GetAllUsers()
-        {
-            return context.Users;
-        }
+
         public User GetUser(string id)
         {
             var user = context.Users
@@ -31,6 +28,14 @@ namespace WebApi.DataModel
                 .FirstOrDefault();
             return user;
         }
+
+        public IEnumerable<User> GetUsers(string userName)
+        {
+            return context.Users
+                .Where(u => u.UserName == userName)
+                .ToList();
+        }
+
 
         public IEnumerable<Project> GetAllProjects(string userId)
         {

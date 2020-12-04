@@ -20,7 +20,7 @@ export class ProjectsComponent implements OnInit {
 
   projects: Array<Project>;
   filteredProjects: Array<Project>;
-  domain = 'http://localhost:8888'
+  domain = sessionStorage.getItem('domain');
   imgdomain = this.domain+'/img/';
   defaultimg = 'unnamed1.jpg';
   userId: string;
@@ -56,6 +56,8 @@ export class ProjectsComponent implements OnInit {
         this.assignProjects();
       }
     })
+    let goaway = document.getElementsByClassName("modal-backdrop");
+    if(goaway.length != 0){ goaway.item(0).remove() };
   }
 
   isUserAuthenticated() {
@@ -68,7 +70,17 @@ export class ProjectsComponent implements OnInit {
       return false;
     }
   }
-
+  isUserAuthorized(){
+    if(this.userId == sessionStorage.getItem("userId")){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+  getCurrentUserId(){
+    return sessionStorage.getItem("userId");
+  }
   assignProjects(){
     this.projects = this.projectService.projects;
     this.filteredProjects = this.projects.slice(0,this.projectsToBeDisplayed);
@@ -79,7 +91,12 @@ export class ProjectsComponent implements OnInit {
     if(!this.createmode){
       this.createmode = true;
       let newproj = new Project();
-      newproj.position = this.projects[0].position+1;
+      if(this.projects.length != 0 ){
+        newproj.position = this.projects[0].position+1;
+      }
+      else{
+        newproj.position = 0;
+      }
       this.filteredProjects.unshift(newproj);
     }
   }
@@ -107,7 +124,12 @@ export class ProjectsComponent implements OnInit {
       project.title=formValues.title;
       project.description=formValues.description;
       project.userId = this.userId;
-      project.position = this.projects[0].position+1;
+      if(this.projects.length != 0 ){
+        project.position = this.projects[0].position+1;
+      }
+      else{
+        project.position = 0;
+      }
 
       // save the photo
       if(this.selectedImage.name ==''){ project.photo = this.defaultimg; }

@@ -22,7 +22,7 @@ export class InfosComponent implements OnInit {
   projectsToBeDisplayed: number = 20;
   currentProject: Project = null;
   modifyProject: boolean = false;
-  domain = 'http://localhost:8888'
+  domain = sessionStorage.getItem('domain');
   imgdomain = this.domain+'/img/';
   topics:boolean = false;
   links: boolean = false;
@@ -71,6 +71,15 @@ export class InfosComponent implements OnInit {
       return true;
     }
     else {
+      return false;
+    }
+  }
+
+  isUserAuthorized(){
+    if(this.userId == sessionStorage.getItem("userId")){
+      return true;
+    }
+    else{
       return false;
     }
   }

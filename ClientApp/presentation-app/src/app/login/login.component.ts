@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -10,10 +10,13 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
   invalidLogin: boolean;
-  domain = 'http://localhost:8888';
+  domain = sessionStorage.getItem('domain');
+
+  @Input()
+  redirect: string;
 
   constructor(private http : HttpClient,
-              private router: Router) { }
+              private router: Router,) { }
 
   ngOnInit(): void {
   }
@@ -27,9 +30,12 @@ export class LoginComponent implements OnInit {
     }).subscribe(response => {
       const token = (<any>response).token;
       const userId = (<any>response).userId;
-      sessionStorage.setItem("userid", userId);
+      sessionStorage.setItem("userId", userId);
       sessionStorage.setItem("jwt", token);
       this.invalidLogin = false;
+      if(this.redirect == "true"){
+        this.router.navigate(['/projects'], {queryParams:{userId:userId}})
+      }
     }, err => {
       this.invalidLogin = true;
     });

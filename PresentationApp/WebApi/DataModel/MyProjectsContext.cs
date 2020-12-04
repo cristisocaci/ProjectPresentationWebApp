@@ -21,20 +21,20 @@ namespace WebApi.DataModel
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().
-                HasMany<Project>(us => us.Projects)
+            modelBuilder.Entity<User>()
+                .HasMany<Project>(us => us.Projects)
                 .WithOne(p => p.User)
                 .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Project>().
-                HasMany<Info>(p => p.Infos)
+            modelBuilder.Entity<Project>()
+                .HasMany<Info>(p => p.Infos)
                 .WithOne(i => i.Project)
                 .HasForeignKey(i => i.ProjectId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<User>().HasData(
-                new User { UserId = "0" }
+                new User { UserId = "0", UserName="cristi@la.com", Password=BCrypt.Net.BCrypt.HashPassword("has123-lld"), Salt="-lld"}
             );
             modelBuilder.Entity<Project>().HasData(
                 new  { ProjectId = 1, Title = "Demo 1", UserId = "0", Position=0, Description="Description of project 1" },

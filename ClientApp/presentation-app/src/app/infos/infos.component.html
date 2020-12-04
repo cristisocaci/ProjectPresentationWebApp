@@ -7,19 +7,30 @@
             class="navbar navbar-expand-md bg-dark text-light justify-content-between sticky-top border-right border-secondary">
             <ul class="navbar-nav mx-2">
                 <!-- Page title -->
-                <a class="navbar-brand text-light text-weight-bolder" href="/projects?userId={{userId}}"><i
+                <a class="navbar-brand text-light text-weight-bolder" href=""><i
                         class="fas fa-project-diagram"></i> Logo</a>
             </ul>
-
-            <ul *ngIf="isUserAuthenticated()" class="navbar-nav mx-2">
-                <!-- Create Project -->
+            
+            <ul *ngIf="isUserAuthenticated() && isUserAuthorized()" class="navbar-nav mx-2">
+                <!-- Enter edit mode -->
                 <li class="nav-item">
-                    <button *ngIf="!modifyProject" class="btn btn-dark text-light" type="button"
-                        (click)="modify()">Edit</button>
+                    <div *ngIf="!modifyProject" class="btn-group">
+                        <a class="btn btn-dark text-light" href="/projects?userId={{userId}}">
+                            <i class="fas fa-angle-left"></i> Back
+                        </a>
+                        <button class="btn btn-dark text-light" type="button" (click)="modify()">Edit</button>
+                    </div>
                     <div *ngIf="modifyProject" class="btn-group">
                         <button class="btn btn-outline-success mr-2" (click)=updateProject()>Save</button>
                         <button class="btn btn-outline-secondary text-light" (click)=cancel()>Cancel</button>
                     </div>
+                </li>
+            </ul>
+            <ul *ngIf="!isUserAuthenticated() || !isUserAuthorized()" class="navbar-nav mx-2">
+                <li class="nav-item">
+                    <a class="btn btn-dark text-light" href="/projects?userId={{userId}}">
+                        <i class="fas fa-angle-left"></i> Back
+                    </a>
                 </li>
             </ul>
         </nav>
@@ -104,7 +115,7 @@
 
         <!-- Modify mode -->
         <ng-template #modifyBlock>
-            <div *ngIf="isUserAuthenticated()" class=" shadow bg-light rounded p-2 m-3">
+            <div *ngIf="isUserAuthenticated() && isUserAuthorized()" class=" shadow bg-light rounded p-2 m-3">
                 <div class="row mt-2 mb-3 mx-0 p-0 py-2 border-top border-bottom border-muted">
                     <div class="col-md-8">
 

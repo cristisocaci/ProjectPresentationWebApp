@@ -6,7 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit{
-  constructor(){}
+  constructor(){
+    sessionStorage.setItem('domain', 'http://localhost:8888');
+  }
   ngOnInit(){
   }
   

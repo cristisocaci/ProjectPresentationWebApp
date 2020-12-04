@@ -7,8 +7,8 @@ namespace WebApi.DataModel
 {
     public interface IMyProjectsRepository
     {
-        IEnumerable<User> GetAllUsers();
         User GetUser(string id);
+        IEnumerable<User> GetUsers(string userName); 
         void DeleteUser(string entity);
 
 

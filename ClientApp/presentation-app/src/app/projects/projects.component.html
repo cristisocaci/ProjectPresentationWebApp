@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-md bg-dark text-light justify-content-between sticky-top">
     <ul class="navbar-nav mr-2 ml-2">
         <!-- Page title -->
-        <a class="navbar-brand text-light text-weight-bolder" href="/projects?userId={{userId}}"><i class="fas fa-project-diagram"></i>
+        <a class="navbar-brand text-light text-weight-bolder" href=""><i class="fas fa-project-diagram"></i>
             Logo</a>
     </ul>
 
@@ -16,7 +16,7 @@
     </div>
 
 
-    <ul *ngIf="isUserAuthenticated()" class="navbar-nav mx-2 ">
+    <ul *ngIf="isUserAuthenticated() && isUserAuthorized()" class="navbar-nav mx-2 ">
         <!-- Dropdown -->
         <li class="nav-item dropdown d-inline-block mw-25">
             <a class="nav-link dropdown-toggle text-light" href="#" id="navbardrop" data-toggle="dropdown">
@@ -31,6 +31,13 @@
             </div>
         </li>
     </ul>
+
+    <ul *ngIf="isUserAuthenticated() && !isUserAuthorized() " class="navbar-nav mx-2">
+        <li class="nav-item d-inline-block">
+            <a class="btn btn-dark" href="/projects?userId={{getCurrentUserId()}}">My Page</a>
+        </li>
+    </ul>
+
     <ul *ngIf="!isUserAuthenticated()" class="navbar-nav mx-2 ">
         <!-- Login -->
         <li class="nav-item d-inline-block mw-75 ">
@@ -39,6 +46,7 @@
             </button>
         </li>
     </ul>
+    
 
 </nav>
 
@@ -65,7 +73,7 @@
                         (click)="deleteProject(project.projectId, project.photo)">Delete</button>
                 </div>
             </ng-template>
-            <a *ngIf="isUserAuthenticated()" class="card-img-overlay badge badge-pill text-secondary" placement="bottom"
+            <a *ngIf="isUserAuthenticated() && isUserAuthorized()" class="card-img-overlay badge badge-pill text-secondary" placement="bottom"
                 [autoClose]="'outside'" [ngbPopover]="popContent">
                 <i class="fa fa-ellipsis-v"></i>
             </a>
@@ -82,7 +90,7 @@
         </div>
         <!-- Edit mode -->
         <ng-template #elseBlock>
-            <form *ngIf="isUserAuthenticated()" [formGroup]="createProjectForm"
+            <form *ngIf="isUserAuthenticated() && isUserAuthorized()" [formGroup]="createProjectForm"
                 (ngSubmit)="createProject(createProjectForm.value)" class="d-flex flex-column h-100"
                 style="height: 35rem;">
                 <div class="img-thumbnail bg-light" id="img">
@@ -116,10 +124,10 @@
 </main>
 
 <div class="btn-group d-flex justify-content-center">
-    <button class="btn btn-dark text-light" (click)="showMoreLessProjects('m')">
+    <button class="btn btn-light text-dark" (click)="showMoreLessProjects('m')">
         <i class="fas fa-angle-down"></i>
     </button>
-    <button class="btn btn-dark text-light" (click)="showMoreLessProjects('l')">
+    <button class="btn btn-light text-dark" (click)="showMoreLessProjects('l')">
         <i class="fas fa-angle-up"></i>
     </button>
 </div>

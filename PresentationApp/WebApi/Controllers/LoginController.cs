@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using WebApi.DataModel;
 
 namespace WebApi.Controllers
 {
@@ -17,10 +19,16 @@ namespace WebApi.Controllers
     public class LoginController : ControllerBase
     {
         private readonly IConfiguration configuration;
+        private readonly IMyProjectsRepository repository;
+        private readonly ILogger<ProjectsController> logger;
 
-        public LoginController(IConfiguration configuration)
+        public LoginController(IConfiguration configuration, 
+            IMyProjectsRepository repository, 
+            ILogger<ProjectsController> logger)
         {
             this.configuration = configuration;
+            this.repository = repository;
+            this.logger = logger;
         }
 
         // POST api/login
@@ -31,13 +39,15 @@ namespace WebApi.Controllers
             {
                 return BadRequest("Invalid client request");
             }
-            if (user.UserName == "user" && user.Password == "hadsaa123")
+            User savedUser = repository.GetUsers(user.UserName).FirstOrDefault();
+            bool verified = BCrypt.Net.BCrypt.Verify(user.Password + savedUser.Salt, savedUser.Password);
+            if (verified)
             {
                 var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("Security:SecretKey").Value));
                 var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
                 var claims = new List<Claim>
                 {
-                    new Claim("UserId", "0")
+                    new Claim("UserId", savedUser.UserId)
                 };
                 var tokeOptions = new JwtSecurityToken(
                     issuer: configuration.GetSection("Security:Issuer").Value,
@@ -47,13 +57,14 @@ namespace WebApi.Controllers
                     signingCredentials: signinCredentials
                 );
                 var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
-                return Ok(new { Token = tokenString, UserId = "0" });
+                return Ok(new { Token = tokenString, UserId = savedUser.UserId});
             }
             else
             {
                 return Unauthorized();
             }
         }
+
     }
 
     public class LoginModel

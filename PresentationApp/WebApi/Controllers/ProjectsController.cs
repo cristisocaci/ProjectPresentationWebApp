@@ -41,7 +41,7 @@ namespace WebApi.Controllers
                     return Ok(projects);
                 }
                 logger.LogInformation($"User with id {userId} not found or has no projects");
-                return NotFound($"User with id {userId} not found or has no projects");
+                return Ok(new List<Project>());
             }
             catch (Exception e)
             {
