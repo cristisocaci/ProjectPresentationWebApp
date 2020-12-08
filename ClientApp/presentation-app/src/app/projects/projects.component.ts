@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import uuidv4 from "uuid/dist/v4";
 import { ActivatedRoute, Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import * as $AB from 'jquery';
 
 import { Project } from '../shared/project';
 import { ProjectsService } from '../shared/projects.service';
@@ -21,6 +20,7 @@ export class ProjectsComponent implements OnInit {
   projects: Array<Project>;
   filteredProjects: Array<Project>;
   domain = sessionStorage.getItem('domain');
+  thispage = "http://localhost:4200"
   imgdomain = this.domain+'/img/';
   defaultimg = 'unnamed1.jpg';
   userId: string;
@@ -50,20 +50,18 @@ export class ProjectsComponent implements OnInit {
           this.router.navigate([''])
         }
       });
-      
+
     this.projectService.loadProjects(this.userId).subscribe(success =>{  // TODO: invalid user id 
       if (success) {
         this.assignProjects();
       }
     })
-    let goaway = document.getElementsByClassName("modal-backdrop");
-    if(goaway.length != 0){ goaway.item(0).remove() };
+
   }
 
   isUserAuthenticated() {
     const token: string = sessionStorage.getItem("jwt");
     if (token && !this.jwtHelper.isTokenExpired(token)) {
-      (<any>$("#login")).modal('hide');
       return true;
     }
     else {

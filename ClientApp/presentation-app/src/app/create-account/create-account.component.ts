@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import * as $AB from 'jquery';
 
 @Component({
   selector: 'app-create-account',
@@ -11,6 +12,7 @@ import { Router } from '@angular/router';
 export class CreateAccountComponent implements OnInit {
   invalidLogin: boolean;
   domain = sessionStorage.getItem('domain');
+  err:string;
 
   constructor(private http : HttpClient,
               private router: Router,) { }
@@ -30,8 +32,11 @@ export class CreateAccountComponent implements OnInit {
       sessionStorage.setItem("userId", userId);
       sessionStorage.setItem("jwt", token);
       this.invalidLogin = false;
-      this.router.navigate(['/projects'], {queryParams:{userId:userId}})
+      this.router.navigate(['/projects'], {queryParams:{userId:userId}});
+      (<any>$("#create")).modal('hide');
+
     }, err => {
+      this.err = err.error;
       this.invalidLogin = true;
     });
   }

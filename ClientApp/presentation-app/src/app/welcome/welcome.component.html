@@ -5,40 +5,59 @@
             Logo</a>
     </ul>
 
-<a href="/projects?userId=0">go</a>
+    <a href="/projects?userId=0">go</a>
 
-<div *ngIf="!isUserAuthenticated()">
-    <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#login">
-        Log In
-    </button>
-    <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#create">
-        Create account
-    </button>
-    <!-- Log In -->
-    <div class="modal fade" id="login">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <app-login redirect="true"></app-login>
-                </div>
-            </div>
-        </div>
+    <div *ngIf="!isUserAuthenticated()">
+        <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#login">
+            Log In
+        </button>
+        <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#create">
+            Create account
+        </button>
     </div>
-    <!-- Create account-->
-    <div class="modal fade" id="create">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <app-create-account></app-create-account>
-                </div>
-            </div>
-        </div>
+
+    <div *ngIf="isUserAuthenticated()">
+        <a class="btn btn-dark" href="/projects?userId={{getCurrentUserId()}}">My Page</a>
+        <a class="btn btn-dark" (click)="logOut()">Log Out</a>
     </div>
-</div>
-<div *ngIf="isUserAuthenticated()">
-    <a class="btn btn-dark" href="/projects?userId={{getCurrentUserId()}}">My Page</a>
-    <a class="btn btn-dark" (click)="logOut()">Log Out</a>
-</div>
 </nav>
 
-<h1>Welcome</h1>
+
+<div class="page-wrap d-flex flex-row align-items-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center" style="background-color: rgba(0, 0, 0, 0.1);">
+                <h1 class="display-1 d-block">Welcome!</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+ <!-- Log In -->
+ <div class="modal fade" id="login">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <app-login redirect="true"></app-login>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Create account-->
+<div class="modal fade" id="create">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <app-create-account></app-create-account>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

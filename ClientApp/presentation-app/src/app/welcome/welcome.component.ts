@@ -16,7 +16,6 @@ export class WelcomeComponent implements OnInit {
   isUserAuthenticated() {
     const token: string = sessionStorage.getItem("jwt");
     if (token && !this.jwtHelper.isTokenExpired(token)) {
-      (<any>$("#login")).modal('hide');
       return true;
     }
     else {

@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import * as $AB from 'jquery';
 
 @Component({
   selector: 'app-login',
@@ -36,6 +37,7 @@ export class LoginComponent implements OnInit {
       if(this.redirect == "true"){
         this.router.navigate(['/projects'], {queryParams:{userId:userId}})
       }
+      (<any>$("#login")).modal('hide');
     }, err => {
       this.invalidLogin = true;
     });
