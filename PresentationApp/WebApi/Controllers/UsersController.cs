@@ -60,7 +60,7 @@ namespace WebApi.Controllers
         // Create user
         // POST api/users
         [HttpPost]
-        public IActionResult CreateUser([FromBody] LoginModel usermodel)
+        public IActionResult CreateUser([FromBody] CreateModel usermodel)
         {
             try
             {
@@ -71,6 +71,8 @@ namespace WebApi.Controllers
 
                 User user = new User();
                 user.UserName = usermodel.UserName;
+                user.FirstName = usermodel.FirstName;
+                user.LastName = usermodel.LastName;
                 user.Salt = BCrypt.Net.BCrypt.GenerateSalt();
                 user.Password = BCrypt.Net.BCrypt.HashPassword(usermodel.Password + user.Salt);
                 repository.AddEntity(user);
@@ -151,4 +153,11 @@ namespace WebApi.Controllers
 
     }
 
+    public class CreateModel
+    {
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+    }
 }
