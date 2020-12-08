@@ -226,9 +226,10 @@
                             </div>
                         </div>
                     </div>
+                    
                     <!-- Delete button -->
                     <button class="btn btn-light align-self-center ml-1" (click)="deleteInfo(i)"
-                            *ngIf="info.type==='subtitle' || info.type==='title' || info.type==='text' || info.type==='image' || info.type==='video' || info.type==='ytvideo'"
+                            *ngIf="info.type==='subtitle' || info.type==='title' || info.type==='text' || info.type==='image' || info.type==='ytvideo'"
                     ><i  class="fas fa-times text-danger"></i></button>
                 </div>
 
@@ -252,7 +253,6 @@
                             </button>
                             <div class="dropdown-menu mt-2">
                                 <button class="btn btn-outline-primary dropdown-item" (click)="addInfo('image')">Add image</button>
-                                <button class="btn btn-outline-primary dropdown-item">Add video</button>
                                 <button class="btn btn-outline-primary dropdown-item" (click)="addInfo('ytvideo')">Add youtube video</button>
                             </div>
                         </div>

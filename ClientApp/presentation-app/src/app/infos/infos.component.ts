@@ -190,6 +190,7 @@ export class InfosComponent implements OnInit {
     reader.onload = function () { me.infoImages[imagesIndex].browserImg = reader.result }
   }
 
+
   deleteInfo(index: number) {
     if(this.currentProject.infos[index].type == 'image'){ // if info is an image, mark it to be deleted
       let i = this.infoImages.findIndex(x=>x.index==index);

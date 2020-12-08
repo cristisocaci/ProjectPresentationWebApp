@@ -267,3 +267,4 @@ PresentationApp/WebApi/Migrations/*
 */Migrations/*
 
 PresentationApp/WebApi/wwwroot/img/*
+PresentationApp/WebApi/web.config

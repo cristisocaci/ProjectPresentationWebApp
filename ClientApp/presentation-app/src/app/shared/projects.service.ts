@@ -56,6 +56,7 @@ export class ProjectsService {
     for(let i=0; i < images.length; ++i){
       formData.append("file", images[i].file, images[i].name);
     }
+    console.log(images);
     return this.http.post(this.domain+`/api/images`, formData).pipe(
       map((data: any) => {
         console.log(data);
