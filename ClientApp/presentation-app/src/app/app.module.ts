@@ -6,7 +6,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { JwtModule } from "@auth0/angular-jwt";
-import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
+import {AutosizeModule} from 'ngx-autosize';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -39,7 +40,7 @@ export function tokenGetter() {
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    TextareaAutosizeModule,
+    AutosizeModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,

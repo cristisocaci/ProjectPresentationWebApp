@@ -31,6 +31,7 @@
     "cdk": "^1.75.0",
     "clipboard": "^2.0.6",
     "jquery": "^3.5.1",
+    "ngx-autosize": "^1.8.4",
     "ngx-magic-social-share": "^0.1.2",
     "ngx-sharebuttons": "^8.0.4",
     "ngx-social-share": "^1.0.0",
