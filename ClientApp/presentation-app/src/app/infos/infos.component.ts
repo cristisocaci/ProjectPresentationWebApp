@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import Swal from 'sweetalert2';
-import { Info } from '../shared/info';
-import { Project } from '../shared/project';
-import { ProjectsService } from '../shared/projects.service';
 import uuidv4 from "uuid/dist/v4";
 import { DomSanitizer } from '@angular/platform-browser';
 import { JwtHelperService } from '@auth0/angular-jwt';
+
+import { Info } from '../shared/info';
+import { Project } from '../shared/project';
+import { ProjectsService } from '../shared/projects.service';
+import { Identity } from '../shared/identity';
+
 
 @Component({
   selector: 'app-infos',
@@ -30,16 +33,17 @@ export class InfosComponent implements OnInit {
   months: Array<string> =  ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   thisMonth: string;
   infoImages:Array<any>;
+  identity: Identity;
 
   constructor(private route: ActivatedRoute,
     private projectService: ProjectsService,
     private sanitizer: DomSanitizer,
-    private jwtHelper: JwtHelperService) {
+    identity: Identity) {
       let d = new Date();
       let month = d.getMonth() + 1;
       let year = d.getFullYear();
       this.thisMonth = "" + year + "-" + ("0"+(month)).slice(-2);
-      console.log(this.thisMonth)
+      this.identity = identity;      
      }
 
 
@@ -65,24 +69,6 @@ export class InfosComponent implements OnInit {
       });
   }
 
-  isUserAuthenticated() {
-    const token: string = sessionStorage.getItem("jwt");
-    if (token && !this.jwtHelper.isTokenExpired(token)) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
-
-  isUserAuthorized(){
-    if(this.userId == sessionStorage.getItem("userId")){
-      return true;
-    }
-    else{
-      return false;
-    }
-  }
   
   assignCurrentProject(){ // used after the data came from the server
     this.currentProject = this.projectService.currentProject; // Load current project information

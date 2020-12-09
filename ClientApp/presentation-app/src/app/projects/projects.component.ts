@@ -7,8 +7,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 
 import { Project } from '../shared/project';
 import { ProjectsService } from '../shared/projects.service';
-import { LoginComponent } from '../login/login.component';
-
+import { Identity } from '../shared/identity';
 
 @Component({
   selector: 'app-projects',
@@ -28,20 +27,18 @@ export class ProjectsComponent implements OnInit {
   selectedImage = {file: null, name: '', placeholder:'Choose project image', browserImg: null};
   createmode: boolean = false;
   projectsToBeDisplayed: number = 18;
-
+  identity: Identity;
   constructor(private projectService: ProjectsService, 
               private formBuilder: FormBuilder,
               private router: Router,
               private route: ActivatedRoute,
-              private jwtHelper: JwtHelperService) {
+              identity: Identity) {
     this.createProjectForm = this.formBuilder.group({
       title:'',
       description:''
     })  
-    
+    this.identity = identity;
   }
-
-
   ngOnInit(): void {
     this.route.queryParams.subscribe(
       params => {
@@ -59,26 +56,6 @@ export class ProjectsComponent implements OnInit {
 
   }
 
-  isUserAuthenticated() {
-    const token: string = sessionStorage.getItem("jwt");
-    if (token && !this.jwtHelper.isTokenExpired(token)) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
-  isUserAuthorized(){
-    if(this.userId == sessionStorage.getItem("userId")){
-      return true;
-    }
-    else{
-      return false;
-    }
-  }
-  getCurrentUserId(){
-    return sessionStorage.getItem("userId");
-  }
   assignProjects(){
     this.projects = this.projectService.projects;
     this.filteredProjects = this.projects.slice(0,this.projectsToBeDisplayed);
@@ -222,10 +199,5 @@ export class ProjectsComponent implements OnInit {
     }
   }
   
-  logOut() {
-    console.log("Logging out")
-    sessionStorage.removeItem("jwt");
-  }
-
 
 }

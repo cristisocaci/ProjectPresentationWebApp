@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.DataModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Cryptography;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
+using WebApi.Security;
 
 namespace WebApi.Controllers
 {
@@ -21,17 +17,18 @@ namespace WebApi.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IConfiguration configuration;
         private readonly IMyProjectsRepository repository;
         private readonly ILogger<UsersController> logger;
+        private readonly ITokenService tokenService;
 
-        public UsersController(IConfiguration configuration, 
+        public UsersController( 
             IMyProjectsRepository repository, 
-            ILogger<UsersController> logger)
+            ILogger<UsersController> logger,
+            ITokenService tokenService)
         {
-            this.configuration = configuration;
             this.repository = repository;
             this.logger = logger;
+            this.tokenService = tokenService;
         }
 
         // read a user 
@@ -78,19 +75,10 @@ namespace WebApi.Controllers
                 repository.AddEntity(user);
                 if (repository.SaveChanges())
                 {
-                    var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("Security:SecretKey").Value));
-                    var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
                     var claims = new List<Claim>{
-                    new Claim("UserId", user.UserId)
+                        new Claim("UserId", user.UserId)
                     };
-                    var tokeOptions = new JwtSecurityToken(
-                        issuer: configuration.GetSection("Security:Issuer").Value,
-                        audience: configuration.GetSection("Security:Audience").Value,
-                        claims: claims,
-                        expires: DateTime.Now.AddMinutes(120),
-                        signingCredentials: signinCredentials
-                    );
-                    var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
+                    var tokenString = tokenService.GenerateAccessToken(claims);
                     return Created($"api/users/{user.UserId}", new { Token = tokenString, UserId = user.UserId });
                 }
             }

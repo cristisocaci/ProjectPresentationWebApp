@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using WebApi.DataModel;
+using WebApi.Security;
 
 namespace WebApi.Controllers
 {
@@ -18,17 +12,18 @@ namespace WebApi.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly IConfiguration configuration;
         private readonly IMyProjectsRepository repository;
         private readonly ILogger<ProjectsController> logger;
+        private readonly ITokenService tokenService;
 
-        public LoginController(IConfiguration configuration, 
+        public LoginController( 
             IMyProjectsRepository repository, 
-            ILogger<ProjectsController> logger)
+            ILogger<ProjectsController> logger,
+            ITokenService tokenService)
         {
-            this.configuration = configuration;
             this.repository = repository;
             this.logger = logger;
+            this.tokenService = tokenService;
         }
 
         // POST api/login
@@ -43,20 +38,10 @@ namespace WebApi.Controllers
             bool verified = BCrypt.Net.BCrypt.Verify(user.Password + savedUser.Salt, savedUser.Password);
             if (verified)
             {
-                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("Security:SecretKey").Value));
-                var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-                var claims = new List<Claim>
-                {
+                var claims = new List<Claim>{
                     new Claim("UserId", savedUser.UserId)
                 };
-                var tokeOptions = new JwtSecurityToken(
-                    issuer: configuration.GetSection("Security:Issuer").Value,
-                    audience: configuration.GetSection("Security:Audience").Value,
-                    claims: claims,
-                    expires: DateTime.Now.AddMinutes(120),
-                    signingCredentials: signinCredentials
-                );
-                var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
+                var tokenString = tokenService.GenerateAccessToken(claims);
                 return Ok(new { Token = tokenString, UserId = savedUser.UserId});
             }
             else

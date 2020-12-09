@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using WebApi.Security;
 
 namespace WebApi
 {
@@ -36,6 +37,7 @@ namespace WebApi
             services.AddEntityFrameworkSqlServer();
             services.AddDbContextPool<MyProjectsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyProjectsDb")));
             services.AddScoped<IMyProjectsRepository, MyProjectsRepository>();
+            services.AddTransient<ITokenService, TokenService>();
             services.AddCors(opt => opt.AddPolicy("MyPolicy", builder =>
             {
                 builder.AllowAnyOrigin()

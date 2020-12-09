@@ -11,7 +11,7 @@
                         class="fas fa-project-diagram"></i> Logo</a>
             </ul>
             
-            <ul *ngIf="isUserAuthenticated() && isUserAuthorized()" class="navbar-nav mx-2">
+            <ul *ngIf="identity.isUserAuthenticated() && identity.isUserAuthorized(userId)" class="navbar-nav mx-2">
                 <!-- Enter edit mode -->
                 <li class="nav-item">
                     <div *ngIf="!modifyProject" class="btn-group">
@@ -26,7 +26,7 @@
                     </div>
                 </li>
             </ul>
-            <ul *ngIf="!isUserAuthenticated() || !isUserAuthorized()" class="navbar-nav mx-2">
+            <ul *ngIf="!identity.isUserAuthenticated() || !identity.isUserAuthorized(userId)" class="navbar-nav mx-2">
                 <li class="nav-item">
                     <a class="btn btn-dark text-light" href="/projects?userId={{userId}}">
                         <i class="fas fa-angle-left"></i> Back
@@ -115,7 +115,7 @@
 
         <!-- Modify mode -->
         <ng-template #modifyBlock>
-            <div *ngIf="isUserAuthenticated() && isUserAuthorized()" class=" shadow bg-light rounded p-2 m-3">
+            <div *ngIf="identity.isUserAuthenticated() && identity.isUserAuthorized(userId)" class=" shadow bg-light rounded p-2 m-3">
                 <div class="row mt-2 mb-3 mx-0 p-0 py-2 border-top border-bottom border-muted">
                     <div class="col-md-8">
 
