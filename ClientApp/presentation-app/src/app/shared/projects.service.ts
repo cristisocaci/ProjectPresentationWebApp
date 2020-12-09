@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Project } from './project';
 import { HttpClient} from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ export class ProjectsService {
   currentProject: Project;
   defaultimg = 'unnamed1.jpg';
 
-  constructor(private http : HttpClient) { }
+  constructor(private http : HttpClient,
+              private router: Router,) { }
 
   loadProjects(userId: string): Observable<boolean>{
     return this.http.get<any>(this.domain+`/api/users/${userId}/projects`).pipe(
@@ -31,7 +33,15 @@ export class ProjectsService {
         console.log("Loaded projects");
         console.log(this.projects);
         return true;
-      }));
+      }),
+      catchError(e => {
+        if(e.status == 404){
+          console.log(e);
+          this.router.navigate(['/404']);
+          return new Observable<any>();
+        }
+      } 
+      ));
   }
 
   addProject(project: Project, userId:string){
@@ -87,7 +97,15 @@ export class ProjectsService {
         }
         this.currentProject = data;
         return true;
-      }));
+      }),
+      catchError(e=>{
+        if(e.status == 404){
+          console.log(e);
+          this.router.navigate(['/404']);
+          return new Observable<any>();
+        }
+      })  
+    );
   }
 
   updateProject(userId: string, projectId: number, project: Project){

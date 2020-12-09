@@ -34,13 +34,16 @@ namespace WebApi.Controllers
         {
             try
             {
+                if (repository.GetUser(userId) == null)
+                    return NotFound("User not found");
+
                 var projects = repository.GetAllProjects(userId);
                 if(projects.Any())
                 {
                     logger.LogInformation($"Projects of user with id {userId} returned");
                     return Ok(projects);
                 }
-                logger.LogInformation($"User with id {userId} not found or has no projects");
+                logger.LogInformation($"User with id {userId} has no projects");
                 return Ok(new List<Project>());
             }
             catch (Exception e)
