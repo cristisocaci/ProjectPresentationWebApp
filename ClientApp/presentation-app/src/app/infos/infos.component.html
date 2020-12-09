@@ -54,11 +54,11 @@
                     </div>
 
                     <!-- Topics and links-->
-                    <h5 *ngIf="topics">Topics</h5>
+                    <h5 *ngIf="topics">Tags</h5>
                     <div class="d-inline-block" *ngFor="let info of currentProject.infos">
-                        <pre *ngIf="info.type=='topic'" class="mr-3"><b>{{info.content}}</b> </pre>
+                        <pre *ngIf="info.type=='topic'" class="mx-2"><b>{{info.content}}</b> </pre>
                     </div>
-                    <h5 *ngIf="links">Relevant websites</h5>
+                    <h5 *ngIf="links">Other links</h5>
                     <div *ngFor="let info of currentProject.infos" class="overflow-hidden">
                         <div *ngIf="info.type=='link'" class="d-inline mr-2">{{info.additionalData}}</div>
                         <a *ngIf="info.type=='link'" href={{info.content}}>{{info.content}}</a>
@@ -86,10 +86,8 @@
             <div class="p-0 m-0 ml-2" *ngFor="let info of currentProject.infos; index as i">
                 <!-- Paragraph -->
                 <p *ngIf="info.type==='text'" style="white-space: pre-line">{{info.content}}</p>
-                <!-- Title -->
-                <h2 *ngIf="info.type==='title'">{{info.content}}</h2>
                 <!-- Subtitle -->
-                <h4 *ngIf="info.type==='subtitle'">{{info.content}}</h4>
+                <h2 *ngIf="info.type==='subtitle'">{{info.content}}</h2>
                 <!-- Youtube video -->
                 <div *ngIf="info.type==='ytvideo'" class="d-flex justify-content-center border-top border-muted pt-2 mt-2 w-100">
                     <iframe  width="560" height="315" [src]='sanitizer.bypassSecurityTrustResourceUrl(info.content)' frameborder="0" allowfullscreen></iframe>
@@ -144,7 +142,7 @@
                         </div>
 
                         <!-- Topics -->
-                        <h5>Topics</h5>
+                        <h5>Tags</h5>
                         <div class="form-inline">
                             <div class="input-group" *ngFor="let info of currentProject.infos; index as i">
                                 <input class="form-control mt-1" type="text" *ngIf="info.type=='topic'" [(ngModel)]="currentProject.infos[i].content" placeholder="Enter the topic">
@@ -154,7 +152,7 @@
                         <button class="btn btn-outline-primary mt-2 mb-3" (click)="addInfo('topic')">Add topic</button>
 
                         <!-- Links -->
-                        <h5>Relevant websites</h5>
+                        <h5>Other links</h5>
                         <div class="d-flex" *ngFor="let info of currentProject.infos; index as i">
                             <div class="form-inline w-100">
                                 <input type="text" class="form-control w-25" *ngIf="info.type=='link'" [(ngModel)]="currentProject.infos[i].additionalData" placeholder="Label">
@@ -194,11 +192,19 @@
 
                 <div class="mt-1 d-flex" *ngFor="let info of currentProject.infos; index as i">
                     <!-- Pargraph -->
-                    <textarea autosize *ngIf="info.type==='text'" type="text" class="form-control" [(ngModel)]="currentProject.infos[i].content" style="resize: none;" placeholder="Enter the paragraph"></textarea>
-                    <!-- Title -->
-                    <input *ngIf="info.type==='title'" type="text" class="form-control form-control-lg font-weight-bolder" [(ngModel)]="currentProject.infos[i].content" placeholder="Enter the title">
+                    <textarea autosize *ngIf="info.type==='text'" 
+                                        type="text" 
+                                        class="form-control" 
+                                        [(ngModel)]="currentProject.infos[i].content" 
+                                        style="resize: none;" 
+                                        placeholder="Enter the paragraph" 
+                                        ></textarea>
                     <!-- Subtitle -->
-                    <input *ngIf="info.type==='subtitle'" type="text" class="form-control font-weight-bold" [(ngModel)]="currentProject.infos[i].content" placeholder="Enter the subtitle">
+                    <input *ngIf="info.type==='subtitle'" 
+                            type="text" 
+                            class="form-control font-weight-bold" 
+                            [(ngModel)]="currentProject.infos[i].content" 
+                            placeholder="Enter the subtitle">
                     <!-- Youtube video -->
                     <div *ngIf="info.type==='ytvideo'" class="form-inline mb-1 w-100" >
                         <input type="text" class="form-control w-25"  [(ngModel)]="currentProject.infos[i].additionalData" placeholder="Video information">
@@ -229,7 +235,7 @@
                     
                     <!-- Delete button -->
                     <button class="btn btn-light align-self-center ml-1" (click)="deleteInfo(i)"
-                            *ngIf="info.type==='subtitle' || info.type==='title' || info.type==='text' || info.type==='image' || info.type==='ytvideo'"
+                            *ngIf="info.type==='subtitle' || info.type==='text' || info.type==='image' || info.type==='ytvideo'"
                     ><i  class="fas fa-times text-danger"></i></button>
                 </div>
 
@@ -237,24 +243,13 @@
                 <div class="form-group form-check d-flex justify-content-between mt-3 mb-0 p-0">
                     <!-- Info add buttons-->
                     <div class="">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown">
-                                Add text
-                            </button>
-                            <div class="dropdown-menu">
-                                <button class="btn btn-outline-primary dropdown-item" (click)="addInfo('title')">Add title</button>
-                                <button class="btn btn-outline-primary dropdown-item" (click)="addInfo('subtitle')">Add subtitle</button>
-                                <button class="btn btn-outline-primary dropdown-item" (click)="addInfo('text')">Add paragraph</button>
-                            </div>
+                        <div class="btn-group mr-1">
+                            <button class="btn btn-outline-primary" (click)="addInfo('text')">Add text</button>
+                            <button class="btn btn-outline-primary" (click)="addInfo('subtitle')">Add subtitle</button>
                         </div>
                         <div class="btn-group">
-                            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown">
-                                Add media
-                            </button>
-                            <div class="dropdown-menu mt-2">
-                                <button class="btn btn-outline-primary dropdown-item" (click)="addInfo('image')">Add image</button>
-                                <button class="btn btn-outline-primary dropdown-item" (click)="addInfo('ytvideo')">Add youtube video</button>
-                            </div>
+                            <button class="btn btn-outline-primary" (click)="addInfo('image')">Add image</button>
+                            <button class="btn btn-outline-primary" (click)="addInfo('ytvideo')">Add youtube video</button>
                         </div>
                     </div>
 
