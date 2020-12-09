@@ -1,12 +1,17 @@
 <form class="form-signin" #loginForm="ngForm" (ngSubmit)="login(loginForm)">
+
     <div class="container-fluid">
       <h2 class="form-signin-heading">Log In</h2>
-      <div *ngIf="invalidLogin" class="alert alert-danger">Invalid username or password.</div>
       <br/>
       <input type="email" id="username" name="username" ngModel class="form-control" placeholder="User Name" required autofocus>
       <br/>
       <input type="password" id="password" name="password" ngModel class="form-control" placeholder="Password" required>
       <br/>
+      <div *ngIf="invalidLogin" class="alert alert-danger alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" (click)=dismiss()>&times;</button>
+        {{message}}
+      </div>
       <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      
     </div>
   </form>

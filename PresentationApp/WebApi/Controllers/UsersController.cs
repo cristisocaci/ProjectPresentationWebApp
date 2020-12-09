@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using WebApi.Security;
+using System.Text.RegularExpressions;
 
 namespace WebApi.Controllers
 {
@@ -61,10 +62,14 @@ namespace WebApi.Controllers
         {
             try
             {
-                if(usermodel == null || usermodel.UserName == "" || usermodel.Password == "") 
+                if (usermodel == null) 
                     return BadRequest("Invalid client request");
+                if (!usermodel.ValidateEmail())
+                    return BadRequest("Invalid Email");
+                if (!usermodel.ValidatePassword())
+                    return BadRequest("Invalid Password");
                 if (repository.GetUsers(usermodel.UserName).Count() > 0)
-                    return BadRequest("User already exists");
+                    return BadRequest("User already exists");  
 
                 User user = new User();
                 user.UserName = usermodel.UserName;
@@ -147,5 +152,19 @@ namespace WebApi.Controllers
         public string Password { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+
+        public bool ValidateEmail()
+        {
+            if (Regex.IsMatch(UserName, @"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$", RegexOptions.IgnoreCase))
+                return true;
+            return false;
+        }
+
+        public bool ValidatePassword()
+        {
+            if (Regex.IsMatch(Password, @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$"))
+                return true;
+            return false;
+        }
     }
 }

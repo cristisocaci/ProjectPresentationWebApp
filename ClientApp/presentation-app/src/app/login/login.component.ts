@@ -11,6 +11,7 @@ import * as $AB from 'jquery';
 })
 export class LoginComponent implements OnInit {
   invalidLogin: boolean;
+  message: string;
   domain = sessionStorage.getItem('domain');
 
   @Input()
@@ -40,7 +41,17 @@ export class LoginComponent implements OnInit {
       (<any>$("#login")).modal('hide');
     }, err => {
       this.invalidLogin = true;
+      if(err.status == 404){
+        this.message = "Incorrect username";
+      }
+      else if(err.status == 401){
+        this.message = "Incorrect password";
+      }
     });
+  }
+
+  dismiss(){
+    this.invalidLogin = false;
   }
 
 }

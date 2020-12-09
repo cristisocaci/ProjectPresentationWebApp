@@ -31,10 +31,12 @@ namespace WebApi.Controllers
         public IActionResult Login([FromBody] LoginModel user)
         {
             if (user == null)
-            {
                 return BadRequest("Invalid client request");
-            }
+            
             User savedUser = repository.GetUsers(user.UserName).FirstOrDefault();
+            if(savedUser == null)
+                return NotFound("User not found");
+            
             bool verified = BCrypt.Net.BCrypt.Verify(user.Password + savedUser.Salt, savedUser.Password);
             if (verified)
             {
@@ -45,9 +47,8 @@ namespace WebApi.Controllers
                 return Ok(new { Token = tokenString, UserId = savedUser.UserId});
             }
             else
-            {
                 return Unauthorized();
-            }
+            
         }
 
     }
