@@ -11,17 +11,22 @@
                         class="fas fa-project-diagram"></i> Logo</a>
             </ul>
             
-            <ul *ngIf="identity.isUserAuthenticated() && identity.isUserAuthorized(userId)" class="navbar-nav mx-2">
-                <li class="nav-item">
-                    <a class="btn btn-dark text-light" href="/projects?userId={{userId}}">
-                        <i class="fas fa-angle-left"></i> Back
-                    </a>
-                </li>
-                <!-- Enter edit mode -->
-                <li class="nav-item">
-                    <button *ngIf="!modifyProject" class="btn btn-dark text-light" type="button" (click)="modify()">Edit</button>
-                </li>
-            </ul>
+            <div class="navbar-nav">
+                <a *ngIf="!modifyProject" class="btn btn-dark text-light" href="/projects?userId={{userId}}">
+                    <i class="fas fa-angle-left"></i> Back
+                </a>
+                <ul *ngIf="identity.isUserAuthenticated() && identity.isUserAuthorized(userId)" class="navbar-nav mx-2">
+                    <!-- Enter edit mode -->
+                    <li class="nav-item">
+                        <button *ngIf="!modifyProject" class="btn btn-dark text-light" type="button" (click)="modify()">Edit</button>
+                        <div *ngIf="modifyProject" class="btn-group">
+                            <button class="btn btn-outline-success mr-2" type="button" (click)="child.updateProject()">Save</button>
+                            <button class="btn btn-outline-secondary" type="button" (click)="child.cancel()">Cancel</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
             
         </nav>
 

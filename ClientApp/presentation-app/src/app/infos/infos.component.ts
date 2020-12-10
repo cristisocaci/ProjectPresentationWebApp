@@ -1,19 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 
 import { Project } from '../shared/project';
 import { ProjectsService } from '../shared/projects.service';
 import { Identity } from '../shared/identity';
+import { InfoEditorComponent } from '../info-editor/info-editor.component';
 
 
 @Component({
   selector: 'app-infos',
   templateUrl: './infos.component.html',
-  styleUrls: ['./infos.component.css']
+  styleUrls: ['./infos.component.css'],
 })
 export class InfosComponent implements OnInit {
   
+  @ViewChild(InfoEditorComponent) child: InfoEditorComponent;
+
   projectId: number;
   userId: any;
   projects: Project[];
