@@ -1,0 +1,227 @@
+ <!-- Infos -->
+        <!-- Read mode -->
+        <div class="shadow bg-light rounded p-2 m-3" *ngIf="modifyProject == false; else modifyBlock">
+            <div class="row my-1 mx-0 p-0 py-2 border-top border-bottom border-muted">
+                
+                <div class="col-md-8 mb-2">
+
+                    <!-- Title and description-->
+                    <h1>{{currentProject.title}}</h1>
+                    <p class="overflow-auto">{{currentProject.description}}</p>
+
+                    <!-- Start and end time -->
+                    <div *ngIf="currentProject.startDate != null" class="mt-0 mb-3">
+                        <div class="d-inline-block"><i>{{months[currentProject.startDate.getMonth()]}} {{currentProject.startDate.getFullYear()}} -</i></div>
+                        <div class="d-inline-block ml-1" *ngIf="currentProject.endDate != null"><i>{{months[currentProject.endDate.getMonth()]}} {{currentProject.endDate.getFullYear()}}</i></div>
+                        <div class="d-inline-block ml-1" *ngIf="currentProject.endDate == null"><i>Present</i></div>
+                    </div>
+
+                    <!-- Topics and links-->
+                    <h5 *ngIf="topics">Tags</h5>
+                    <div class="d-inline-block" *ngFor="let info of currentProject.infos">
+                        <pre *ngIf="info.type=='topic'" class="mx-2"><b>{{info.content}}</b> </pre>
+                    </div>
+                    <h5 *ngIf="links">Other links</h5>
+                    <div *ngFor="let info of currentProject.infos" class="overflow-hidden">
+                        <div *ngIf="info.type=='link'" class="d-inline mr-2">{{info.additionalData}}</div>
+                        <a *ngIf="info.type=='link'" href={{info.content}}>{{info.content}}</a>
+                    </div>
+                </div>
+
+                <!-- Image -->
+                <div class="col-md-4">
+                    <!-- For big screens -->
+                    <div class="d-flex justify-content-end ">
+                        <div class="d-none d-md-block ">
+                            <img class="img-thumbnail img-fluid"  width="400" src={{imgdomain}}{{currentProject.photo}}>
+                        </div> 
+                    </div> 
+                    <!-- For small screens -->
+                    <div class="d-md-none d-flex justify-content-center">
+                        <img class="img-thumbnail img-fluid" width="300" src={{imgdomain}}{{currentProject.photo}}>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- Informations -->
+            <br>
+            <div class="p-0 m-0 ml-2" *ngFor="let info of currentProject.infos; index as i">
+                <!-- Paragraph -->
+                <p *ngIf="info.type==='text'" style="white-space: pre-line">{{info.content}}</p>
+                <!-- Subtitle -->
+                <h2 *ngIf="info.type==='subtitle'">{{info.content}}</h2>
+                <!-- Youtube video -->
+                <div *ngIf="info.type==='ytvideo'" class="d-flex justify-content-center border-top border-muted pt-2 mt-2 w-100">
+                    <iframe  width="560" height="315" [src]='sanitizer.bypassSecurityTrustResourceUrl(info.content)' frameborder="0" allowfullscreen></iframe>
+                </div>
+                <!-- Additional info for youtube video -->
+                <div *ngIf="info.type==='ytvideo'" class="d-flex justify-content-center border-bottom border-muted py-2 mb-2 w-100">
+                    <i>{{info.additionalData}}</i>
+                </div>
+
+                <!-- Image -->
+                <div class="w-100" *ngIf="info.type==='image'">
+                    <div class="d-flex justify-content-center border-top border-muted pt-2 mt-2 w-100">
+                        <img class="img-thumbnail mb-1 img-fluid" src={{imgdomain}}{{info.content}} width="400">
+                    </div>
+                    <div class="d-flex justify-content-center border-bottom border-muted py-2 mb-2 w-100">
+                        <i>{{info.additionalData}}</i>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Modify mode -->
+        <ng-template #modifyBlock>
+            <div *ngIf="identity.isUserAuthenticated() && identity.isUserAuthorized(userId)" class=" shadow bg-light rounded p-2 m-3">
+                <div class="row mt-2 mb-3 mx-0 p-0 py-2 border-top border-bottom border-muted">
+                    <div class="col-md-8">
+
+                        <!-- Title and description -->
+                        <h5>Title</h5>
+                        <input type="text" class="form-control form-control-lg font-weight-bolder mb-3"  [(ngModel)]="currentProject.title" required>
+                        <h5>Description</h5>
+                        <textarea autosize type="text" class="form-control mb-3" [(ngModel)]="currentProject.description" style="resize: none;"></textarea>
+
+                        <!-- Project duration -->
+                        <h5>Project duration</h5>
+                        <div class="col-12 form-inline w-100 p-0">
+                            <label class="col-2 justify-content-start p-0">Start date:</label>
+                            <input *ngIf="currentProject.startDate != null" type="month" min="1980-01" max="{{thisMonth}}" class="form-control col-4 w-50" id="startdate" 
+                                    value='{{currentProject.startDate.getFullYear()}}-{{("0"+(currentProject.startDate.getMonth()+1)).slice(-2)}}'>
+                            <input *ngIf="currentProject.startDate == null" type="month" min="1980-01" max="{{thisMonth}}" class="form-control col-4 w-50" id="startdate">
+                        </div>
+                        <div class="col-12 form-inline w-100 p-0">
+                            <label class="col-2 justify-content-start p-0">End date:</label>
+                            <input *ngIf="currentProject.endDate != null" type="month" min="1980-01" max="{{thisMonth}}" class="form-control col-4 w-50" id="enddate" 
+                                    value='{{currentProject.endDate.getFullYear()}}-{{("0"+(currentProject.endDate.getMonth()+1)).slice(-2)}}'>
+                            <input *ngIf="currentProject.endDate == null" type="month" min="1980-01" max="{{thisMonth}}"class="form-control col-4 w-50" id="enddate">
+                            <button class="btn btn-light" ngbPopover="Let empty if you are currently working on the project" placement="bottom">
+                                <i  class="fas fa-question-circle"></i>
+                            </button>
+                        </div>
+
+                        <!-- Topics -->
+                        <h5>Tags</h5>
+                        <div class="form-inline">
+                            <div class="input-group" *ngFor="let info of currentProject.infos; index as i">
+                                <input class="form-control mt-1" type="text" *ngIf="info.type=='topic'" [(ngModel)]="currentProject.infos[i].content" placeholder="Enter the topic">
+                                <button class="btn btn-light mr-1" (click)="deleteInfo(i)" *ngIf="info.type=='topic'"><i  class="fas fa-times text-danger"></i></button>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-primary mt-2 mb-3" (click)="addInfo('topic')">Add topic</button>
+
+                        <!-- Links -->
+                        <h5>Other links</h5>
+                        <div class="d-flex" *ngFor="let info of currentProject.infos; index as i">
+                            <div class="form-inline w-100">
+                                <input type="text" class="form-control w-25" *ngIf="info.type=='link'" [(ngModel)]="currentProject.infos[i].additionalData" placeholder="Label">
+                                <input type="text" class="form-control w-75" *ngIf="info.type=='link'" [(ngModel)]="currentProject.infos[i].content" placeholder="Enter the link">
+                            </div>
+                            <button class="btn btn-light" (click)="deleteInfo(i)" *ngIf="info.type=='link'"><i  class="fas fa-times text-danger"></i></button>
+                        </div>
+                        <button class="btn btn-outline-primary my-2" (click)="addInfo('link')">Add link</button>
+
+                        <br> 
+                    </div>
+
+                    <!-- Project Image -->
+                    <div class="col-md-4">
+                        <!-- For big screens -->
+                        <div class="d-flex justify-content-center">
+                            <div class="d-none d-md-block ">
+                                <img *ngIf="projectImage.file==null" class="img-thumbnail mb-1 img-fluid " width="400" src={{imgdomain}}{{currentProject.photo}}>
+                                <img *ngIf="projectImage.file!=null" class="img-thumbnail mb-1 img-fluid " width="400" src={{projectImage.browserImg}}>
+                            </div>
+                        </div>
+                        <!-- For small screens -->
+                        <div class="d-md-none d-flex justify-content-center">
+                            <img *ngIf="projectImage.file==null" class="img-thumbnail img-fluid mb-1 img-fluid" width="300" src={{imgdomain}}{{currentProject.photo}}>
+                            <img *ngIf="projectImage.file!=null" class="img-thumbnail img-fluid mb-1 img-fluid" width="300" src={{projectImage.browserImg}}>
+                        </div>
+
+                        <div class="custom-file mb-3 ">
+                            <input #imageInput type="file" accept="image/*" class="custom-file-input" id="customFile" (change)="saveProjectImage(imageInput)">
+                            <label class="custom-file-label overflow-hidden" for="customFile">{{projectImage.placeholder}}</label>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <!-- Information -->
+
+                <div class="mt-1 d-flex" *ngFor="let info of currentProject.infos; index as i">
+                    <!-- Pargraph -->
+                    <textarea autosize *ngIf="info.type==='text'" 
+                                        type="text" 
+                                        class="form-control" 
+                                        [(ngModel)]="currentProject.infos[i].content" 
+                                        style="resize: none;" 
+                                        placeholder="Enter the paragraph" 
+                                        ></textarea>
+                    <!-- Subtitle -->
+                    <input *ngIf="info.type==='subtitle'" 
+                            type="text" 
+                            class="form-control font-weight-bold" 
+                            [(ngModel)]="currentProject.infos[i].content" 
+                            placeholder="Enter the subtitle">
+                    <!-- Youtube video -->
+                    <div *ngIf="info.type==='ytvideo'" class="form-inline mb-1 w-100" >
+                        <input type="text" class="form-control w-25"  [(ngModel)]="currentProject.infos[i].additionalData" placeholder="Video information">
+                        <input type="text" class="form-control w-75"  [(ngModel)]="currentProject.infos[i].content" placeholder="Enter the youtube link">
+                    </div>
+                    <!-- Image -->
+                    <div class="w-100" *ngIf="info.type==='image'">
+                        <div>
+                            <div *ngFor="let img of infoImages; index as j">
+                                <div *ngIf="img.index == i && !img.deleted" class="d-flex justify-content-center border-top border-muted pt-2 mt-2 w-100">
+                                    <img *ngIf="img.browserImg!=null" class="img-thumbnail mb-1 img-fluid d-none d-md-block" src={{img.browserImg}} width="400">
+                                    <img *ngIf="img.browserImg==null" class="img-thumbnail mb-1 img-fluid d-none d-md-block" src={{imgdomain}}{{info.content}} width="400">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center border-bottom border-muted py-2 mb-2 w-100 ">
+                            <div class="form-inline mb-1">
+                                <input type="text" class="form-control w-50" [(ngModel)]="this.currentProject.infos[i].additionalData"
+                                    placeholder="Image information">
+                                <div class="custom-file w-50">
+                                    <input #imageInput type="file" accept="image/*" class="custom-file-input" id="img{{i}}"
+                                        (change)="saveImage(imageInput, i)">
+                                    <label class="custom-file-label overflow-hidden justify-content-start" for="img{{i}}">Choose image</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Delete button -->
+                    <button class="btn btn-light align-self-center ml-1" (click)="deleteInfo(i)"
+                            *ngIf="info.type==='subtitle' || info.type==='text' || info.type==='image' || info.type==='ytvideo'"
+                    ><i  class="fas fa-times text-danger"></i></button>
+                </div>
+
+                <!-- Buttons -->
+                <div class="form-group form-check d-flex justify-content-between mt-3 mb-0 p-0">
+                    <!-- Info add buttons-->
+                    <div class="">
+                        <div class="btn-group mr-1">
+                            <button class="btn btn-outline-primary" (click)="addInfo('text')">Add text</button>
+                            <button class="btn btn-outline-primary" (click)="addInfo('subtitle')">Add subtitle</button>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-outline-primary" (click)="addInfo('image')">Add image</button>
+                            <button class="btn btn-outline-primary" (click)="addInfo('ytvideo')">Add youtube video</button>
+                        </div>
+                    </div>
+
+                    <!-- save cancel buttons-->
+                    <div class="btn-group h-50">
+                        <button class="btn btn-success mr-2" (click)=updateProject()>Save</button>
+                        <button class="btn btn-secondary" (click)=cancel()>Cancel</button>
+                    </div>
+                </div>
+                
+            </div>
+        </ng-template>
