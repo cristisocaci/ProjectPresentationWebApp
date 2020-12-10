@@ -26,7 +26,7 @@ export class ProjectsComponent implements OnInit {
   createProjectForm: FormGroup;
   selectedImage = {file: null, name: '', placeholder:'Choose project image', browserImg: null};
   createmode: boolean = false;
-  projectsToBeDisplayed: number = 18;
+  projectsToBeDisplayed: number;
   identity: Identity;
   constructor(private projectService: ProjectsService, 
               private formBuilder: FormBuilder,
@@ -48,7 +48,7 @@ export class ProjectsComponent implements OnInit {
         }
       });
 
-    this.projectService.loadProjects(this.userId).subscribe(success =>{  // TODO: invalid user id 
+    this.projectService.loadProjects(this.userId).subscribe(success =>{ 
       if (success) {
         this.assignProjects();
       }
@@ -58,6 +58,7 @@ export class ProjectsComponent implements OnInit {
 
   assignProjects(){
     this.projects = this.projectService.projects;
+    this.projectsToBeDisplayed = this.projects.length;  // REMOVE THIS LINE IF YOU WANT TO USE ShowMoreLessProjects 
     this.filteredProjects = this.projects.slice(0,this.projectsToBeDisplayed);
     this.createmode = false;
   }

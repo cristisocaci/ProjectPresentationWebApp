@@ -18,15 +18,11 @@
 
     <ul *ngIf="identity.isUserAuthenticated() && identity.isUserAuthorized(userId)" class="navbar-nav mx-2 ">
         <!-- Dropdown -->
-        <li class="nav-item dropdown d-inline-block mw-25">
-            <a class="nav-link dropdown-toggle text-light" href="#" id="navbardrop" data-toggle="dropdown">
-                Account
-            </a>
-            <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item btn" (click)="createProjectDisplay()">Create Project</a>
-                <a class="dropdown-item"  href="https://api.whatsapp.com/send?text=check out this link : {{thispage}}/projects?userId={{userId}}" 
-                                        data-action="share/whatsapp/share">Share on WhatsApp</a>
-                <a class="dropdown-item btn" (click)="identity.logOut()">Log Out</a>
+        <li class="nav-item d-inline-block mw-25">
+            <div class="btn-group">
+                <a class="btn btn-dark text-light" (click)="createProjectDisplay()">Create Project</a>
+                <a class="btn btn-dark text-light">Account Information</a>
+                <a class="btn btn-dark text-light" (click)="identity.logOut()">Log Out</a>
             </div>
         </li>
     </ul>
@@ -122,8 +118,8 @@
     </div>
 </main>  
 
-
-<div class="btn-group d-flex justify-content-center">
+<!-- Hidden for the moment -->
+<div class="btn-group d-none justify-content-center">
     <button class="btn btn-light text-dark" (click)="showMoreLessProjects('m')">
         <i class="fas fa-angle-down"></i>
     </button>
