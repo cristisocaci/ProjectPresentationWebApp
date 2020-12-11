@@ -97,20 +97,18 @@
                             <input *ngIf="currentProject.endDate != null" type="month" min="1980-01" max="{{thisMonth}}" class="form-control col-4 w-50" id="enddate" 
                                     value='{{currentProject.endDate.getFullYear()}}-{{("0"+(currentProject.endDate.getMonth()+1)).slice(-2)}}'>
                             <input *ngIf="currentProject.endDate == null" type="month" min="1980-01" max="{{thisMonth}}"class="form-control col-4 w-50" id="enddate">
-                            <button class="btn btn-light" ngbPopover="Let empty if you are currently working on the project" placement="bottom">
+                            <button class="btn btn-light rounded-circle" ngbPopover="Let empty if you are currently working on the project" placement="bottom">
                                 <i  class="fas fa-question-circle"></i>
                             </button>
                         </div>
 
                         <!-- Topics -->
                         <h5>Tags</h5>
-                        <div class="form-inline">
-                            <div class="input-group" *ngFor="let info of currentProject.infos; index as i">
-                                <input class="form-control mt-1" type="text" *ngIf="info.type=='topic'" [(ngModel)]="currentProject.infos[i].content" placeholder="Topic">
-                                <button class="btn btn-light mr-1" (click)="deleteInfo(i)" *ngIf="info.type=='topic'"><i  class="fas fa-times text-danger"></i></button>
-                            </div>
+                        <div class="d-inline-flex" *ngFor="let info of currentProject.infos; index as i">
+                            <input class="form-control mt-1" type="text" *ngIf="info.type=='topic'" [(ngModel)]="currentProject.infos[i].content" placeholder="Topic">
+                            <button class="btn btn-light mr-1" (click)="deleteInfo(i)" *ngIf="info.type=='topic'"><i  class="fas fa-times text-danger"></i></button>
                         </div>
-                        <button class="btn btn-outline-primary mt-2 mb-3" (click)="addInfo('topic')">Add topic</button>
+                        <button class="btn btn-dark text-light rounded-circle mt-2 mb-3" (click)="addInfo('topic')"><i class="fas fa-plus"></i></button>
 
                         <!-- Links -->
                         <h5>Other links</h5>
@@ -121,7 +119,7 @@
                             </div>
                             <button class="btn btn-light" (click)="deleteInfo(i)" *ngIf="info.type=='link'"><i  class="fas fa-times text-danger"></i></button>
                         </div>
-                        <button class="btn btn-outline-primary my-2" (click)="addInfo('link')">Add link</button>
+                        <button class="btn btn-dark text-light rounded-circle my-2" (click)="addInfo('link')"><i class="fas fa-plus"></i></button>
 
                         <br> 
                     </div>
