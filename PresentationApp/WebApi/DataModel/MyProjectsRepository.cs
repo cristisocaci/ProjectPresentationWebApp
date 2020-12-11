@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -58,15 +59,18 @@ namespace WebApi.DataModel
             context.Add(entity);
         }
 
-        public void DeleteUser(string id)
-        {
-            var user = context.Users.Find(id);
+        public void DeleteUser(string userId)
+        {   
+            var user = context.Users.Find(userId);
+            DeleteImages(userId);
             context.Users.Remove(user);
         }
 
-        public void DeleteProject(int id)
+        public void DeleteProject(int projectId)
         {
-            var proj = context.Projects.Find(id);
+            
+            var proj = context.Projects.Find(projectId);
+            DeleteInfoImages(proj.UserId, projectId);
             context.Remove(proj);
         }
 
@@ -131,6 +135,32 @@ namespace WebApi.DataModel
                     .Select(p => p.UserId)
                     .FirstOrDefault();
             return null;
+        }
+
+        private void DeleteInfoImages(string userId, int projectId)
+        {
+            var project = GetProject(userId, projectId);
+            foreach (var info in project.Infos)
+                if (info.Type == "image")
+                    DeleteImage(info.Content);
+        }
+
+        private void DeleteImages(string userId)
+        {
+            var user = GetUser(userId);
+            foreach(var project in user.Projects)
+            {
+                DeleteImage(project.Photo);
+                DeleteInfoImages(userId, project.ProjectId);
+            }
+        }
+
+        private void DeleteImage(string name)
+        {
+            string folderName = Path.Combine("wwwroot", "img");
+            string pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            string fullPath = Path.Combine(pathToSave, name);
+            System.IO.File.Delete(fullPath);
         }
     }
        

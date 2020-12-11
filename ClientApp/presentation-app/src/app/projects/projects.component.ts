@@ -152,12 +152,12 @@ export class ProjectsComponent implements OnInit {
 
   deleteProject(id: number, photoName: string){
     Swal.fire({
-      title: 'Are you sure?',
+      title: 'Delete project?',
       text: "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'No, cancel!',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
     }).then((result) => {
       if (result.isConfirmed) {
         this.projectService.deleteImage(photoName); //delete the project image
@@ -199,6 +199,22 @@ export class ProjectsComponent implements OnInit {
       this.filterProjects(value);
     }
   }
-  
+
+  deleteUser(){
+    Swal.fire({
+      title: 'Delete account?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.projectService.deleteUser(this.userId).subscribe(success =>{});
+        this.identity.logOut();
+        this.router.navigate([""]);
+      }
+    })
+  }
 
 }

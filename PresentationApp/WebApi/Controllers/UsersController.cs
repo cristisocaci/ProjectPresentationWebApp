@@ -39,14 +39,20 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = repository.GetUser(id);
-                if(user != null)
+                if (VerifyUserId(id))
                 {
-                    logger.LogInformation($"User with id {id} returned");
-                    return Ok(user);
+                    var user = repository.GetUser(id);
+                    if (user != null)
+                    {
+                        var u = new { userId = user.UserId, userName = user.UserName, firstName = user.FirstName, lastName = user.LastName };
+                        logger.LogInformation($"User with id {id} returned");
+                        return Ok(u);
+                    }
+                    logger.LogInformation($"User with id {id} not found");
+                    return NotFound($"User with id {id} not found");
                 }
-                logger.LogInformation($"User with id {id} not found");
-                return NotFound($"User with id {id} not found");
+                else
+                    return Unauthorized();
             }
             catch(Exception e)
             {
@@ -106,8 +112,10 @@ namespace WebApi.Controllers
                 {
                     repository.DeleteUser(id);
                     if (repository.SaveChanges())
-                        return Ok("User deleted");
+                        return Ok(new string[] { "User deleted" });
                 }
+                else
+                    return Unauthorized();
   
             }
             catch(Exception e)
@@ -121,9 +129,38 @@ namespace WebApi.Controllers
         // Update User
         // PUT api/users/{id}
         [HttpPut("{id}"), Authorize]
-        public IActionResult Update(string id, [FromBody] User newUser)
+        public IActionResult Update(string id, [FromBody] UpdateModel newUser)
         {
-            return Ok();
+            try
+            {
+                if (VerifyUserId(id))
+                {
+                    if (newUser == null)
+                        return BadRequest("Invalid client request");
+                    if (!newUser.ValidateNewPassword())
+                        return BadRequest("Invalid New Password");
+
+                    var user = repository.GetUser(id);
+                    bool verified = BCrypt.Net.BCrypt.Verify(newUser.Password + user.Salt, user.Password);
+                    if (verified)
+                    {
+                        user.Salt = BCrypt.Net.BCrypt.GenerateSalt();
+                        user.Password = BCrypt.Net.BCrypt.HashPassword(newUser.NewPassword + user.Salt);
+                        if (repository.SaveChanges())
+                            return Ok(new string[] { "User updated" });
+                    }
+                    else
+                        return BadRequest("Incorrect Password");
+                }
+                else
+                    return Unauthorized();
+
+            }
+            catch (Exception e)
+            {
+                logger.LogInformation("Failed to update user\n" + e);
+            }
+            return BadRequest("Failed to update user");
         }
 
 
@@ -166,5 +203,19 @@ namespace WebApi.Controllers
                 return true;
             return false;
         }
+    }
+
+    public class UpdateModel
+    {
+        public string Password { get; set; }
+        public string NewPassword { get; set; }
+
+        public bool ValidateNewPassword()
+        {
+            if (Regex.IsMatch(NewPassword, @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$"))
+                return true;
+            return false;
+        }
+
     }
 }

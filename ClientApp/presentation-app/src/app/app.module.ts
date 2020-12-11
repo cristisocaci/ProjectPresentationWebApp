@@ -18,6 +18,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { CreateAccountComponent } from './create-account/create-account.component';
 import { Page404Component } from './page404/page404.component';
 import { InfoEditorComponent } from './info-editor/info-editor.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 export function tokenGetter() {
   return sessionStorage.getItem("jwt");
@@ -33,6 +34,7 @@ export function tokenGetter() {
     CreateAccountComponent,
     Page404Component,
     InfoEditorComponent,
+    ChangePasswordComponent,
   ],
   imports: [
     BrowserModule,

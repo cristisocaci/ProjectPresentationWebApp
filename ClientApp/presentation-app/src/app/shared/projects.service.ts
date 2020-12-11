@@ -141,4 +141,12 @@ export class ProjectsService {
         return true;
       }));
   }
+
+  deleteUser(userId){
+    return this.http.post(this.domain+`/api/users/${userId}`, null).pipe(
+      map( (data: any) => {
+        return true;
+      })
+    );
+  }
 }

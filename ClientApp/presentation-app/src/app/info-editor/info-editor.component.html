@@ -3,7 +3,7 @@
         <div class="shadow bg-light rounded p-2 m-3" *ngIf="modifyProject == false; else modifyBlock">
             <div class="row my-1 mx-0 p-0 py-2 border-top border-bottom border-muted">
                 
-                <div class="col-md-8 mb-2">
+                <div class="col-md-6 mb-2">
 
                     <!-- Title and description-->
                     <h1>{{currentProject.title}}</h1>
@@ -18,27 +18,25 @@
 
                     <!-- Topics and links-->
                     <h5 *ngIf="topics">Tags</h5>
-                    <div class="d-inline-block" *ngFor="let info of currentProject.infos">
-                        <pre *ngIf="info.type=='topic'" class="mx-2"><b>{{info.content}}</b> </pre>
+                    <div class="d-inline-flex align-items-center mb-2" *ngFor="let info of currentProject.infos">
+                        <pre *ngIf="info.type=='topic'" class="mx-2 my-0"><b>{{info.content}}</b> </pre>
                     </div>
                     <h5 *ngIf="links">Other links</h5>
-                    <div *ngFor="let info of currentProject.infos" class="overflow-hidden">
-                        <div *ngIf="info.type=='link'" class="d-inline mr-2">{{info.additionalData}}</div>
+                    <div *ngFor="let info of currentProject.infos" class="d-flex overflow-hidden">
+                        <div *ngIf="info.type=='link'" class="d-inline mx-2">{{info.additionalData}}</div>
                         <a *ngIf="info.type=='link'" href={{info.content}}>{{info.content}}</a>
                     </div>
                 </div>
 
                 <!-- Image -->
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <!-- For big screens -->
-                    <div class="d-flex justify-content-end ">
-                        <div class="d-none d-md-block ">
-                            <img class="img-thumbnail img-fluid"  width="400" src={{imgdomain}}{{currentProject.photo}}>
-                        </div> 
+                    <div class="d-none d-md-flex justify-content-end align-items-center h-100">
+                        <img class="img-thumbnail img-fluid"  src={{imgdomain}}{{currentProject.photo}}>
                     </div> 
                     <!-- For small screens -->
                     <div class="d-md-none d-flex justify-content-center">
-                        <img class="img-thumbnail img-fluid" width="300" src={{imgdomain}}{{currentProject.photo}}>
+                        <img class="img-thumbnail img-fluid" width="560" src={{imgdomain}}{{currentProject.photo}}>
                     </div>
                 </div>
 
@@ -63,7 +61,7 @@
                 <!-- Image -->
                 <div class="w-100" *ngIf="info.type==='image'">
                     <div class="d-flex justify-content-center border-top border-muted pt-2 mt-2 w-100">
-                        <img class="img-thumbnail mb-1 img-fluid" src={{imgdomain}}{{info.content}} width="400">
+                        <img class="img-thumbnail mb-1 img-fluid" src={{imgdomain}}{{info.content}} width="560">
                     </div>
                     <div class="d-flex justify-content-center border-bottom border-muted py-2 mb-2 w-100">
                         <i>{{info.additionalData}}</i>
@@ -78,7 +76,7 @@
         <ng-template #modifyBlock>
             <div *ngIf="identity.isUserAuthenticated() && identity.isUserAuthorized(userId)" class=" shadow bg-light rounded p-2 m-3">
                 <div class="row mt-2 mb-3 mx-0 p-0 py-2 border-top border-bottom border-muted">
-                    <div class="col-md-8">
+                    <div class="col-md-7">
 
                         <!-- Title and description -->
                         <h5>Title</h5>
@@ -129,18 +127,16 @@
                     </div>
 
                     <!-- Project Image -->
-                    <div class="col-md-4">
+                    <div class="col-md-5">
                         <!-- For big screens -->
-                        <div class="d-flex justify-content-center">
-                            <div class="d-none d-md-block ">
-                                <img *ngIf="projectImage.file==null" class="img-thumbnail mb-1 img-fluid " width="400" src={{imgdomain}}{{currentProject.photo}}>
-                                <img *ngIf="projectImage.file!=null" class="img-thumbnail mb-1 img-fluid " width="400" src={{projectImage.browserImg}}>
-                            </div>
+                        <div class="d-none d-md-flex justify-content-center">
+                            <img *ngIf="projectImage.file==null" class="img-thumbnail mb-1 img-fluid " width="560" src={{imgdomain}}{{currentProject.photo}}>
+                            <img *ngIf="projectImage.file!=null" class="img-thumbnail mb-1 img-fluid " width="560" src={{projectImage.browserImg}}>
                         </div>
                         <!-- For small screens -->
                         <div class="d-md-none d-flex justify-content-center">
-                            <img *ngIf="projectImage.file==null" class="img-thumbnail img-fluid mb-1 img-fluid" width="300" src={{imgdomain}}{{currentProject.photo}}>
-                            <img *ngIf="projectImage.file!=null" class="img-thumbnail img-fluid mb-1 img-fluid" width="300" src={{projectImage.browserImg}}>
+                            <img *ngIf="projectImage.file==null" class="img-thumbnail img-fluid mb-1 img-fluid" width="560" src={{imgdomain}}{{currentProject.photo}}>
+                            <img *ngIf="projectImage.file!=null" class="img-thumbnail img-fluid mb-1 img-fluid" width="560" src={{projectImage.browserImg}}>
                         </div>
 
                         <div class="custom-file mb-3 ">
@@ -178,8 +174,8 @@
                         <div>
                             <div *ngFor="let img of infoImages; index as j">
                                 <div *ngIf="img.index == i && !img.deleted" class="d-flex justify-content-center border-top border-muted pt-2 mt-2 w-100">
-                                    <img *ngIf="img.browserImg!=null" class="img-thumbnail mb-1 img-fluid d-none d-md-block" src={{img.browserImg}} width="400">
-                                    <img *ngIf="img.browserImg==null" class="img-thumbnail mb-1 img-fluid d-none d-md-block" src={{imgdomain}}{{info.content}} width="400">
+                                    <img *ngIf="img.browserImg!=null" class="img-thumbnail mb-1 img-fluid" src={{img.browserImg}} width="560">
+                                    <img *ngIf="img.browserImg==null" class="img-thumbnail mb-1 img-fluid" src={{imgdomain}}{{info.content}} width="560">
                                 </div>
                             </div>
                         </div>

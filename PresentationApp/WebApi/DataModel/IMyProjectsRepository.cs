@@ -9,12 +9,12 @@ namespace WebApi.DataModel
     {
         User GetUser(string id);
         IEnumerable<User> GetUsers(string userName); 
-        void DeleteUser(string entity);
+        void DeleteUser(string id);
 
 
         IEnumerable<Project> GetAllProjects(string userId);
         Project GetProject(string userId, int id);
-        void DeleteProject(int entity);
+        void DeleteProject(int projectId);
         bool UpdateProject(Project proj, string userId, int id);
         bool UpdateProjects(Project[] projects, string userId);
 
