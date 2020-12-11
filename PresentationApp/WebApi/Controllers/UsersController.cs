@@ -64,8 +64,8 @@ namespace WebApi.Controllers
             {
                 if (usermodel == null) 
                     return BadRequest("Invalid client request");
-                if (!usermodel.ValidateEmail())
-                    return BadRequest("Invalid Email");
+                if (!usermodel.ValidateUserName())
+                    return BadRequest("Invalid Username");
                 if (!usermodel.ValidatePassword())
                     return BadRequest("Invalid Password");
                 if (repository.GetUsers(usermodel.UserName).Count() > 0)
@@ -153,9 +153,9 @@ namespace WebApi.Controllers
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        public bool ValidateEmail()
+        public bool ValidateUserName()
         {
-            if (Regex.IsMatch(UserName, @"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$", RegexOptions.IgnoreCase))
+            if (Regex.IsMatch(UserName, @"^(?=[a-zA-Z0-9._]{6,20}$)(?!.*[_.]{2})[^_.].*[^_.]$", RegexOptions.IgnoreCase))
                 return true;
             return false;
         }

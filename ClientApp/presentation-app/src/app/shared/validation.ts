@@ -6,8 +6,8 @@ import { Injectable } from '@angular/core';
 
 export class Validation {
 
-    validateEmail(email){
-        if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)) {
+    validateUsername(username){
+        if (/^(?=[a-zA-Z0-9._]{6,20}$)(?!.*[_.]{2})[^_.].*[^_.]$/.test(username)) {
             return (true)
         }
         return (false)

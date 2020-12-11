@@ -27,8 +27,8 @@ export class CreateAccountComponent implements OnInit {
   createAccount(form: NgForm) {
     this.passproblem = false;
 
-    if(!this.validation.validateEmail(form.value.username)){
-      this.message = "Invalid Email";
+    if(!this.validation.validateUsername(form.value.username)){
+      this.message = "Invalid Username";
       this.invalidCreate = true;
       return;
     }

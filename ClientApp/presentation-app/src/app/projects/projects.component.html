@@ -21,8 +21,12 @@
         <li class="nav-item d-inline-block mw-25">
             <div class="btn-group">
                 <a class="btn btn-dark text-light" (click)="createProjectDisplay()">Create Project</a>
-                <a class="btn btn-dark text-light">Account Information</a>
-                <a class="btn btn-dark text-light" (click)="identity.logOut()">Log Out</a>
+                <button class="btn btn-dark text-light dropdown-toggle"  data-toggle="dropdown">Account</button>
+                <div class="dropdown-menu dropdown-menu-right bg-dark position-absolute">
+                    <button class="btn btn-dark text-light w-100 d-flex justify-content-start">Change Password</button>
+                    <button class="btn btn-dark text-light w-100 d-flex justify-content-start">Delete Account</button>
+                    <button class="btn btn-dark text-light w-100 d-flex justify-content-start" (click)="identity.logOut()">Log Out</button>
+                </div>
             </div>
         </li>
     </ul>
