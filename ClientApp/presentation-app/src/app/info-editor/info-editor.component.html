@@ -106,7 +106,7 @@
                         <h5>Tags</h5>
                         <div class="form-inline">
                             <div class="input-group" *ngFor="let info of currentProject.infos; index as i">
-                                <input class="form-control mt-1" type="text" *ngIf="info.type=='topic'" [(ngModel)]="currentProject.infos[i].content" placeholder="Enter the topic">
+                                <input class="form-control mt-1" type="text" *ngIf="info.type=='topic'" [(ngModel)]="currentProject.infos[i].content" placeholder="Topic">
                                 <button class="btn btn-light mr-1" (click)="deleteInfo(i)" *ngIf="info.type=='topic'"><i  class="fas fa-times text-danger"></i></button>
                             </div>
                         </div>
@@ -117,7 +117,7 @@
                         <div class="d-flex" *ngFor="let info of currentProject.infos; index as i">
                             <div class="form-inline w-100">
                                 <input type="text" class="form-control w-25" *ngIf="info.type=='link'" [(ngModel)]="currentProject.infos[i].additionalData" placeholder="Label">
-                                <input type="text" class="form-control w-75" *ngIf="info.type=='link'" [(ngModel)]="currentProject.infos[i].content" placeholder="Enter the link">
+                                <input type="text" class="form-control w-75" *ngIf="info.type=='link'" [(ngModel)]="currentProject.infos[i].content" placeholder="Link">
                             </div>
                             <button class="btn btn-light" (click)="deleteInfo(i)" *ngIf="info.type=='link'"><i  class="fas fa-times text-danger"></i></button>
                         </div>
@@ -156,18 +156,18 @@
                                         class="form-control" 
                                         [(ngModel)]="currentProject.infos[i].content" 
                                         style="resize: none;" 
-                                        placeholder="Enter the paragraph" 
+                                        placeholder="Text" 
                                         ></textarea>
                     <!-- Subtitle -->
                     <input *ngIf="info.type==='subtitle'" 
                             type="text" 
                             class="form-control font-weight-bold" 
                             [(ngModel)]="currentProject.infos[i].content" 
-                            placeholder="Enter the subtitle">
+                            placeholder="Subtitle">
                     <!-- Youtube video -->
                     <div *ngIf="info.type==='ytvideo'" class="form-inline mb-1 w-100" >
                         <input type="text" class="form-control w-25"  [(ngModel)]="currentProject.infos[i].additionalData" placeholder="Video information">
-                        <input type="text" class="form-control w-75"  [(ngModel)]="currentProject.infos[i].content" placeholder="Enter the youtube link">
+                        <input type="text" class="form-control w-75"  [(ngModel)]="currentProject.infos[i].content" placeholder="Youtube link">
                     </div>
                     <!-- Image -->
                     <div class="w-100" *ngIf="info.type==='image'">
