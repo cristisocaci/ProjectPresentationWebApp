@@ -2,10 +2,8 @@
     <ul class="navbar-nav mr-2 ml-2">
         <!-- Page title -->
         <a class="navbar-brand text-light text-weight-bolder" href=""><i class="fas fa-project-diagram"></i>
-            Logo</a>
+            {{logo}}</a>
     </ul>
-
-    <a href="/projects?userId=0">go</a>
 
     <div *ngIf="!identity.isUserAuthenticated()">
         <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#login">
@@ -28,6 +26,14 @@
         <div class="row justify-content-center">
             <div class="col-md-6 text-center">
                 <h1 class="display-1 d-block">Welcome!</h1>
+                <p>My name is Cristian Socaci and I build this app to showcase my personal projects. 
+                    You can check them out <a class="btn p-0 text-primary" href="/projects?userId=0">here</a>. 
+                    If you wish to showcase your own projects,
+                    <a class="btn p-0 text-primary" data-toggle="modal" data-target="#create">
+                        create an account
+                    </a>
+                    and start making your presentations.
+                </p>
             </div>
         </div>
     </div>

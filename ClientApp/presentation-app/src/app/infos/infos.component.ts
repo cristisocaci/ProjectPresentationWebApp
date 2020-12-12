@@ -17,6 +17,7 @@ export class InfosComponent implements OnInit {
   
   @ViewChild(InfoEditorComponent) child: InfoEditorComponent;
 
+  logo = sessionStorage.getItem("logo");
   projectId: number;
   userId: any;
   projects: Project[];

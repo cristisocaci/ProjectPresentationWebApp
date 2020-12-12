@@ -16,6 +16,7 @@ import { Identity } from '../shared/identity';
 })
 export class ProjectsComponent implements OnInit {
 
+  logo = sessionStorage.getItem("logo");
   projects: Array<Project>;
   filteredProjects: Array<Project>;
   domain = sessionStorage.getItem('domain');

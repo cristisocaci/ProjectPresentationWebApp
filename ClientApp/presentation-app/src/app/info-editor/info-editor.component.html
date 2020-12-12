@@ -23,8 +23,8 @@
                     </div>
                     <h5 *ngIf="links">Other links</h5>
                     <div *ngFor="let info of currentProject.infos" class="d-flex overflow-hidden">
-                        <div *ngIf="info.type=='link'" class="d-inline mx-2">{{info.additionalData}}</div>
-                        <a *ngIf="info.type=='link'" href={{info.content}}>{{info.content}}</a>
+                        <div *ngIf="info.type=='link'" class="d-inline">{{info.additionalData}}</div>
+                        <a *ngIf="info.type=='link'" href={{info.content}} class="ml-2">{{info.content}}</a>
                     </div>
                 </div>
 

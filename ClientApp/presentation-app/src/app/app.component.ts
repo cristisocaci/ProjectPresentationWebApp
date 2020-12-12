@@ -8,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class AppComponent implements OnInit{
   constructor(){
     sessionStorage.setItem('domain', 'http://localhost:8888');
+    sessionStorage.setItem('logo', "MyProject");
   }
   ngOnInit(){
   }

@@ -10,6 +10,7 @@ import { Identity } from '../shared/identity';
 })
 export class WelcomeComponent implements OnInit {
   identity: Identity;
+  logo = sessionStorage.getItem("logo");
 
   constructor( identity: Identity ) { 
     this.identity = identity;
