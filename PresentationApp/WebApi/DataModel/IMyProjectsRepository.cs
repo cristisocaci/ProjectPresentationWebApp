@@ -12,7 +12,7 @@ namespace WebApi.DataModel
         void DeleteUser(string id);
 
 
-        IEnumerable<Project> GetAllProjects(string userId);
+        IEnumerable<Object> GetAllProjects(string userId);
         Project GetProject(string userId, int id);
         void DeleteProject(int projectId);
         bool UpdateProject(Project proj, string userId, int id);

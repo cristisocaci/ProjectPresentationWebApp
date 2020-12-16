@@ -23,8 +23,7 @@ namespace WebApi.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            var user = context.Find<User>("0");
-            return new string[] { "value1", "value2", user.UserId };
+            return new string[] { "value1", "value2"};
         }
 
         // GET api/values/5

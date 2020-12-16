@@ -24,7 +24,6 @@ namespace WebApi.DataModel
         public User GetUser(string id)
         {
             var user = context.Users
-                .Include(u => u.Projects)
                 .Where(u => u.UserId == id)
                 .FirstOrDefault();
             return user;
@@ -38,10 +37,21 @@ namespace WebApi.DataModel
         }
 
 
-        public IEnumerable<Project> GetAllProjects(string userId)
+        public IEnumerable<Object> GetAllProjects(string userId)
         {
             return context.Projects
                 .Where(p => p.UserId == userId)
+                .Select(p => new
+                {
+                    p.ProjectId,
+                    p.Title,
+                    p.Photo,
+                    p.Description,
+                    p.Position,
+                    p.StartDate,
+                    p.EndDate,
+                    p.UserId
+                })
                 .ToList();
 
         }
