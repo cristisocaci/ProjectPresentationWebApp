@@ -53,7 +53,7 @@ namespace WebApi
                 opt.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
-                    ValidateAudience = true,
+                    ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
 
@@ -70,6 +70,7 @@ namespace WebApi
                 o.MultipartBodyLengthLimit = int.MaxValue;
                 o.MemoryBufferThreshold = int.MaxValue;
             });
+
            
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
