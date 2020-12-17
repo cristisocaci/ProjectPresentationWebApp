@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <Target Name="PrePublishTarget" AfterTargets="Publish">
-    <Exec Command="dotnet tool install --global dotnet-ef" />
+    <Exec Command="dotnet tool install --global dotnet-ef --version 2.1.4" />
     <Exec Command="dotnet ef migrations add Create" />
     <Exec Command="dotnet ef database update" />
   </Target>

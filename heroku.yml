@@ -4,4 +4,4 @@ build:
 setup:
   addons:
   - plan: heroku-postgresql
-    as: DATABASE
+    as: DATABASE_URL
