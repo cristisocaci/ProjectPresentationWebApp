@@ -4,10 +4,10 @@ EXPOSE 80
 
 FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /src
-COPY ["WebApi/WebApi.csproj", "WebApi/"]
-RUN dotnet restore "WebApi/WebApi.csproj"
+COPY ["WebApi.csproj", "./"]
+RUN dotnet restore "WebApi.csproj"
 COPY . .
-WORKDIR "/src/WebApi"
+WORKDIR "/src/"
 RUN dotnet build "WebApi.csproj" -c Release -o /app
 
 FROM build AS publish
@@ -16,4 +16,5 @@ RUN dotnet publish "WebApi.csproj" -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "WebApi.dll"]
+# ENTRYPOINT ["dotnet", "WebApi.dll"]
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet WebApi.dll
