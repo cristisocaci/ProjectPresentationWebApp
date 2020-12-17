@@ -32,10 +32,31 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            string connectionString = null;
+            string envVar = Environment.GetEnvironmentVariable("DATABASE_URL");
+            if (string.IsNullOrEmpty(envVar))
+            {
+                connectionString = Configuration["Connectionstrings:database"];
+            }
+            else
+            {
+                //parse database URL. Format is postgres://<username>:<password>@<host>/<dbname>
+                var uri = new Uri(envVar);
+                var username = uri.UserInfo.Split(':')[0];
+                var password = uri.UserInfo.Split(':')[1];
+                connectionString =
+                "; Database=" + uri.AbsolutePath.Substring(1) +
+                "; Username=" + username +
+                "; Password=" + password +
+                "; Port=" + uri.Port +
+                "; SSL Mode=Require; Trust Server Certificate=true;";
+            }
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                     .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore); ;
             services.AddEntityFrameworkSqlServer();
-            services.AddDbContextPool<MyProjectsContext>(options => options.UseSqlite(Configuration.GetConnectionString("MyProjectsDbSQLite")));
+            services.AddDbContextPool<MyProjectsContext>(options => options.UseNpgsql(connectionString));
             services.AddScoped<IMyProjectsRepository, MyProjectsRepository>();
             services.AddTransient<ITokenService, TokenService>();
             services.AddCors(opt => opt.AddPolicy("MyPolicy", builder =>
@@ -73,6 +94,7 @@ namespace WebApi
 
            
         }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
