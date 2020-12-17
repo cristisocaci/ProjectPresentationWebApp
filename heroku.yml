@@ -1,3 +1,7 @@
 build:
     docker:
         web: PresentationApp/WebApi/Dockerfile
+setup:
+  addons:
+  - plan: heroku-postgresql
+    as: DATABASE
