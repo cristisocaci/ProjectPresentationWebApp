@@ -3,14 +3,14 @@ WORKDIR /app
 
 FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /src
-COPY ["./PresentationApp/WebApi/WebApi.csproj", "./"]
+COPY ["WebApi.csproj", "./"]
 RUN dotnet restore "WebApi.csproj"
 COPY . .
 WORKDIR "/src/"
-RUN dotnet build "./WebApi.csproj" -c Release -o /app
+RUN dotnet build "WebApi.csproj" -c Release -o /app
 
 FROM build AS publish
-RUN dotnet publish "./WebApi.csproj" -c Release -o /app
+RUN dotnet publish "WebApi.csproj" -c Release -o /app
 
 FROM base AS final
 WORKDIR /app
