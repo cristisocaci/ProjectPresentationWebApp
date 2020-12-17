@@ -37,8 +37,8 @@ namespace WebApi.DataModel
                 new User { UserId = "0", UserName="cristi@la.com", Password=BCrypt.Net.BCrypt.HashPassword("has123-lld"), Salt="-lld"}
             );
             modelBuilder.Entity<Project>().HasData(
-                new  { ProjectId = 1, Title = "Demo 1", UserId = "0", Position=0, Description="Description of project 1" },
-                new  { ProjectId = 2, Title = "Demo 2", UserId = "0", Position=1, Description = "Description of project 1" }
+                new  { ProjectId = 1, Title = "Demo 1", UserId = "0", Position=0, Description="Description of project 1", Photo="unnamed1.jpg" },
+                new  { ProjectId = 2, Title = "Demo 2", UserId = "0", Position=1, Description = "Description of project 1", Photo = "unnamed1.jpg" }
             );
             
             modelBuilder.Entity<Info>().HasData(
