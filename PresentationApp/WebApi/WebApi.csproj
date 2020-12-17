@@ -38,4 +38,9 @@
     <PackageReference Include="System.Text.Json" Version="4.7.2" />
   </ItemGroup>
 
+  <Target Name="PrePublishTarget" AfterTargets="Publish">
+    <Exec Command="dotnet ef migrations add CreateDatabase" />
+    <Exec Command="dotnet ef database update" />
+  </Target>
+  
 </Project>
