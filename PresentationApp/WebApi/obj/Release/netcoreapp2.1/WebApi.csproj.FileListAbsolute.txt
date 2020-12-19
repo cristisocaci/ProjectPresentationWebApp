@@ -1,0 +1,15 @@
+D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\bin\Release\netcoreapp2.1\WebApi.deps.json
+D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\bin\Release\netcoreapp2.1\WebApi.runtimeconfig.json
+D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\bin\Release\netcoreapp2.1\WebApi.runtimeconfig.dev.json
+D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\bin\Release\netcoreapp2.1\WebApi.dll
+D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\bin\Release\netcoreapp2.1\WebApi.pdb
+D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\obj\Release\netcoreapp2.1\WebApi.csprojAssemblyReference.cache
+D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\obj\Release\netcoreapp2.1\WebApi.csproj.CoreCompileInputs.cache
+D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\obj\Release\netcoreapp2.1\WebApi.RazorAssemblyInfo.cache
+D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\obj\Release\netcoreapp2.1\WebApi.RazorAssemblyInfo.cs
+D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\obj\Release\netcoreapp2.1\UserSecretsAssemblyInfo.cs
+D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\obj\Release\netcoreapp2.1\WebApi.AssemblyInfoInputs.cache
+D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\obj\Release\netcoreapp2.1\WebApi.AssemblyInfo.cs
+D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\obj\Release\netcoreapp2.1\WebApi.RazorTargetAssemblyInfo.cache
+D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\obj\Release\netcoreapp2.1\WebApi.dll
+D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\obj\Release\netcoreapp2.1\WebApi.pdb

@@ -1,0 +1,10 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\PresentationApp",
+    "\\PresentationApp\\WebApi",
+    "\\PresentationApp\\WebApi\\Controllers",
+    "\\PresentationApp\\WebApi\\DataModel"
+  ],
+  "PreviewInSolutionExplorer": false
+}
