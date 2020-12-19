@@ -44,11 +44,11 @@ namespace WebApi
             var port = "5432"; //uri.Port;
             var database = "d51epvnsrgaekl"; //uri.LocalPath.TrimStart('/');
             connectionString =
-                "Username=" + username +
-                ";Password=" + password + 
-                ";Host=" + host +
+                "Host=" + host +
                 ";Port=" + port +
                 ";Database=" + database +
+                ";Username=" + username +
+                ";Password=" + password + 
                 ";SSLMode=Require;" +
                 "TrustServerCertificate=True;";
             
