@@ -32,7 +32,7 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            /*
             string connectionString = null;
             string envVar = Environment.GetEnvironmentVariable("DATABASE_URL");
 
@@ -51,13 +51,13 @@ namespace WebApi
                 ";Password=" + password + 
                 ";SSLMode=Require;" +
                 "TrustServerCertificate=True;";
-            
+            */
                   
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                     .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore); ;
             services.AddEntityFrameworkSqlServer();
-            services.AddDbContextPool<MyProjectsContext>(options => options.UseNpgsql(connectionString));
+            services.AddDbContextPool<MyProjectsContext>(options => options.UseSqlite(Configuration.GetConnectionString("MyProjectsDbSQLite"));
             services.AddScoped<IMyProjectsRepository, MyProjectsRepository>();
             services.AddTransient<ITokenService, TokenService>();
             services.AddCors(opt => opt.AddPolicy("MyPolicy", builder =>
