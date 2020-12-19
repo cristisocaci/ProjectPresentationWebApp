@@ -29,9 +29,7 @@ namespace WebApi
                     logging.ClearProviders();
                     logging.AddConsole();
                 })
-                .UseStartup<Startup>()
-                .UseUrls("http://*:" + Environment.GetEnvironmentVariable("PORT"));
-
+                .UseStartup<Startup>();
     }
 
 }
