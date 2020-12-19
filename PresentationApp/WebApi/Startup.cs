@@ -41,12 +41,21 @@ namespace WebApi
             var username = uri.UserInfo.Split(':')[0];
             var password = uri.UserInfo.Split(':')[1];
             connectionString =
-            "; Database=" + uri.AbsolutePath.Substring(1) +
+                "Username=" + username +
+                ";Password=" + password + 
+                ";Host=" + uri.Host +
+                ";Port=" + uri.Port +
+                ";Database=" + uri.LocalPath.TrimStart('/') +
+                ";SSLMode=Require;" +
+                "TrustServerCertificate=True;";
+            
+                /*
+                "; Database=" + uri.AbsolutePath.Substring(1) +
             "; Username=" + username +
             "; Password=" + password +
             "; Port=" + uri.Port +
-            "; sslmode=Prefer; Trust Server Certificate=true;";
-            
+            "; sslmode=Prefer; TrustServerCertificate=true;";
+                */        
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                     .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore); ;
