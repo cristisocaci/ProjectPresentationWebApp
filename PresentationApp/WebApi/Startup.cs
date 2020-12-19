@@ -57,7 +57,7 @@ namespace WebApi
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                     .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore); ;
             services.AddEntityFrameworkSqlServer();
-            services.AddDbContextPool<MyProjectsContext>(options => options.UseSqlite(Configuration.GetConnectionString("MyProjectsDbSQLite"));
+            services.AddDbContextPool<MyProjectsContext>(options => options.UseSqlite(Configuration.GetConnectionString("MyProjectsDbSQLite")));
             services.AddScoped<IMyProjectsRepository, MyProjectsRepository>();
             services.AddTransient<ITokenService, TokenService>();
             services.AddCors(opt => opt.AddPolicy("MyPolicy", builder =>
