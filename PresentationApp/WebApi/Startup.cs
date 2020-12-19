@@ -45,7 +45,7 @@ namespace WebApi
             "; Username=" + username +
             "; Password=" + password +
             "; Port=" + uri.Port +
-            "; SSL Mode=Require; Trust Server Certificate=true;";
+            "; sslmode=Prefer; Trust Server Certificate=true;";
             
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
