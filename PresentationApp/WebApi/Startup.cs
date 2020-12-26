@@ -32,17 +32,17 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            /*
+            
             string connectionString = null;
             string envVar = Environment.GetEnvironmentVariable("DATABASE_URL");
 
             //parse database URL. Format is postgres://<username>:<password>@<host>/<dbname>
             var uri = new Uri(envVar);
-            var username = "cgztxvzuopfzpo"; //uri.UserInfo.Split(':')[0];
-            var password = "c7dfc5a24dfab327127b225be2d983f56aac5f45f2bf68bfa9da1996c5c5b950"; //uri.UserInfo.Split(':')[1];
-            var host = "ec2-52-31-94-195.eu-west-1.compute.amazonaws.com"; //uri.Host;
-            var port = "5432"; //uri.Port;
-            var database = "d51epvnsrgaekl"; //uri.LocalPath.TrimStart('/');
+            var username = uri.UserInfo.Split(':')[0];
+            var password = uri.UserInfo.Split(':')[1];
+            var host = uri.Host;
+            var port = uri.Port;
+            var database = uri.LocalPath.TrimStart('/');
             connectionString =
                 "Host=" + host +
                 ";Port=" + port +
@@ -51,13 +51,12 @@ namespace WebApi
                 ";Password=" + password + 
                 ";SSLMode=Require;" +
                 "TrustServerCertificate=True;";
-            */
+            
                   
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                     .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore); ;
-            services.AddEntityFrameworkSqlServer();
-            services.AddDbContextPool<MyProjectsContext>(options => options.UseSqlite(Configuration.GetConnectionString("MyProjectsDbSQLite")));
+            services.AddDbContextPool<MyProjectsContext>(options => options.UseNpgsql(connectionString));
             services.AddScoped<IMyProjectsRepository, MyProjectsRepository>();
             services.AddTransient<ITokenService, TokenService>();
             services.AddCors(opt => opt.AddPolicy("MyPolicy", builder =>
