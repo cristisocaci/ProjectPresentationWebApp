@@ -12,3 +12,4 @@ D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\obj\Deb
 D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\obj\Debug\netcoreapp2.1\WebApi.dll
 D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\obj\Debug\netcoreapp2.1\WebApi.pdb
 D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\obj\Debug\netcoreapp2.1\WebApi.csprojAssemblyReference.cache
+D:\Cristi\Visual Studio\ProjectPresentationWebApp\PresentationApp\WebApi\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs
