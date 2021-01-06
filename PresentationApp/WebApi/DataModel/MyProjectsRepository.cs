@@ -147,6 +147,16 @@ namespace WebApi.DataModel
             return null;
         }
 
+        private void DeleteImages(string userId)
+        {
+            var user = GetUser(userId);
+            foreach (var project in user.Projects)
+            {
+                DeleteImage(project.Photo);
+                DeleteInfoImages(userId, project.ProjectId);
+            }
+        }
+
         private void DeleteInfoImages(string userId, int projectId)
         {
             var project = GetProject(userId, projectId);
@@ -155,22 +165,14 @@ namespace WebApi.DataModel
                     DeleteImage(info.Content);
         }
 
-        private void DeleteImages(string userId)
-        {
-            var user = GetUser(userId);
-            foreach(var project in user.Projects)
-            {
-                DeleteImage(project.Photo);
-                DeleteInfoImages(userId, project.ProjectId);
-            }
-        }
-
         private void DeleteImage(string name)
         {
+            /* Delete image saved in filesystem
             string folderName = Path.Combine("wwwroot", "img");
             string pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
             string fullPath = Path.Combine(pathToSave, name);
             System.IO.File.Delete(fullPath);
+            */
         }
     }
        

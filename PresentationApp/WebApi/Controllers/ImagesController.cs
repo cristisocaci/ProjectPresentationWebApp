@@ -12,6 +12,9 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using WebApi.DataModel;
 
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
@@ -35,20 +38,29 @@ namespace WebApi.Controllers
             try
             {
                 foreach(var file in Request.Form.Files) {
-                    
+
                     var folderName = Path.Combine("wwwroot", "img");
                     var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
                     if (file.Length > 0)
                     {
                         var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
                         var fullPath = Path.Combine(pathToSave, fileName);
-                        var dbPath = Path.Combine(folderName, fileName);
                         using (var stream = new FileStream(fullPath, FileMode.Create))
                         {
                             file.CopyTo(stream);
                         }
+                        var uploadParams = new ImageUploadParams()
+                        {
+                            File = new FileDescription(fullPath),
+                            UseFilename = true,
+                            UniqueFilename = false,
+                            Folder = "projectscape"
+                        };
+                        var cloudinary = new Cloudinary(new Account("myprojectresources", "158451326186384", "rPFto1LaKPIxm-b511jIABiwyhk"));
+                        var uploadResult = cloudinary.Upload(uploadParams);
                         
                     }
+                    
 
                 }
                 return Ok(new string[] { "Photos uploaded" });
@@ -72,10 +84,12 @@ namespace WebApi.Controllers
                 {
                     if (VerifyUserId(userId))
                     {
+                        /* 
                         string folderName = Path.Combine("wwwroot", "img");
                         string pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
                         string fullPath = Path.Combine(pathToSave, name);
                         System.IO.File.Delete(fullPath);
+                        */
                         return Ok(new string[] { "Photo deleted", name });
                     }
                     else return Unauthorized();

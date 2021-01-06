@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebApi.Security;
+using CloudinaryDotNet;
 
 namespace WebApi
 {
@@ -34,7 +35,8 @@ namespace WebApi
         {
             
             string connectionString = null;
-            string envVar = Environment.GetEnvironmentVariable("DATABASE_URL");
+            string envVar = "postgres://cgztxvzuopfzpo:c7dfc5a24dfab327127b225be2d983f56aac5f45f2bf68bfa9da1996c5c5b950@ec2-52-31-94-195.eu-west-1.compute.amazonaws.com:5432/d51epvnsrgaekl";
+                //Environment.GetEnvironmentVariable("DATABASE_URL");
 
             //parse database URL. Format is postgres://<username>:<password>@<host>/<dbname>
             var uri = new Uri(envVar);
@@ -91,6 +93,8 @@ namespace WebApi
                 o.MultipartBodyLengthLimit = int.MaxValue;
                 o.MemoryBufferThreshold = int.MaxValue;
             });
+
+           
 
            
         }
