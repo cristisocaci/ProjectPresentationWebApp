@@ -37,6 +37,7 @@ namespace WebApi
             string connectionString = null;
             string envVar = Environment.GetEnvironmentVariable("DATABASE_URL");
 
+
             //parse database URL. Format is postgres://<username>:<password>@<host>/<dbname>
             var uri = new Uri(envVar);
             var username = uri.UserInfo.Split(':')[0];
