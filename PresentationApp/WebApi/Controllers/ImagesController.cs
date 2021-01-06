@@ -82,6 +82,7 @@ namespace WebApi.Controllers
                 var userId = repository.GetOwnerOfImage(name);
                 if (name != null)
                 {
+                    return Ok(new string[] { "Photo deleted", name });
                     if (VerifyUserId(userId))
                     {
                         /* 
